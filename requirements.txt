@@ -1,6 +1,6 @@
 jugaad-data
 pandas
-pandas-ta
+git+https://github.com/twopirllc/pandas-ta.git@development
 numpy
 requests
 beautifulsoup4
