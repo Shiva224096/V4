@@ -1,455 +1,281 @@
-/**
- * app.js — SwingEdge Trading Dashboard
- * Fetches signals.json from GitHub raw URL (or local fallback)
- * and renders interactive signal cards with sparklines.
- */
-
 'use strict';
 
-/* ═══════════════════════════════════════════════════════════
-   CONFIG — Update GITHUB_USER and GITHUB_REPO after pushing
-   ═══════════════════════════════════════════════════════════ */
 const CONFIG = {
-  // Swap these with your actual GitHub username and repo name:
-  GITHUB_USER:    'Shiva224096',
-  GITHUB_REPO:    'V4',
-  // Local path used when opening index.html directly or via local HTTP server
-  LOCAL_JSON:     './data/signals.json',      // served from project root
-  LOCAL_JSON_ALT: '../data/signals.json',     // file:// fallback
-  LOCAL_UPDATED:  './data/last_updated.txt',
-  REFRESH_MS:     60_000,     // Auto-refresh every 60 s
-  ANIMATION_STAGGER: 60,      // ms between card animations
+  GITHUB_USER: 'Shiva224096', GITHUB_REPO: 'V4',
+  LOCAL_JSON: './data/signals.json', LOCAL_JSON_ALT: '../data/signals.json',
+  LOCAL_UPDATED: './data/last_updated.txt',
+  REFRESH_MS: 60_000, ANIMATION_STAGGER: 60, PAGE_SIZE: 50,
 };
-
-// Derived URLs
-const RAW_BASE    = `https://raw.githubusercontent.com/${CONFIG.GITHUB_USER}/${CONFIG.GITHUB_REPO}/main`;
+const RAW_BASE = `https://raw.githubusercontent.com/${CONFIG.GITHUB_USER}/${CONFIG.GITHUB_REPO}/main`;
 const SIGNALS_URL = `${RAW_BASE}/data/signals.json`;
 const UPDATED_URL = `${RAW_BASE}/data/last_updated.txt`;
 
-/* ═══════════════════════════════════════════════════════════
-   STATE
-   ═══════════════════════════════════════════════════════════ */
-let allSignals  = [];
-let filteredSig = [];
-let refreshTimer = null;
-const sparklineCharts = new Map();   // canvas id → Chart instance
+let allSignals = [], filteredSig = [], refreshTimer = null, currentView = 'cards';
+let currentPage = 1, sortCol = 'score', sortDir = 'desc', modalSignal = null;
+const sparklineCharts = new Map();
 
-/* ═══════════════════════════════════════════════════════════
-   FETCH + RENDER PIPELINE
-   ═══════════════════════════════════════════════════════════ */
-
+// ═══ FETCH ═══
 async function fetchSignals() {
-  setLoading(true);
-  setRefreshSpinning(true);
-
+  setLoading(true); setRefreshSpinning(true);
   try {
-    /* Try GitHub raw first, then local root, then local alt (file://) */
     let data;
-    const sources = [
-      SIGNALS_URL + `?t=${Date.now()}`,
-      CONFIG.LOCAL_JSON,
-      CONFIG.LOCAL_JSON_ALT,
-    ];
-    let lastErr;
+    const sources = [SIGNALS_URL+`?t=${Date.now()}`, CONFIG.LOCAL_JSON, CONFIG.LOCAL_JSON_ALT];
     for (const src of sources) {
-      try {
-        const resp = await fetch(src);
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        data = await resp.json();
-        break;
-      } catch (e) { lastErr = e; }
+      try { const r = await fetch(src); if(!r.ok) throw 0; data = await r.json(); break; } catch(_){}
     }
-    if (!data) throw new Error(`All sources failed. Run: python scripts/generate_json.py --demo`);
-
+    if (!data) throw new Error('All sources failed.');
     allSignals = data.signals || [];
-    updateStats(allSignals);
-    applyFilters();
-    updateLastUpdated(data.generated_at);
-    updateMarketStatus();
-    hideError();
-    startAutoRefresh();
-  } catch (err) {
-    showError(err.message);
-    console.error('[SwingEdge] Fetch error:', err);
-  } finally {
-    setLoading(false);
-    setRefreshSpinning(false);
-  }
+    updateStats(allSignals); applyFilters();
+    updateLastUpdated(data.generated_at); updateMarketStatus(); hideError(); startAutoRefresh();
+  } catch (err) { showError(err.message); } finally { setLoading(false); setRefreshSpinning(false); }
 }
 
-async function fetchLastUpdated() {
-  try {
-    let ts;
-    try {
-      const r = await fetch(UPDATED_URL + `?t=${Date.now()}`);
-      ts = await r.text();
-    } catch (_) {
-      const r = await fetch(CONFIG.LOCAL_UPDATED + `?t=${Date.now()}`);
-      ts = await r.text();
-    }
-    updateLastUpdated(ts.trim());
-  } catch (_) { /* silent */ }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   FILTERS
-   ═══════════════════════════════════════════════════════════ */
-
+// ═══ FILTERS ═══
 function applyFilters() {
-  const exchange  = document.getElementById('filter-exchange').value;
-  const strategy  = document.getElementById('filter-strategy').value;
-  const badge     = document.getElementById('filter-badge').value;
-  const minScore  = parseInt(document.getElementById('filter-min-score').value, 10) || 0;
-  const pattern   = document.getElementById('filter-pattern').value;
-  const search    = document.getElementById('filter-search').value.trim().toUpperCase();
-
+  const exchange = document.getElementById('filter-exchange').value;
+  const strategy = document.getElementById('filter-strategy').value;
+  const badge = document.getElementById('filter-badge').value;
+  const minScore = parseInt(document.getElementById('filter-min-score').value,10)||0;
+  const pattern = document.getElementById('filter-pattern').value;
+  const search = document.getElementById('filter-search').value.trim().toUpperCase();
   filteredSig = allSignals.filter(s => {
     if (exchange && s.exchange !== exchange) return false;
     if (strategy && s.strategy !== strategy) return false;
-    if (badge    && s.badge    !== badge)    return false;
-    if (s.score < minScore)                  return false;
-    if (pattern  && !s.pattern.includes(pattern.replace(/[🔨🟢⭐🌠➕📊🌇🤝]/gu, '').trim())) return false;
-    if (search   && !s.symbol.includes(search)) return false;
+    if (badge && s.badge !== badge) return false;
+    if (s.score < minScore) return false;
+    if (pattern && !(s.pattern||'').includes(pattern)) return false;
+    if (search && !s.symbol.includes(search)) return false;
     return true;
   });
-
-  document.getElementById('results-count').textContent =
-    `${filteredSig.length} of ${allSignals.length} signals`;
-
-  renderCards(filteredSig);
+  document.getElementById('results-count').textContent = `${filteredSig.length} of ${allSignals.length} signals`;
+  currentPage = 1;
+  if (currentView === 'cards') renderCards(filteredSig); else renderTable(filteredSig);
 }
-
 function clearFilters() {
-  ['filter-exchange','filter-strategy','filter-badge','filter-pattern'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  document.getElementById('filter-min-score').value = 0;
-  document.getElementById('score-range-display').textContent = '0';
-  document.getElementById('filter-search').value = '';
+  ['filter-exchange','filter-strategy','filter-badge','filter-pattern'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('filter-min-score').value=0;
+  document.getElementById('score-range-display').textContent='0';
+  document.getElementById('filter-search').value='';
   applyFilters();
 }
 
-/* ═══════════════════════════════════════════════════════════
-   RENDER CARDS
-   ═══════════════════════════════════════════════════════════ */
+// ═══ VIEW TOGGLE ═══
+function setView(v) {
+  currentView = v;
+  document.getElementById('btn-view-cards').classList.toggle('active', v==='cards');
+  document.getElementById('btn-view-table').classList.toggle('active', v==='table');
+  document.getElementById('cards-grid').hidden = v!=='cards';
+  document.getElementById('table-container').hidden = v!=='table';
+  if (v==='cards') renderCards(filteredSig); else renderTable(filteredSig);
+}
 
+// ═══ CARDS ═══
 function renderCards(signals) {
   const grid = document.getElementById('cards-grid');
-
-  // Destroy old sparkline charts
-  sparklineCharts.forEach(chart => chart.destroy());
-  sparklineCharts.clear();
-
-  if (!signals.length) {
-    grid.innerHTML = '';
-    document.getElementById('empty-state').hidden = false;
-    return;
-  }
-  document.getElementById('empty-state').hidden = true;
-
-  // Group signals by symbol
-  const groupedMap = new Map();
-  signals.forEach(s => {
-    if (!groupedMap.has(s.symbol)) {
-      groupedMap.set(s.symbol, []);
-    }
-    groupedMap.get(s.symbol).push(s);
-  });
-  
-  const groupedArray = Array.from(groupedMap.values());
-
-  grid.innerHTML = groupedArray.map((group, i) => buildGroupCardHTML(group, i)).join('');
-
-  // Build sparklines after DOM is ready
-  requestAnimationFrame(() => {
-    groupedArray.forEach((group, i) => {
-      const s = group[0];
-      const canvasId = `spark-${i}`;
-      buildSparkline(canvasId, s.sparkline || []);
-    });
-  });
+  sparklineCharts.forEach(c=>c.destroy()); sparklineCharts.clear();
+  if (!signals.length) { grid.innerHTML=''; document.getElementById('empty-state').hidden=false; return; }
+  document.getElementById('empty-state').hidden=true;
+  const grouped = new Map();
+  signals.forEach(s => { if(!grouped.has(s.symbol)) grouped.set(s.symbol,[]); grouped.get(s.symbol).push(s); });
+  const groups = Array.from(grouped.values());
+  grid.innerHTML = groups.map((g,i) => buildGroupCard(g,i)).join('');
+  requestAnimationFrame(() => groups.forEach((g,i) => buildSparkline(`spark-${i}`, g[0].sparkline||[])));
 }
 
-function buildGroupCardHTML(group, i) {
-  const mainSignal = group.reduce((prev, current) => (prev.score > current.score) ? prev : current);
-  const score     = mainSignal.score || 0;
-  const pct       = score; // 0–100
-  const ringColor = score >= 80 ? '#22c55e' : score >= 60 ? '#eab308' : '#ef4444';
-  const ringGlow  = score >= 80 ? 'rgba(34,197,94,0.4)' : score >= 60 ? 'rgba(234,179,8,0.35)' : 'rgba(239,68,68,0.35)';
-
-  const rup = n => n != null ? `₹${Number(n).toLocaleString('en-IN', {maximumFractionDigits: 2})}` : '—';
-
-  const signalsHTML = group.map((s, idx) => {
-    const rr   = s.rr  ? `${s.rr}:1` : '—';
-    const date = s.date ? formatDate(s.date) : '—';
-    return `
-      ${idx > 0 ? '<hr class="signal-divider" />' : ''}
-      <div class="signal-item">
-        <!-- Strategy + Pattern -->
-        <div class="card-strategy-row">
-          <span class="card-strategy">${escHtml(s.strategy)}</span>
-          <span class="card-pattern">${escHtml(s.pattern || '—')}</span>
-        </div>
-
-        <!-- Prices -->
-        <div class="card-prices">
-          <div class="price-box">
-            <div class="price-label">Entry</div>
-            <div class="price-value entry">${rup(s.entry)}</div>
-          </div>
-          <div class="price-box">
-            <div class="price-label">Target 🎯</div>
-            <div class="price-value target">${rup(s.target)}</div>
-          </div>
-          <div class="price-box">
-            <div class="price-label">Stop Loss 🛑</div>
-            <div class="price-value sl">${rup(s.stop_loss)}</div>
-          </div>
-        </div>
-
-        <!-- R:R + Date -->
-        <div class="card-rr-row" style="margin-bottom: 0;">
-          <span class="rr-pill">⚖️ R:R ${escHtml(rr)}</span>
-          <span class="card-date">${escHtml(date)}</span>
-        </div>
-      </div>
-    `;
+function buildGroupCard(group, i) {
+  const m = group.reduce((a,b) => a.score>b.score?a:b);
+  const sc = m.score||0, rc = sc>=80?'#22c55e':sc>=60?'#eab308':'#ef4444';
+  const rg = sc>=80?'rgba(34,197,94,0.4)':sc>=60?'rgba(234,179,8,0.35)':'rgba(239,68,68,0.35)';
+  const rup = n => n!=null?`₹${Number(n).toLocaleString('en-IN',{maximumFractionDigits:2})}`:'—';
+  const sigs = group.map((s,idx) => {
+    const rr = s.rr?`${s.rr}:1`:'—', dt = s.date?formatDate(s.date):'—';
+    return `${idx>0?'<hr class="signal-divider"/>':''}
+    <div class="signal-item">
+      <div class="card-strategy-row"><span class="card-strategy">${esc(s.strategy)}</span><span class="card-pattern">${esc(s.pattern||'—')}</span></div>
+      <div class="card-prices"><div class="price-box"><div class="price-label">Entry</div><div class="price-value entry">${rup(s.entry)}</div></div><div class="price-box"><div class="price-label">Target 🎯</div><div class="price-value target">${rup(s.target)}</div></div><div class="price-box"><div class="price-label">Stop Loss 🛑</div><div class="price-value sl">${rup(s.stop_loss)}</div></div></div>
+      <div class="card-rr-row" style="margin-bottom:0"><span class="rr-pill">⚖️ R:R ${esc(rr)}</span><span class="card-date">${esc(dt)}</span></div>
+    </div>`;
   }).join('');
-
-  return `
-<article
-  class="signal-card badge-${escHtml(mainSignal.badge)}"
-  role="listitem"
-  style="animation-delay: ${i * CONFIG.ANIMATION_STAGGER}ms"
-  aria-label="${escHtml(mainSignal.symbol)} — ${group.length} signals"
->
-  <!-- Header -->
-  <div class="card-header">
-    <div class="card-symbol-wrap">
-      <span class="card-symbol">${escHtml(mainSignal.symbol)}</span>
-      <span class="card-exchange-badge">${escHtml(mainSignal.exchange || 'NSE')}</span>
-      <span class="card-close">LTP ${rup(mainSignal.close)}</span>
-    </div>
-    <div class="score-badge">
-      <div
-        class="score-ring"
-        style="
-          --ring-color: ${ringColor};
-          --ring-pct: ${pct * 3.6}deg;
-          --ring-glow: ${ringGlow};
-          background: conic-gradient(${ringColor} ${pct * 3.6}deg, rgba(255,255,255,0.04) 0%);
-          box-shadow: 0 0 14px ${ringGlow};
-        "
-      >
-        <span class="score-num">${score}</span>
-      </div>
-      <span
-        class="score-label-text"
-        style="color: ${ringColor}"
-      >${escHtml(mainSignal.badge)}</span>
-    </div>
-  </div>
-
-  <div class="group-signals">
-    ${signalsHTML}
-  </div>
-
-  <!-- Sparkline -->
-  <div class="sparkline-wrap">
-    <canvas id="spark-${i}" height="44" aria-label="${escHtml(mainSignal.symbol)} 7-day price trend"></canvas>
-  </div>
-</article>`;
+  return `<article class="signal-card badge-${esc(m.badge)}" role="listitem" style="animation-delay:${i*CONFIG.ANIMATION_STAGGER}ms" onclick="openModal(${JSON.stringify(m).replace(/"/g,'&quot;')})">
+  <div class="card-header"><div class="card-symbol-wrap"><span class="card-symbol">${esc(m.symbol)}</span><span class="card-exchange-badge">${esc(m.exchange||'NSE')}</span><span class="card-close">LTP ${rup(m.close)}</span></div>
+  <div class="score-badge"><div class="score-ring" style="--ring-color:${rc};background:conic-gradient(${rc} ${sc*3.6}deg,rgba(255,255,255,0.04) 0%);box-shadow:0 0 14px ${rg}"><span class="score-num">${sc}</span></div><span class="score-label-text" style="color:${rc}">${esc(m.badge)}</span></div></div>
+  <div class="group-signals">${sigs}</div>
+  <div class="sparkline-wrap"><canvas id="spark-${i}" height="44"></canvas></div></article>`;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   SPARKLINE (Chart.js)
-   ═══════════════════════════════════════════════════════════ */
+// ═══ TABLE ═══
+function renderTable(signals) {
+  document.getElementById('empty-state').hidden = signals.length > 0;
+  if (!signals.length) { document.getElementById('table-body').innerHTML=''; document.getElementById('pagination').innerHTML=''; return; }
+  // Sort
+  const sorted = [...signals].sort((a,b) => {
+    let va=a[sortCol], vb=b[sortCol];
+    if (typeof va==='string') { va=va.toLowerCase(); vb=(vb||'').toLowerCase(); }
+    if (va<vb) return sortDir==='asc'?-1:1;
+    if (va>vb) return sortDir==='asc'?1:-1;
+    return 0;
+  });
+  const totalPages = Math.ceil(sorted.length/CONFIG.PAGE_SIZE);
+  if (currentPage>totalPages) currentPage=totalPages;
+  const start = (currentPage-1)*CONFIG.PAGE_SIZE, pageData = sorted.slice(start, start+CONFIG.PAGE_SIZE);
+  const rup = n => n!=null?`₹${Number(n).toLocaleString('en-IN',{maximumFractionDigits:2})}`:'—';
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = pageData.map(s => {
+    const bc = s.badge==='Strong'?'badge-strong':s.badge==='Moderate'?'badge-moderate':'badge-weak';
+    return `<tr class="table-row ${bc}" onclick="openModal(${JSON.stringify(s).replace(/"/g,'&quot;')})">
+      <td class="col-symbol">${esc(s.symbol)}</td>
+      <td><span class="strategy-pill">${esc(s.strategy)}</span></td>
+      <td>${esc(s.pattern||'—')}</td>
+      <td class="num">${rup(s.entry)}</td>
+      <td class="num col-target">${rup(s.target)}</td>
+      <td class="num col-sl">${rup(s.stop_loss)}</td>
+      <td class="num">${s.rr?s.rr+':1':'—'}</td>
+      <td class="num"><span class="score-pill ${bc}">${s.score}</span></td>
+      <td><span class="badge-label ${bc}">${esc(s.badge)}</span></td>
+      <td class="num">${s.date?formatDate(s.date):'—'}</td>
+      <td><button class="btn-mini" onclick="event.stopPropagation();openModal(${JSON.stringify(s).replace(/"/g,'&quot;')})">📊</button></td>
+    </tr>`;
+  }).join('');
+  // Sort indicators
+  document.querySelectorAll('.signals-table th.sortable').forEach(th => {
+    const icon = th.querySelector('.sort-icon');
+    if (th.dataset.sort===sortCol) icon.textContent = sortDir==='asc'?'↑':'↓';
+    else icon.textContent = '⇅';
+  });
+  // Pagination
+  renderPagination(totalPages);
+}
+function sortTable(col) {
+  if (sortCol===col) sortDir = sortDir==='asc'?'desc':'asc';
+  else { sortCol=col; sortDir='desc'; }
+  renderTable(filteredSig);
+}
+function renderPagination(total) {
+  if (total<=1) { document.getElementById('pagination').innerHTML=''; return; }
+  let html = `<button class="page-btn" ${currentPage<=1?'disabled':''} onclick="goPage(${currentPage-1})">‹</button>`;
+  const range = 2;
+  for (let p=1;p<=total;p++) {
+    if (p===1||p===total||Math.abs(p-currentPage)<=range)
+      html += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+    else if (Math.abs(p-currentPage)===range+1) html += `<span class="page-dots">…</span>`;
+  }
+  html += `<button class="page-btn" ${currentPage>=total?'disabled':''} onclick="goPage(${currentPage+1})">›</button>`;
+  document.getElementById('pagination').innerHTML = html;
+}
+function goPage(p) { currentPage=p; renderTable(filteredSig); document.getElementById('table-container').scrollIntoView({behavior:'smooth'}); }
 
+// ═══ MODAL + TRADINGVIEW ═══
+function openModal(signal) {
+  modalSignal = signal;
+  const m = document.getElementById('chart-modal');
+  document.getElementById('modal-title').textContent = signal.symbol;
+  document.getElementById('modal-subtitle').textContent = `${signal.strategy} · Score ${signal.score} · ${signal.badge}`;
+  const rup = n => n!=null?`₹${Number(n).toLocaleString('en-IN',{maximumFractionDigits:2})}`:'—';
+  document.getElementById('modal-signal-info').innerHTML = `
+    <div class="modal-info-grid">
+      <div class="modal-info-item"><span class="mil">Strategy</span><span class="miv strategy-pill">${esc(signal.strategy)}</span></div>
+      <div class="modal-info-item"><span class="mil">Pattern</span><span class="miv">${esc(signal.pattern||'—')}</span></div>
+      <div class="modal-info-item"><span class="mil">Entry</span><span class="miv">${rup(signal.entry)}</span></div>
+      <div class="modal-info-item"><span class="mil">Target 🎯</span><span class="miv col-target">${rup(signal.target)}</span></div>
+      <div class="modal-info-item"><span class="mil">Stop Loss 🛑</span><span class="miv col-sl">${rup(signal.stop_loss)}</span></div>
+      <div class="modal-info-item"><span class="mil">R:R</span><span class="miv">${signal.rr?signal.rr+':1':'—'}</span></div>
+    </div>`;
+  // TradingView widget
+  const widgetEl = document.getElementById('tradingview-widget');
+  widgetEl.innerHTML = '';
+  try {
+    if (typeof TradingView !== 'undefined') {
+      new TradingView.widget({
+        container_id: 'tradingview-widget', symbol: `NSE:${signal.symbol}`,
+        interval: 'D', theme: 'dark', style: '1', timezone: 'Asia/Kolkata',
+        width: '100%', height: 450, toolbar_bg: '#0d1b2e',
+        enable_publishing: false, allow_symbol_change: false, hide_top_toolbar: false,
+        studies: ['RSI@tv-basicstudies','MAExp@tv-basicstudies'],
+        overrides: { 'mainSeriesProperties.candleStyle.upColor':'#22c55e','mainSeriesProperties.candleStyle.downColor':'#ef4444' }
+      });
+    } else {
+      widgetEl.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:450px;color:var(--text-secondary)">
+        <p>TradingView widget loading…<br>If it doesn't load, use the buttons below.</p></div>`;
+    }
+  } catch(e) {
+    widgetEl.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:300px;color:var(--text-secondary)">
+      <p>Chart unavailable. Use "Open in TradingView" below.</p></div>`;
+  }
+  m.hidden = false; document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('chart-modal').hidden = true;
+  document.body.style.overflow = '';
+  document.getElementById('tradingview-widget').innerHTML = '';
+  modalSignal = null;
+}
+function openTradingViewChart() {
+  if (!modalSignal) return;
+  const url = `https://www.tradingview.com/chart/?symbol=NSE:${modalSignal.symbol}&interval=D`;
+  window.open(url, '_blank');
+}
+function openTradingViewLink() {
+  if (!modalSignal) return;
+  const url = `https://www.tradingview.com/symbols/NSE-${modalSignal.symbol}/`;
+  window.open(url, '_blank');
+}
+
+// ═══ SPARKLINE ═══
 function buildSparkline(canvasId, data) {
   const canvas = document.getElementById(canvasId);
-  if (!canvas || !data.length) return;
-
-  const isUp = data[data.length - 1] >= data[0];
-  const lineColor  = isUp ? '#22c55e' : '#ef4444';
-  const fillColor  = isUp ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)';
-
+  if (!canvas||!data.length) return;
+  const isUp = data[data.length-1]>=data[0], lc = isUp?'#22c55e':'#ef4444', fc = isUp?'rgba(34,197,94,0.08)':'rgba(239,68,68,0.08)';
   const chart = new Chart(canvas, {
-    type: 'line',
-    data: {
-      labels: data.map((_, i) => `D-${data.length - 1 - i}`),
-      datasets: [{
-        data,
-        borderColor:     lineColor,
-        borderWidth:     1.8,
-        backgroundColor: fillColor,
-        fill:            true,
-        tension:         0.4,
-        pointRadius:     0,
-        pointHoverRadius:3,
-        pointHoverBackgroundColor: lineColor,
-      }]
-    },
-    options: {
-      responsive:          true,
-      maintainAspectRatio: false,
-      animation:           { duration: 600, easing: 'easeOutCubic' },
-      plugins: { legend: { display: false }, tooltip: {
-        mode: 'index', intersect: false,
-        backgroundColor: 'rgba(13,27,46,0.95)',
-        titleColor: '#7fa8d0', bodyColor: '#f0f6ff',
-        borderColor: 'rgba(59,130,246,0.3)', borderWidth: 1,
-        callbacks: { label: ctx => ` ${ctx.parsed.y.toFixed(1)}` }
-      }},
-      scales: {
-        x: { display: false },
-        y: { display: false, min: -5, max: 105 }
-      },
-      interaction: { mode: 'nearest', axis: 'x', intersect: false },
-    }
+    type:'line', data:{ labels:data.map((_,i)=>`D-${data.length-1-i}`), datasets:[{data,borderColor:lc,borderWidth:1.8,backgroundColor:fc,fill:true,tension:0.4,pointRadius:0,pointHoverRadius:3,pointHoverBackgroundColor:lc}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:600,easing:'easeOutCubic'},plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,backgroundColor:'rgba(13,27,46,0.95)',titleColor:'#7fa8d0',bodyColor:'#f0f6ff',borderColor:'rgba(59,130,246,0.3)',borderWidth:1,callbacks:{label:ctx=>` ${ctx.parsed.y.toFixed(1)}`}}},scales:{x:{display:false},y:{display:false,min:-5,max:105}},interaction:{mode:'nearest',axis:'x',intersect:false}}
   });
-
   sparklineCharts.set(canvasId, chart);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   STATS BAR
-   ═══════════════════════════════════════════════════════════ */
-
+// ═══ STATS ═══
 function updateStats(signals) {
-  const strong   = signals.filter(s => s.badge === 'Strong').length;
-  const moderate = signals.filter(s => s.badge === 'Moderate').length;
-  const weak     = signals.filter(s => s.badge === 'Weak').length;
-  const strategies = new Set(signals.map(s => s.strategy)).size;
-
-  animateCount('stat-total-val',      signals.length);
-  animateCount('stat-strong-val',     strong);
-  animateCount('stat-moderate-val',   moderate);
-  animateCount('stat-weak-val',       weak);
-  animateCount('stat-strategies-val', strategies);
+  const strong=signals.filter(s=>s.badge==='Strong').length, moderate=signals.filter(s=>s.badge==='Moderate').length;
+  const weak=signals.filter(s=>s.badge==='Weak').length, strats=new Set(signals.map(s=>s.strategy)).size;
+  animateCount('stat-total-val',signals.length); animateCount('stat-strong-val',strong);
+  animateCount('stat-moderate-val',moderate); animateCount('stat-weak-val',weak); animateCount('stat-strategies-val',strats);
+}
+function animateCount(id,target) {
+  const el=document.getElementById(id); if(!el) return;
+  let s=0; const step=Math.ceil(target/20);
+  const iv=setInterval(()=>{s=Math.min(s+step,target);el.textContent=s;if(s>=target)clearInterval(iv);},30);
 }
 
-function animateCount(elId, target) {
-  const el = document.getElementById(elId);
-  if (!el) return;
-  let start = 0;
-  const step = Math.ceil(target / 20);
-  const interval = setInterval(() => {
-    start = Math.min(start + step, target);
-    el.textContent = start;
-    if (start >= target) clearInterval(interval);
-  }, 30);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   MARKET STATUS (IST 9:15 AM – 3:30 PM)
-   ═══════════════════════════════════════════════════════════ */
-
+// ═══ MARKET STATUS ═══
 function updateMarketStatus() {
-  const now  = new Date();
-  const ist  = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
-  const h    = ist.getHours();
-  const m    = ist.getMinutes();
-  const dow  = ist.getDay(); // 0=Sun 6=Sat
-  const mins = h * 60 + m;
-
-  const isWeekday = dow >= 1 && dow <= 5;
-  const isOpen    = isWeekday && mins >= 9 * 60 + 15 && mins < 15 * 60 + 30;
-
-  const dot  = document.getElementById('status-dot');
-  const text = document.getElementById('status-text');
-
-  if (isOpen) {
-    dot.className  = 'status-dot open';
-    text.textContent = 'Market Open';
-    text.style.color = '#22c55e';
-  } else {
-    dot.className  = 'status-dot closed';
-    const reason = !isWeekday ? 'Weekend' : mins < 9 * 60 + 15 ? 'Pre-Market' : 'Market Closed';
-    text.textContent = reason;
-    text.style.color = '#ef4444';
-  }
+  const now=new Date(), ist=new Date(now.toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));
+  const h=ist.getHours(),m=ist.getMinutes(),dow=ist.getDay(),mins=h*60+m;
+  const isWeekday=dow>=1&&dow<=5, isOpen=isWeekday&&mins>=9*60+15&&mins<15*60+30;
+  const dot=document.getElementById('status-dot'), text=document.getElementById('status-text');
+  if(isOpen){dot.className='status-dot open';text.textContent='Market Open';text.style.color='#22c55e';}
+  else{dot.className='status-dot closed';text.textContent=!isWeekday?'Weekend':mins<9*60+15?'Pre-Market':'Market Closed';text.style.color='#ef4444';}
 }
 
-/* ═══════════════════════════════════════════════════════════
-   UI HELPERS
-   ═══════════════════════════════════════════════════════════ */
+// ═══ HELPERS ═══
+function setLoading(s){document.getElementById('loading-state').hidden=!s;document.getElementById('cards-grid').hidden=s;document.getElementById('table-container').hidden=s||currentView!=='table';}
+function showError(msg){document.getElementById('error-state').hidden=false;document.getElementById('error-msg').textContent=msg;document.getElementById('loading-state').hidden=true;}
+function hideError(){document.getElementById('error-state').hidden=true;}
+function updateLastUpdated(ts){if(ts)document.getElementById('updated-text').textContent=`Updated: ${ts.trim()}`;}
+function setRefreshSpinning(on){const i=document.getElementById('refresh-icon');if(on)i.classList.add('spinning');else i.classList.remove('spinning');}
+function startAutoRefresh(){clearInterval(refreshTimer);refreshTimer=setInterval(fetchSignals,CONFIG.REFRESH_MS);}
+function formatDate(str){try{return new Date(str).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}catch(_){return str;}}
+function esc(s){return s==null?'':String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-function setLoading(show) {
-  document.getElementById('loading-state').hidden  = !show;
-  document.getElementById('cards-grid').hidden     = show;
-}
-
-function showError(msg) {
-  document.getElementById('error-state').hidden = false;
-  document.getElementById('error-msg').textContent = msg;
-  document.getElementById('loading-state').hidden = true;
-}
-
-function hideError() {
-  document.getElementById('error-state').hidden = true;
-}
-
-function updateLastUpdated(ts) {
-  if (!ts) return;
-  document.getElementById('updated-text').textContent = `Updated: ${ts.trim()}`;
-}
-
-function setRefreshSpinning(on) {
-  const icon = document.getElementById('refresh-icon');
-  if (on) icon.classList.add('spinning');
-  else    icon.classList.remove('spinning');
-}
-
-function startAutoRefresh() {
-  clearInterval(refreshTimer);
-  refreshTimer = setInterval(fetchSignals, CONFIG.REFRESH_MS);
-}
-
-function formatDate(str) {
-  try {
-    const d = new Date(str);
-    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-  } catch (_) { return str; }
-}
-
-function escHtml(str) {
-  if (str == null) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-/* ═══════════════════════════════════════════════════════════
-   EVENT LISTENERS
-   ═══════════════════════════════════════════════════════════ */
-
+// ═══ EVENTS ═══
 function bindFilters() {
-  const filterIds = [
-    'filter-exchange', 'filter-strategy', 'filter-badge',
-    'filter-pattern',  'filter-search',
-  ];
-  filterIds.forEach(id => {
-    document.getElementById(id)?.addEventListener('input', applyFilters);
-    document.getElementById(id)?.addEventListener('change', applyFilters);
+  ['filter-exchange','filter-strategy','filter-badge','filter-pattern','filter-search'].forEach(id=>{
+    document.getElementById(id)?.addEventListener('input',applyFilters);
+    document.getElementById(id)?.addEventListener('change',applyFilters);
   });
-
-  const rangeEl = document.getElementById('filter-min-score');
-  const display = document.getElementById('score-range-display');
-  rangeEl?.addEventListener('input', () => {
-    display.textContent = rangeEl.value;
-    applyFilters();
-  });
+  const r=document.getElementById('filter-min-score'),d=document.getElementById('score-range-display');
+  r?.addEventListener('input',()=>{d.textContent=r.value;applyFilters();});
+  document.getElementById('chart-modal')?.addEventListener('click',e=>{if(e.target.id==='chart-modal')closeModal();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 }
 
-/* ═══════════════════════════════════════════════════════════
-   BOOT
-   ═══════════════════════════════════════════════════════════ */
-
-document.addEventListener('DOMContentLoaded', () => {
-  bindFilters();
-  updateMarketStatus();
-  setInterval(updateMarketStatus, 60_000);
-  fetchSignals();
-});
+// ═══ BOOT ═══
+document.addEventListener('DOMContentLoaded',()=>{bindFilters();updateMarketStatus();setInterval(updateMarketStatus,60000);fetchSignals();});

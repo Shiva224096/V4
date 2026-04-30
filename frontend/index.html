@@ -12,8 +12,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-  <!-- Chart.js -->
+  <!-- Chart.js for sparklines -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- TradingView Widget -->
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -166,6 +169,19 @@
 
       <div class="filter-actions">
         <button class="btn-ghost" id="btn-clear-filters" onclick="clearFilters()">✕ Clear Filters</button>
+
+        <!-- View Toggle -->
+        <div class="view-toggle" id="view-toggle">
+          <button class="view-btn active" id="btn-view-cards" onclick="setView('cards')" aria-label="Card view">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+            Cards
+          </button>
+          <button class="view-btn" id="btn-view-table" onclick="setView('table')" aria-label="Table view">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="14" height="3" rx="0.5"/><rect x="1" y="6" width="14" height="3" rx="0.5"/><rect x="1" y="11" width="14" height="3" rx="0.5"/></svg>
+            Table
+          </button>
+        </div>
+
         <span class="results-count" id="results-count" aria-live="polite">—</span>
       </div>
     </div>
@@ -198,8 +214,65 @@
 
       <!-- Cards grid -->
       <div class="cards-grid" id="cards-grid" role="list" aria-label="Trading signals"></div>
+
+      <!-- Table view -->
+      <div class="table-container" id="table-container" hidden>
+        <div class="table-scroll">
+          <table class="signals-table" id="signals-table">
+            <thead>
+              <tr>
+                <th class="sortable" data-sort="symbol" onclick="sortTable('symbol')">Symbol <span class="sort-icon">⇅</span></th>
+                <th class="sortable" data-sort="strategy" onclick="sortTable('strategy')">Strategy <span class="sort-icon">⇅</span></th>
+                <th class="sortable" data-sort="pattern" onclick="sortTable('pattern')">Pattern <span class="sort-icon">⇅</span></th>
+                <th class="sortable num" data-sort="entry" onclick="sortTable('entry')">Entry <span class="sort-icon">⇅</span></th>
+                <th class="sortable num" data-sort="target" onclick="sortTable('target')">Target <span class="sort-icon">⇅</span></th>
+                <th class="sortable num" data-sort="stop_loss" onclick="sortTable('stop_loss')">SL <span class="sort-icon">⇅</span></th>
+                <th class="sortable num" data-sort="rr" onclick="sortTable('rr')">R:R <span class="sort-icon">⇅</span></th>
+                <th class="sortable num" data-sort="score" onclick="sortTable('score')">Score <span class="sort-icon">⇅</span></th>
+                <th class="sortable" data-sort="badge" onclick="sortTable('badge')">Badge <span class="sort-icon">⇅</span></th>
+                <th class="sortable" data-sort="date" onclick="sortTable('date')">Date <span class="sort-icon">⇅</span></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination"></div>
+      </div>
     </div>
   </main>
+
+  <!-- ─── Chart Modal ─── -->
+  <div class="modal-overlay" id="chart-modal" hidden>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h2 class="modal-title" id="modal-title">RELIANCE</h2>
+          <span class="modal-subtitle" id="modal-subtitle">EMA Crossover · Score 88</span>
+        </div>
+        <button class="modal-close" id="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="modal-signal-info" id="modal-signal-info"></div>
+
+      <div class="modal-chart-area" id="modal-chart-area">
+        <div id="tradingview-widget" style="width:100%;height:450px;"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-chart" id="btn-tv-chart" onclick="openTradingViewChart()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          View Interactive Chart
+        </button>
+        <button class="btn-tradingview" id="btn-tv-link" onclick="openTradingViewLink()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Open in TradingView
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ─── Footer ─── -->
   <footer class="footer" role="contentinfo">
