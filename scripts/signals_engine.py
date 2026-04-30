@@ -118,7 +118,7 @@ def load_tickers() -> list[str]:
     path = os.path.join(DATA_DIR, "nse_tickers.csv")
     if os.path.exists(path):
         df = pd.read_csv(path)
-        return df["symbol"].dropna().tolist()[:MAX_STOCKS]
+        return df["symbol"].dropna().tolist()
     # Fallback: hardcoded top 20 blue chips
     return [
         "RELIANCE","TCS","HDFCBANK","INFY","ICICIBANK",
