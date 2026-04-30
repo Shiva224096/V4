@@ -14,7 +14,7 @@ import pytz
 
 # Allow imports from scripts/
 sys.path.insert(0, os.path.dirname(__file__))
-from fetch_ohlcv import get_ohlcv
+from bhavcopy_bulk import build_bhavcopy_history
 from strategies import run_all_strategies
 from patterns import get_active_patterns, get_pattern_label, pattern_score_bonus
 
@@ -142,12 +142,16 @@ def run_engine():
     tickers = load_tickers()
     print(f"[Engine] Processing {len(tickers)} tickers...")
 
+    # 1. Fetch entire market history in bulk (takes 1-2 mins)
+    print(f"[Engine] Downloading Bulk Bhavcopy History (this takes a minute)...")
+    history_dict = build_bhavcopy_history(days=200)
+
     all_signals = []
 
     for i, symbol in enumerate(tickers):
         print(f"\n[{i+1}/{len(tickers)}] {symbol}")
         try:
-            df = get_ohlcv(symbol, days=270)
+            df = history_dict.get(symbol)
             if df is None or len(df) < 20:
                 print(f"  Skipping {symbol} — insufficient data")
                 continue
@@ -186,8 +190,6 @@ def run_engine():
 
         except Exception as e:
             print(f"  [!] Error processing {symbol}: {e}")
-
-        time.sleep(SLEEP_SEC)
 
     # Sort by score descending
     all_signals.sort(key=lambda x: x["score"], reverse=True)
