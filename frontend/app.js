@@ -180,33 +180,11 @@ function openModal(signal) {
       <div class="modal-info-item"><span class="mil">Stop Loss 🛑</span><span class="miv col-sl">${rup(signal.stop_loss)}</span></div>
       <div class="modal-info-item"><span class="mil">R:R</span><span class="miv">${signal.rr?signal.rr+':1':'—'}</span></div>
     </div>`;
-  // TradingView widget
-  const widgetEl = document.getElementById('tradingview-widget');
-  widgetEl.innerHTML = '';
-  try {
-    if (typeof TradingView !== 'undefined') {
-      new TradingView.widget({
-        container_id: 'tradingview-widget', symbol: `NSE:${signal.symbol}`,
-        interval: 'D', theme: 'dark', style: '1', timezone: 'Asia/Kolkata',
-        width: '100%', height: 450, toolbar_bg: '#0d1b2e',
-        enable_publishing: false, allow_symbol_change: false, hide_top_toolbar: false,
-        studies: ['RSI@tv-basicstudies','MAExp@tv-basicstudies'],
-        overrides: { 'mainSeriesProperties.candleStyle.upColor':'#22c55e','mainSeriesProperties.candleStyle.downColor':'#ef4444' }
-      });
-    } else {
-      widgetEl.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:450px;color:var(--text-secondary)">
-        <p>TradingView widget loading…<br>If it doesn't load, use the buttons below.</p></div>`;
-    }
-  } catch(e) {
-    widgetEl.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:300px;color:var(--text-secondary)">
-      <p>Chart unavailable. Use "Open in TradingView" below.</p></div>`;
-  }
   m.hidden = false; document.body.style.overflow = 'hidden';
 }
 function closeModal() {
   document.getElementById('chart-modal').hidden = true;
   document.body.style.overflow = '';
-  document.getElementById('tradingview-widget').innerHTML = '';
   modalSignal = null;
 }
 function openTradingViewChart() {
