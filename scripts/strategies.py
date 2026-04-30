@@ -1,6 +1,6 @@
 """
 strategies.py
-10 swing trading strategy detectors.
+16 swing trading strategy detectors.
 All use pandas-ta only (no TA-Lib C compiler dependency).
 Each function returns a dict with signal details or None.
 """
@@ -24,6 +24,15 @@ def _prev(series: pd.Series):
     """Return the second-to-last non-NaN value."""
     s = series.dropna()
     return s.iloc[-2] if len(s) >= 2 else None
+
+
+def _safe_rr(entry, target, sl):
+    """Compute risk-reward safely."""
+    risk = abs(entry - sl)
+    reward = abs(target - entry)
+    if risk < 0.01:
+        return 2.0
+    return round(reward / risk, 2)
 
 
 # ---------------------------------------------------------------------------
@@ -52,7 +61,7 @@ def strategy_ema_crossover(df: pd.DataFrame) -> dict | None:
             "entry":    round(entry, 2),
             "target":   round(tgt, 2),
             "stop_loss": round(sl, 2),
-            "rr":       round((tgt - entry) / max(entry - sl, 0.01), 2),
+            "rr":       _safe_rr(entry, tgt, sl),
         }
     return None
 
@@ -93,7 +102,7 @@ def strategy_macd(df: pd.DataFrame) -> dict | None:
             "entry":     round(entry, 2),
             "target":    round(tgt, 2),
             "stop_loss": round(sl, 2),
-            "rr":        round((tgt - entry) / max(entry - sl, 0.01), 2),
+            "rr":        _safe_rr(entry, tgt, sl),
         }
     return None
 
@@ -124,7 +133,7 @@ def strategy_rsi_reversal(df: pd.DataFrame) -> dict | None:
             "entry":     round(entry, 2),
             "target":    round(tgt, 2),
             "stop_loss": round(sl, 2),
-            "rr":        round((tgt - entry) / max(entry - sl, 0.01), 2),
+            "rr":        _safe_rr(entry, tgt, sl),
             "rsi":       round(float(last_rsi), 1),
         }
     return None
@@ -172,7 +181,7 @@ def strategy_bollinger_squeeze(df: pd.DataFrame) -> dict | None:
             "entry":     round(entry, 2),
             "target":    round(tgt, 2),
             "stop_loss": round(sl, 2),
-            "rr":        round((tgt - entry) / max(entry - sl, 0.01), 2),
+            "rr":        _safe_rr(entry, tgt, sl),
         }
     return None
 
@@ -209,7 +218,7 @@ def strategy_supertrend(df: pd.DataFrame) -> dict | None:
                 "entry":     round(entry, 2),
                 "target":    round(tgt, 2),
                 "stop_loss": round(sl, 2),
-                "rr":        round((tgt - entry) / max(entry - sl, 0.01), 2),
+                "rr":        _safe_rr(entry, tgt, sl),
             }
     except Exception as e:
         print(f"    [Supertrend] Error: {e}")
@@ -241,7 +250,7 @@ def strategy_volume_breakout(df: pd.DataFrame) -> dict | None:
             "entry":       round(entry, 2),
             "target":      round(tgt, 2),
             "stop_loss":   round(sl, 2),
-            "rr":          round((tgt - entry) / max(entry - sl, 0.01), 2),
+            "rr":          _safe_rr(entry, tgt, sl),
             "vol_ratio":   round(last_vol / max(avg_vol, 1), 1),
         }
     return None
@@ -280,7 +289,7 @@ def strategy_inside_bar(df: pd.DataFrame) -> dict | None:
             "entry":     round(entry, 2),
             "target":    round(tgt, 2),
             "stop_loss": round(sl, 2),
-            "rr":        round((tgt - entry) / max(entry - sl, 0.01), 2),
+            "rr":        _safe_rr(entry, tgt, sl),
         }
     return None
 
@@ -310,7 +319,7 @@ def strategy_golden_cross(df: pd.DataFrame) -> dict | None:
             "entry":     round(entry, 2),
             "target":    round(tgt, 2),
             "stop_loss": round(sl, 2),
-            "rr":        round((tgt - entry) / max(entry - sl, 0.01), 2),
+            "rr":        _safe_rr(entry, tgt, sl),
         }
     return None
 
@@ -347,7 +356,7 @@ def strategy_ema_pullback(df: pd.DataFrame) -> dict | None:
             "entry":     round(entry, 2),
             "target":    round(tgt, 2),
             "stop_loss": round(sl, 2),
-            "rr":        round((tgt - entry) / max(entry - sl, 0.01), 2),
+            "rr":        _safe_rr(entry, tgt, sl),
         }
     return None
 
@@ -377,9 +386,305 @@ def strategy_52w_high_break(df: pd.DataFrame) -> dict | None:
             "entry":     round(entry, 2),
             "target":    round(tgt, 2),
             "stop_loss": round(sl, 2),
-            "rr":        round((tgt - entry) / max(entry - sl, 0.01), 2),
+            "rr":        _safe_rr(entry, tgt, sl),
             "52w_high":  round(high_52w, 2),
         }
+    return None
+
+
+# ===========================================================================
+# NEW STRATEGIES (11–16)
+# ===========================================================================
+
+# ---------------------------------------------------------------------------
+# Strategy 11 — VWAP Reclaim
+# Price crosses above VWAP after trading below it.
+# Uses a rolling VWAP approximation (pandas-ta vwap needs intraday,
+# so we compute a cumulative price*volume / cumvolume over last 20 days).
+# ---------------------------------------------------------------------------
+
+def strategy_vwap_reclaim(df: pd.DataFrame) -> dict | None:
+    if len(df) < 25:
+        return None
+    try:
+        # Rolling VWAP approximation over 20 days
+        typical = (df["high"] + df["low"] + df["close"]) / 3
+        cum_tp_vol = (typical * df["volume"]).rolling(20).sum()
+        cum_vol    = df["volume"].rolling(20).sum()
+        vwap = cum_tp_vol / cum_vol
+
+        last_vwap = float(vwap.dropna().iloc[-1])
+        prev_vwap = float(vwap.dropna().iloc[-2])
+
+        last_close = float(df["close"].iloc[-1])
+        prev_close = float(df["close"].iloc[-2])
+
+        # Was below VWAP, now reclaimed above
+        if prev_close < prev_vwap and last_close > last_vwap:
+            entry = last_close
+            sl    = float(df["low"].iloc[-3:].min())
+            tgt   = entry + 2 * (entry - sl)
+            return {
+                "strategy":  "VWAP Reclaim",
+                "entry":     round(entry, 2),
+                "target":    round(tgt, 2),
+                "stop_loss": round(sl, 2),
+                "rr":        _safe_rr(entry, tgt, sl),
+            }
+    except Exception:
+        pass
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Strategy 12 — Stochastic Oversold Cross
+# %K crosses above %D when both are below 20 (oversold territory).
+# ---------------------------------------------------------------------------
+
+def strategy_stochastic_oversold(df: pd.DataFrame) -> dict | None:
+    if len(df) < 20:
+        return None
+    try:
+        stoch = ta.stoch(df["high"], df["low"], df["close"], k=14, d=3, smooth_k=3)
+        if stoch is None or stoch.empty:
+            return None
+
+        k_col = [c for c in stoch.columns if "STOCHk_" in c]
+        d_col = [c for c in stoch.columns if "STOCHd_" in c]
+
+        if not k_col or not d_col:
+            return None
+
+        k_line = stoch[k_col[0]]
+        d_line = stoch[d_col[0]]
+
+        prev_k, prev_d = _prev(k_line), _prev(d_line)
+        last_k, last_d = _last(k_line), _last(d_line)
+
+        if None in (prev_k, prev_d, last_k, last_d):
+            return None
+
+        # %K crosses above %D while both were in oversold zone (<20)
+        if prev_k <= prev_d and last_k > last_d and prev_k < 20 and prev_d < 20:
+            entry = float(df["close"].iloc[-1])
+            sl    = float(df["low"].iloc[-5:].min())
+            tgt   = entry + 2 * (entry - sl)
+            return {
+                "strategy":  "Stochastic Oversold",
+                "entry":     round(entry, 2),
+                "target":    round(tgt, 2),
+                "stop_loss": round(sl, 2),
+                "rr":        _safe_rr(entry, tgt, sl),
+                "stoch_k":   round(float(last_k), 1),
+            }
+    except Exception:
+        pass
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Strategy 13 — ADX Trend Strength
+# ADX > 25 signals a strong trend; +DI crosses above -DI = bullish trend.
+# ---------------------------------------------------------------------------
+
+def strategy_adx_trend(df: pd.DataFrame) -> dict | None:
+    if len(df) < 30:
+        return None
+    try:
+        adx_df = ta.adx(df["high"], df["low"], df["close"], length=14)
+        if adx_df is None or adx_df.empty:
+            return None
+
+        adx_col  = [c for c in adx_df.columns if c.startswith("ADX_")]
+        dmp_col  = [c for c in adx_df.columns if c.startswith("DMP_")]
+        dmn_col  = [c for c in adx_df.columns if c.startswith("DMN_")]
+
+        if not adx_col or not dmp_col or not dmn_col:
+            return None
+
+        adx_line = adx_df[adx_col[0]]
+        dmp_line = adx_df[dmp_col[0]]
+        dmn_line = adx_df[dmn_col[0]]
+
+        last_adx = _last(adx_line)
+        prev_dmp, prev_dmn = _prev(dmp_line), _prev(dmn_line)
+        last_dmp, last_dmn = _last(dmp_line), _last(dmn_line)
+
+        if None in (last_adx, prev_dmp, prev_dmn, last_dmp, last_dmn):
+            return None
+
+        # Strong trend + bullish DI crossover
+        if last_adx > 25 and prev_dmp <= prev_dmn and last_dmp > last_dmn:
+            entry = float(df["close"].iloc[-1])
+            sl    = float(df["low"].iloc[-5:].min())
+            tgt   = entry + 2 * (entry - sl)
+            return {
+                "strategy":  "ADX Trend Strength",
+                "entry":     round(entry, 2),
+                "target":    round(tgt, 2),
+                "stop_loss": round(sl, 2),
+                "rr":        _safe_rr(entry, tgt, sl),
+                "adx":       round(float(last_adx), 1),
+            }
+    except Exception:
+        pass
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Strategy 14 — Double Bottom
+# Two similar lows separated by a peak, followed by a breakout above the peak.
+# Scans last 30 candles for the pattern.
+# ---------------------------------------------------------------------------
+
+def strategy_double_bottom(df: pd.DataFrame) -> dict | None:
+    if len(df) < 35:
+        return None
+    try:
+        window = df.tail(30)
+        lows   = window["low"].values.astype(float)
+        closes = window["close"].values.astype(float)
+        highs  = window["high"].values.astype(float)
+
+        # Find two lowest points at least 5 bars apart
+        min1_idx = np.argmin(lows)
+        # Mask out ±4 bars around first low to find second
+        masked = lows.copy()
+        start = max(0, min1_idx - 4)
+        end   = min(len(masked), min1_idx + 5)
+        masked[start:end] = np.inf
+        min2_idx = np.argmin(masked)
+
+        if min1_idx == min2_idx:
+            return None
+
+        low1, low2 = lows[min1_idx], lows[min2_idx]
+        # Lows should be within 3% of each other
+        avg_low = (low1 + low2) / 2
+        if avg_low == 0:
+            return None
+        if abs(low1 - low2) / avg_low > 0.03:
+            return None
+
+        # Find peak between the two lows
+        left_idx  = min(min1_idx, min2_idx)
+        right_idx = max(min1_idx, min2_idx)
+        if right_idx - left_idx < 3:
+            return None
+
+        neckline = float(highs[left_idx:right_idx + 1].max())
+
+        # Breakout: last close above neckline
+        last_close = closes[-1]
+        prev_close = closes[-2]
+
+        if prev_close <= neckline and last_close > neckline:
+            entry = float(last_close)
+            sl    = float(min(low1, low2))
+            tgt   = entry + (neckline - sl)  # measured move
+            return {
+                "strategy":  "Double Bottom",
+                "entry":     round(entry, 2),
+                "target":    round(tgt, 2),
+                "stop_loss": round(sl, 2),
+                "rr":        _safe_rr(entry, tgt, sl),
+            }
+    except Exception:
+        pass
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Strategy 15 — Moving Average Ribbon Expansion
+# 8/13/21/34 EMAs all fan out bullishly (each shorter EMA > longer EMA)
+# and the ribbon just started expanding (wasn't fanned out 2 bars ago).
+# ---------------------------------------------------------------------------
+
+def strategy_ma_ribbon(df: pd.DataFrame) -> dict | None:
+    if len(df) < 40:
+        return None
+    try:
+        ema8  = ta.ema(df["close"], length=8)
+        ema13 = ta.ema(df["close"], length=13)
+        ema21 = ta.ema(df["close"], length=21)
+        ema34 = ta.ema(df["close"], length=34)
+
+        if any(x is None for x in [ema8, ema13, ema21, ema34]):
+            return None
+
+        l8,  l13,  l21,  l34  = _last(ema8), _last(ema13), _last(ema21), _last(ema34)
+        p8,  p13,  p21,  p34  = _prev(ema8), _prev(ema13), _prev(ema21), _prev(ema34)
+
+        if None in (l8, l13, l21, l34, p8, p13, p21, p34):
+            return None
+
+        # Current: perfect bullish alignment
+        bullish_now = l8 > l13 > l21 > l34
+        # Previous: NOT perfectly aligned (ribbon was compressed)
+        bullish_prev = p8 > p13 > p21 > p34
+
+        if bullish_now and not bullish_prev:
+            entry = float(df["close"].iloc[-1])
+            sl    = float(df["low"].iloc[-5:].min())
+            tgt   = entry + 2 * (entry - sl)
+            return {
+                "strategy":  "MA Ribbon Expansion",
+                "entry":     round(entry, 2),
+                "target":    round(tgt, 2),
+                "stop_loss": round(sl, 2),
+                "rr":        _safe_rr(entry, tgt, sl),
+            }
+    except Exception:
+        pass
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Strategy 16 — Breakout + Retest
+# Price broke above a 20-day resistance, pulled back to retest it
+# (came within 1% of old resistance), then bounced up on the last candle.
+# ---------------------------------------------------------------------------
+
+def strategy_breakout_retest(df: pd.DataFrame) -> dict | None:
+    if len(df) < 30:
+        return None
+    try:
+        closes = df["close"].values.astype(float)
+        highs  = df["high"].values.astype(float)
+        lows   = df["low"].values.astype(float)
+
+        # Resistance = highest high from bars -25 to -6
+        resistance = float(highs[-25:-5].max())
+
+        # Verify breakout occurred in bars -5 to -3 (price went above resistance)
+        breakout_zone = closes[-5:-2]
+        had_breakout = any(c > resistance for c in breakout_zone)
+
+        if not had_breakout:
+            return None
+
+        # Retest: bar -2 or -1 dipped back near resistance (within 1.5%)
+        retest_low = float(min(lows[-2], lows[-1]))
+        retest_occurred = retest_low <= resistance * 1.015
+
+        # Bounce: last candle closes above resistance
+        last_close = closes[-1]
+        prev_close = closes[-2]
+        bounced = last_close > resistance and last_close > prev_close
+
+        if retest_occurred and bounced:
+            entry = float(last_close)
+            sl    = float(min(lows[-3:]))
+            tgt   = entry + 2 * (entry - sl)
+            return {
+                "strategy":  "Breakout Retest",
+                "entry":     round(entry, 2),
+                "target":    round(tgt, 2),
+                "stop_loss": round(sl, 2),
+                "rr":        _safe_rr(entry, tgt, sl),
+            }
+    except Exception:
+        pass
     return None
 
 
@@ -398,11 +703,18 @@ ALL_STRATEGIES = [
     strategy_golden_cross,
     strategy_ema_pullback,
     strategy_52w_high_break,
+    # New strategies
+    strategy_vwap_reclaim,
+    strategy_stochastic_oversold,
+    strategy_adx_trend,
+    strategy_double_bottom,
+    strategy_ma_ribbon,
+    strategy_breakout_retest,
 ]
 
 
 def run_all_strategies(df: pd.DataFrame) -> list[dict]:
-    """Run all 10 strategies on df. Return list of triggered signals."""
+    """Run all 16 strategies on df. Return list of triggered signals."""
     results = []
     for fn in ALL_STRATEGIES:
         try:

@@ -1,7 +1,8 @@
 """
 signals_engine.py
-Main orchestrator — runs all strategies across NSE 500 tickers.
+Main orchestrator — runs all strategies across all NSE tickers.
 Writes results to data/signals.json and data/last_updated.txt
+Integrates backtest-derived dynamic weights for strategy scoring.
 """
 
 import os
@@ -16,18 +17,35 @@ import pytz
 sys.path.insert(0, os.path.dirname(__file__))
 from bhavcopy_bulk import build_bhavcopy_history
 from strategies import run_all_strategies
-from patterns import get_active_patterns, get_pattern_label, pattern_score_bonus
+from patterns import (
+    get_active_patterns, get_pattern_label, get_all_pattern_labels,
+    pattern_score_bonus
+)
+from backtester import load_backtest_weights
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 os.makedirs(DATA_DIR, exist_ok=True)
 
-MAX_STOCKS = 300   # GitHub Actions 6-hour limit safety cap
 SLEEP_SEC  = 1.5   # Respect NSE rate limits
 
 
 # ---------------------------------------------------------------------------
-# Scoring logic (0–100)
+# Scoring logic (0–100) — now with backtest-driven dynamic weights
 # ---------------------------------------------------------------------------
+
+# Cache backtest weights at module load
+_backtest_weights = None
+
+def _get_backtest_weights() -> dict:
+    global _backtest_weights
+    if _backtest_weights is None:
+        _backtest_weights = load_backtest_weights()
+        if _backtest_weights:
+            print(f"[Scoring] Loaded backtest weights for {len(_backtest_weights)} strategies")
+        else:
+            print("[Scoring] No backtest weights found — using default scoring")
+    return _backtest_weights
+
 
 def compute_score(df: pd.DataFrame, signal: dict, patterns: list[str]) -> int:
     score = 0
@@ -38,10 +56,12 @@ def compute_score(df: pd.DataFrame, signal: dict, patterns: list[str]) -> int:
         last_vol = df["volume"].iloc[-1]
         if last_vol > 2 * vol_avg:
             score += 25
+        elif last_vol > 1.5 * vol_avg:
+            score += 15
     except Exception:
         pass
 
-    # Strong candlestick pattern → +20
+    # Candlestick pattern → tiered bonus (strong bullish = +20, moderate = +10)
     score += pattern_score_bonus(patterns)
 
     # 52-week high breakout → +20
@@ -51,6 +71,7 @@ def compute_score(df: pd.DataFrame, signal: dict, patterns: list[str]) -> int:
         score += 20
 
     # Multiple strategy confluence → +15 (handled at caller level)
+
     # RSI in ideal zone 40–60 → +10
     try:
         import pandas_ta as ta
@@ -58,6 +79,8 @@ def compute_score(df: pd.DataFrame, signal: dict, patterns: list[str]) -> int:
         last_rsi = rsi.dropna().iloc[-1]
         if 40 <= last_rsi <= 60:
             score += 10
+        elif 30 <= last_rsi < 40:
+            score += 5  # Still recovering from oversold
     except Exception:
         pass
 
@@ -72,7 +95,24 @@ def compute_score(df: pd.DataFrame, signal: dict, patterns: list[str]) -> int:
     except Exception:
         pass
 
-    return min(score, 100)
+    # Price above 200 SMA (long-term trend) → +5
+    try:
+        import pandas_ta as ta
+        sma200 = ta.sma(df["close"], length=200)
+        if sma200 is not None:
+            last_sma200 = sma200.dropna().iloc[-1]
+            if df["close"].iloc[-1] > last_sma200:
+                score += 5
+    except Exception:
+        pass
+
+    # ── Backtest-driven dynamic weight ──
+    weights = _get_backtest_weights()
+    strategy_name = signal.get("strategy", "")
+    if strategy_name in weights:
+        score += weights[strategy_name]
+
+    return max(min(score, 100), 0)
 
 
 def score_badge(score: int) -> str:
@@ -149,11 +189,11 @@ def run_engine():
     all_signals = []
 
     for i, symbol in enumerate(tickers):
-        print(f"\n[{i+1}/{len(tickers)}] {symbol}")
+        if (i + 1) % 100 == 0:
+            print(f"\n[{i+1}/{len(tickers)}] Processing {symbol}...")
         try:
             df = history_dict.get(symbol)
             if df is None or len(df) < 20:
-                print(f"  Skipping {symbol} — insufficient data")
                 continue
 
             signals = run_all_strategies(df)
@@ -163,6 +203,7 @@ def run_engine():
             # Detect patterns once per ticker
             patterns = get_active_patterns(df)
             pattern_label = get_pattern_label(patterns)
+            all_pattern_labels = get_all_pattern_labels(patterns)
 
             # Compute confluence bonus
             confluence_bonus = 15 if len(signals) > 1 else 0
@@ -170,12 +211,13 @@ def run_engine():
             # Aggregate: one record per strategy triggered
             for sig in signals:
                 score = compute_score(df, sig, patterns) + confluence_bonus
-                score = min(score, 100)
+                score = max(min(score, 100), 0)
                 record = {
                     "symbol":        symbol,
                     "exchange":      "NSE",
                     "strategy":      sig["strategy"],
                     "pattern":       pattern_label,
+                    "all_patterns":  all_pattern_labels,
                     "entry":         sig.get("entry"),
                     "target":        sig.get("target"),
                     "stop_loss":     sig.get("stop_loss"),
