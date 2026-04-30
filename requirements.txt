@@ -1,0 +1,11 @@
+jugaad-data
+pandas
+pandas-ta
+numpy
+requests
+beautifulsoup4
+twelvedata
+ta
+python-dotenv
+lxml
+pytz

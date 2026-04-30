@@ -1,0 +1,60 @@
+name: Daily Swing Signals — 9 AM IST
+
+on:
+  schedule:
+    - cron: '30 3 * * 1-5'   # Mon–Fri at 9:00 AM IST (3:30 AM UTC)
+  workflow_dispatch:           # Allow manual trigger from Actions tab
+
+jobs:
+  run-signals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+
+    permissions:
+      contents: write          # Required to push signals.json back to repo
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Fetch ticker lists
+        run: python scripts/fetch_tickers.py
+        continue-on-error: true   # Don't fail the whole job if NSE is down
+
+      - name: Run signals engine
+        run: python scripts/signals_engine.py
+        env:
+          TWELVE_DATA_KEY: ${{ secrets.TWELVE_DATA_KEY }}
+        timeout-minutes: 270
+
+      - name: Validate and write JSON
+        run: python scripts/generate_json.py
+
+      - name: Send email report
+        run: python scripts/email_report.py
+        env:
+          GMAIL_USER:      ${{ secrets.GMAIL_USER }}
+          GMAIL_PASS:      ${{ secrets.GMAIL_PASS }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+        continue-on-error: true   # Email failure shouldn't block JSON commit
+
+      - name: Commit updated signals to repo
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name  "GitHub Actions"
+          git add data/signals.json data/last_updated.txt data/nse_tickers.csv || true
+          git diff --staged --quiet || git commit -m "chore: signals update $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

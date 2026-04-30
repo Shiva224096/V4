@@ -1,0 +1,38 @@
+name: Weekly Ticker Refresh — Sunday 8 PM IST
+
+on:
+  schedule:
+    - cron: '30 14 * * 0'    # Sunday 8:00 PM IST (14:30 UTC)
+  workflow_dispatch:
+
+jobs:
+  refresh-tickers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Fetch fresh NSE ticker list
+        run: python scripts/fetch_tickers.py
+
+      - name: Commit updated tickers
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name  "GitHub Actions"
+          git add data/nse_tickers.csv data/bse_tickers.csv || true
+          git diff --staged --quiet || git commit -m "chore: ticker list refresh $(date -u '+%Y-%m-%d')"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

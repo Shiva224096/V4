@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwingEdge — Indian Stock Market Signals | NSE & BSE</title>
+  <meta name="description" content="AI-powered swing trading signals for Indian stock market (NSE & BSE). Daily signals generated at 9 AM IST with entry, target, stop-loss and risk-reward ratios." />
+  <meta name="keywords" content="swing trading, NSE, BSE, Indian stock market, trading signals, technical analysis" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Background particles ─── -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="glow glow-1" aria-hidden="true"></div>
+  <div class="glow glow-2" aria-hidden="true"></div>
+
+  <!-- ─── Header ─── -->
+  <header class="header" role="banner">
+    <div class="container">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="brand-icon" aria-hidden="true">📈</div>
+          <div>
+            <h1 class="brand-name">SwingEdge</h1>
+            <p class="brand-tagline">NSE · BSE · India</p>
+          </div>
+        </div>
+
+        <div class="header-meta">
+          <div class="market-status" id="market-status" aria-live="polite">
+            <span class="status-dot" id="status-dot"></span>
+            <span id="status-text">Checking market...</span>
+          </div>
+          <div class="last-updated" id="last-updated" aria-live="polite">
+            <span class="updated-icon">🕐</span>
+            <span id="updated-text">Loading...</span>
+          </div>
+          <button class="btn-refresh" id="btn-refresh" onclick="fetchSignals()" aria-label="Refresh signals">
+            <span class="refresh-icon" id="refresh-icon">↺</span> Refresh
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── Stats Bar ─── -->
+  <section class="stats-bar" aria-label="Summary statistics">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card" id="stat-total">
+          <div class="stat-value" id="stat-total-val">—</div>
+          <div class="stat-label">Total Signals</div>
+        </div>
+        <div class="stat-card stat-strong" id="stat-strong">
+          <div class="stat-value" id="stat-strong-val">—</div>
+          <div class="stat-label">🟢 Strong (80+)</div>
+        </div>
+        <div class="stat-card stat-moderate" id="stat-moderate">
+          <div class="stat-value" id="stat-moderate-val">—</div>
+          <div class="stat-label">🟡 Moderate</div>
+        </div>
+        <div class="stat-card stat-weak" id="stat-weak">
+          <div class="stat-value" id="stat-weak-val">—</div>
+          <div class="stat-label">🔴 Weak</div>
+        </div>
+        <div class="stat-card" id="stat-strategies">
+          <div class="stat-value" id="stat-strategies-val">—</div>
+          <div class="stat-label">Strategies Hit</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Filters ─── -->
+  <section class="filters-section" aria-label="Signal filters">
+    <div class="container">
+      <div class="filters-bar">
+        <div class="filter-group">
+          <label class="filter-label" for="filter-exchange">Exchange</label>
+          <select class="filter-select" id="filter-exchange">
+            <option value="">All</option>
+            <option value="NSE">NSE</option>
+            <option value="BSE">BSE</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="filter-strategy">Strategy</label>
+          <select class="filter-select" id="filter-strategy">
+            <option value="">All Strategies</option>
+            <option>EMA Crossover</option>
+            <option>MACD Crossover</option>
+            <option>RSI Reversal</option>
+            <option>Bollinger Squeeze</option>
+            <option>Supertrend Breakout</option>
+            <option>Volume Breakout</option>
+            <option>Inside Bar Breakout</option>
+            <option>Golden Cross</option>
+            <option>EMA Pullback</option>
+            <option>52-Week High Break</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="filter-badge">Score</label>
+          <select class="filter-select" id="filter-badge">
+            <option value="">All</option>
+            <option value="Strong">🟢 Strong (80+)</option>
+            <option value="Moderate">🟡 Moderate (60–79)</option>
+            <option value="Weak">🔴 Weak (&lt;60)</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="filter-min-score">Min Score</label>
+          <div class="score-range-wrap">
+            <input type="range" class="score-range" id="filter-min-score" min="0" max="100" value="0" />
+            <span class="score-range-val" id="score-range-display">0</span>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="filter-pattern">Pattern</label>
+          <select class="filter-select" id="filter-pattern">
+            <option value="">Any Pattern</option>
+            <option>🔨 Hammer</option>
+            <option>🟢 Engulfing</option>
+            <option>⭐ Morning Star</option>
+            <option>🌠 Shooting Star</option>
+            <option>➕ Doji</option>
+            <option>📊 Marubozu</option>
+            <option>🌇 Evening Star</option>
+            <option>🤝 Harami</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="filter-search">Search</label>
+          <input type="text" class="filter-select" id="filter-search" placeholder="e.g. RELIANCE" aria-label="Search by symbol" />
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn-ghost" id="btn-clear-filters" onclick="clearFilters()">✕ Clear Filters</button>
+        <span class="results-count" id="results-count" aria-live="polite">—</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Main content ─── -->
+  <main class="main-content" id="main-content" role="main">
+    <div class="container">
+
+      <!-- Loading state -->
+      <div class="loading-state" id="loading-state" aria-busy="true">
+        <div class="spinner" aria-hidden="true"></div>
+        <p class="loading-text">Fetching signals from NSE...</p>
+      </div>
+
+      <!-- Error state -->
+      <div class="error-state" id="error-state" hidden>
+        <div class="error-icon" aria-hidden="true">⚠️</div>
+        <h2 class="error-title">Could not load signals</h2>
+        <p class="error-msg" id="error-msg">Check your connection or try again.</p>
+        <button class="btn-primary" onclick="fetchSignals()">Retry</button>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="empty-state" hidden>
+        <div class="empty-icon" aria-hidden="true">🔍</div>
+        <h2 class="empty-title">No signals match your filters</h2>
+        <button class="btn-ghost" onclick="clearFilters()">Clear Filters</button>
+      </div>
+
+      <!-- Cards grid -->
+      <div class="cards-grid" id="cards-grid" role="list" aria-label="Trading signals"></div>
+    </div>
+  </main>
+
+  <!-- ─── Footer ─── -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <p class="footer-copy">© 2025 SwingEdge · Powered by GitHub Actions · NSE/BSE Data</p>
+        <p class="footer-disclaimer">⚠️ For educational purposes only. Not financial advice. Always do your own research.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

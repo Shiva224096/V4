@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwingEdge — Indian Stock Market Signals | NSE & BSE</title>
+  <meta name="description" content="AI-powered swing trading signals for Indian stock market (NSE & BSE). Daily signals generated at 9 AM IST with entry, target, stop-loss and risk-reward ratios." />
+  <meta name="keywords" content="swing trading, NSE, BSE, Indian stock market, trading signals, technical analysis" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+/* ══════════════════════════════════════════════
+   SwingEdge — Dark Trading Dashboard
+   style.css
+   ══════════════════════════════════════════════ */
+
+/* ── Design Tokens ── */
+:root {
+  --bg-base:        #050c1a;
+  --bg-surface:     #0d1b2e;
+  --bg-card:        #0f2040;
+  --bg-card-hover:  #142850;
+  --bg-overlay:     rgba(13, 27, 46, 0.95);
+
+  --border:         rgba(59, 130, 246, 0.15);
+  --border-hover:   rgba(59, 130, 246, 0.4);
+
+  --text-primary:   #f0f6ff;
+  --text-secondary: #7fa8d0;
+  --text-muted:     #3d5a7a;
+
+  --accent-blue:    #3b82f6;
+  --accent-cyan:    #06b6d4;
+  --accent-purple:  #8b5cf6;
+  --accent-green:   #22c55e;
+  --accent-yellow:  #eab308;
+  --accent-red:     #ef4444;
+
+  --strong-bg:      rgba(34, 197, 94, 0.1);
+  --strong-border:  rgba(34, 197, 94, 0.3);
+  --moderate-bg:    rgba(234, 179, 8, 0.1);
+  --moderate-border:rgba(234, 179, 8, 0.3);
+  --weak-bg:        rgba(239, 68, 68, 0.1);
+  --weak-border:    rgba(239, 68, 68, 0.3);
+
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  18px;
+  --radius-xl:  24px;
+
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 40px rgba(59, 130, 246, 0.08);
+
+  --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Background Grid + Glows ── */
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.glow {
+  position: fixed; border-radius: 50%; filter: blur(80px);
+  pointer-events: none; z-index: 0; opacity: 0.35;
+}
+.glow-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, transparent 70%);
+  top: -200px; left: -200px;
+  animation: driftA 18s ease-in-out infinite alternate;
+}
+.glow-2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+  bottom: -150px; right: -150px;
+  animation: driftB 22s ease-in-out infinite alternate;
+}
+@keyframes driftA {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(80px, 60px); }
+}
+@keyframes driftB {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(-60px, -80px); }
+}
+
+/* ── Layout ── */
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative; z-index: 1;
+}
+
+/* ── Header ── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(5, 12, 26, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 0;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.brand-icon {
+  font-size: 28px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5));
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4)); }
+  50%       { filter: drop-shadow(0 0 18px rgba(59, 130, 246, 0.8)); }
+}
+.brand-name {
+  font-size: 22px; font-weight: 800;
+  background: linear-gradient(135deg, #f0f6ff, var(--accent-cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+.brand-tagline { font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+
+.header-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+.market-status {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 6px 14px; font-size: 12px; font-weight: 500;
+}
+.status-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted);
+  transition: background var(--transition);
+}
+.status-dot.open  { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); animation: blink 2s infinite; }
+.status-dot.closed { background: var(--accent-red); }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+.last-updated {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text-secondary);
+}
+
+.btn-refresh {
+  display: flex; align-items: center; gap: 6px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+  border: none; border-radius: var(--radius-sm); padding: 8px 16px;
+  color: white; font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.btn-refresh:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4); }
+.btn-refresh:active { transform: translateY(0); }
+.refresh-icon { display: inline-block; font-size: 16px; transition: transform 0.5s; }
+.refresh-icon.spinning { animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Stats Bar ── */
+.stats-bar {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 0;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+@media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 560px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  text-align: center;
+  transition: transform var(--transition), border-color var(--transition);
+}
+.stat-card:hover { transform: translateY(-2px); border-color: var(--accent-blue); }
+.stat-card.stat-strong { border-color: var(--strong-border); background: var(--strong-bg); }
+.stat-card.stat-moderate { border-color: var(--moderate-border); background: var(--moderate-bg); }
+.stat-card.stat-weak { border-color: var(--weak-border); background: var(--weak-bg); }
+
+.stat-value {
+  font-size: 26px; font-weight: 800; font-family: var(--font-mono);
+  background: linear-gradient(135deg, var(--text-primary), var(--accent-cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: countUp 0.6s ease-out;
+}
+.stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 2px; letter-spacing: 0.3px; }
+
+/* ── Filters Section ── */
+.filters-section {
+  padding: 20px 0 10px;
+  border-bottom: 1px solid var(--border);
+}
+.filters-bar {
+  display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end;
+}
+.filter-group { display: flex; flex-direction: column; gap: 5px; min-width: 130px; }
+.filter-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; }
+
+.filter-select {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 8px 12px;
+  color: var(--text-primary); font-size: 13px; font-family: var(--font-sans);
+  outline: none; cursor: pointer;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237fa8d0'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  padding-right: 28px;
+}
+select.filter-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237fa8d0'/%3E%3C/svg%3E"); }
+input.filter-select { background-image: none; padding-right: 12px; }
+
+.filter-select:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+.filter-select:hover { border-color: rgba(59, 130, 246, 0.35); }
+.filter-select option { background: #0d1b2e; }
+
+.score-range-wrap { display: flex; align-items: center; gap: 8px; }
+.score-range {
+  -webkit-appearance: none; appearance: none;
+  width: 110px; height: 4px; background: var(--bg-surface);
+  border-radius: 2px; outline: none; cursor: pointer;
+  accent-color: var(--accent-blue);
+}
+.score-range::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px;
+  border-radius: 50%; background: var(--accent-blue); cursor: pointer;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+  transition: transform var(--transition);
+}
+.score-range::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.score-range-val {
+  font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+  color: var(--accent-blue); min-width: 28px; text-align: right;
+}
+
+.filter-actions {
+  display: flex; align-items: center; gap: 14px;
+  margin-top: 12px; flex-wrap: wrap;
+}
+.btn-ghost {
+  background: transparent; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 6px 14px;
+  color: var(--text-secondary); font-size: 12px; cursor: pointer;
+  transition: border-color var(--transition), color var(--transition);
+}
+.btn-ghost:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+.results-count { font-size: 12px; color: var(--text-muted); font-family: var(--font-mono); }
+
+/* ── Main Content ── */
+.main-content { padding: 28px 0 60px; }
+
+/* ── Loading State ── */
+.loading-state {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 20px; padding: 80px 0;
+}
+.spinner {
+  width: 48px; height: 48px; border-radius: 50%;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent-blue);
+  animation: spin 0.9s linear infinite;
+}
+.loading-text { font-size: 14px; color: var(--text-secondary); }
+
+/* ── Error State ── */
+.error-state {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px; padding: 80px 0; text-align: center;
+}
+.error-icon { font-size: 48px; }
+.error-title { font-size: 20px; font-weight: 700; color: var(--accent-red); }
+.error-msg { font-size: 14px; color: var(--text-secondary); max-width: 400px; }
+
+/* ── Empty State ── */
+.empty-state {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px; padding: 80px 0;
+}
+.empty-icon { font-size: 48px; }
+.empty-title { font-size: 18px; font-weight: 600; color: var(--text-secondary); }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  border: none; border-radius: var(--radius-sm); padding: 10px 24px;
+  color: white; font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35); }
+
+/* ── Cards Grid ── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 18px;
+}
+@media (max-width: 720px) { .cards-grid { grid-template-columns: 1fr; } }
+
+/* ── Signal Card ── */
+.signal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  cursor: pointer;
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    border-color var(--transition),
+    background var(--transition);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInUp 0.4s ease-out both;
+}
+.signal-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.signal-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(59, 130, 246, 0.2);
+  border-color: var(--border-hover);
+  background: var(--bg-card-hover);
+}
+.signal-card:hover::before { transform: scaleX(1); }
+
+.signal-card.badge-Strong  { border-color: rgba(34, 197, 94, 0.25); }
+.signal-card.badge-Moderate { border-color: rgba(234, 179, 8, 0.2); }
+.signal-card.badge-Weak    { border-color: rgba(239, 68, 68, 0.15); }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Card header */
+.card-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 14px;
+}
+.card-symbol-wrap { display: flex; flex-direction: column; gap: 3px; }
+.card-symbol {
+  font-size: 20px; font-weight: 800; font-family: var(--font-mono);
+  color: var(--text-primary); letter-spacing: -0.3px;
+}
+.card-exchange-badge {
+  display: inline-block;
+  background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 4px; padding: 2px 7px;
+  font-size: 10px; font-weight: 700; color: var(--accent-blue);
+  text-transform: uppercase; letter-spacing: 0.8px; width: fit-content;
+}
+.card-close {
+  font-size: 11px; color: var(--text-muted); margin-top: 2px;
+  font-family: var(--font-mono);
+}
+
+.score-badge {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.score-ring {
+  width: 52px; height: 52px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 800; font-family: var(--font-mono);
+  position: relative;
+  background: conic-gradient(var(--ring-color, #3b82f6) var(--ring-pct, 0%), rgba(255,255,255,0.05) 0%);
+  box-shadow: 0 0 12px var(--ring-glow, rgba(59,130,246,0.3));
+}
+.score-ring::before {
+  content: '';
+  position: absolute; inset: 5px; border-radius: 50%;
+  background: var(--bg-card);
+}
+.score-num { position: relative; z-index: 1; }
+.score-label-text { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Strategy & Pattern row */
+.card-strategy-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; gap: 8px;
+}
+.card-strategy {
+  font-size: 13px; font-weight: 600; color: var(--accent-cyan);
+  background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.2);
+  border-radius: var(--radius-sm); padding: 4px 10px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.card-pattern {
+  font-size: 12px; color: var(--accent-purple);
+  background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: var(--radius-sm); padding: 4px 10px;
+  white-space: nowrap;
+}
+
+/* Price grid */
+.card-prices {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px; margin-bottom: 14px;
+}
+.price-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 8px; text-align: center;
+}
+.price-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
+.price-value { font-size: 15px; font-weight: 700; font-family: var(--font-mono); }
+.price-value.entry  { color: var(--text-primary); }
+.price-value.target { color: var(--accent-green); }
+.price-value.sl     { color: var(--accent-red); }
+
+/* RR row */
+.card-rr-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.rr-pill {
+  background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.3);
+  border-radius: 20px; padding: 4px 12px;
+  font-size: 12px; font-weight: 700; color: var(--accent-yellow);
+  font-family: var(--font-mono);
+}
+.card-date { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+
+/* Sparkline */
+.sparkline-wrap {
+  height: 52px; margin-top: 6px;
+  border-top: 1px solid var(--border); padding-top: 8px;
+}
+.sparkline-wrap canvas { width: 100% !important; height: 44px !important; }
+
+/* ── Footer ── */
+.footer {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border);
+  padding: 20px 0;
+}
+.footer-inner { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+.footer-copy { font-size: 12px; color: var(--text-muted); }
+.footer-disclaimer { font-size: 11px; color: #2a3d52; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .header-inner { gap: 10px; }
+  .brand-name { font-size: 18px; }
+  .last-updated { display: none; }
+  .cards-grid { grid-template-columns: 1fr; gap: 14px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .filters-bar { gap: 10px; }
+  .filter-group { min-width: 110px; }
+}
+
+@media (max-width: 480px) {
+  .header-meta { width: 100%; justify-content: space-between; }
+  .stat-value { font-size: 20px; }
+}
+
+/* ── Utility: hidden ── */
+[hidden] { display: none !important; }
+
+</style>
+</head>
+<body>
+
+  <!-- ─── Background particles ─── -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="glow glow-1" aria-hidden="true"></div>
+  <div class="glow glow-2" aria-hidden="true"></div>
+
+  <!-- ─── Header ─── -->
+  <header class="header" role="banner">
+    <div class="container">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="brand-icon" aria-hidden="true">📈</div>
+          <div>
+            <h1 class="brand-name">SwingEdge</h1>
+            <p class="brand-tagline">NSE · BSE · India</p>
+          </div>
+        </div>
+
+        <div class="header-meta">
+          <div class="market-status" id="market-status" aria-live="polite">
+            <span class="status-dot" id="status-dot"></span>
+            <span id="status-text">Checking market...</span>
+          </div>
+          <div class="last-updated" id="last-updated" aria-live="polite">
+            <span class="updated-icon">🕐</span>
+            <span id="updated-text">Loading...</span>
+          </div>
+          <button class="btn-refresh" id="btn-refresh" onclick="fetchSignals()" aria-label="Refresh signals">
+            <span class="refresh-icon" id="refresh-icon">↺</span> Refresh
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── Stats Bar ─── -->
+  <section class="stats-bar" aria-label="Summary statistics">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card" id="stat-total">
+          <div class="stat-value" id="stat-total-val">—</div>
+          <div class="stat-label">Total Signals</div>
+        </div>
+        <div class="stat-card stat-strong" id="stat-strong">
+          <div class="stat-value" id="stat-strong-val">—</div>
+          <div class="stat-label">🟢 Strong (80+)</div>
+        </div>
+        <div class="stat-card stat-moderate" id="stat-moderate">
+          <div class="stat-value" id="stat-moderate-val">—</div>
+          <div class="stat-label">🟡 Moderate</div>
+        </div>
+        <div class="stat-card stat-weak" id="stat-weak">
+          <div class="stat-value" id="stat-weak-val">—</div>
+          <div class="stat-label">🔴 Weak</div>
+        </div>
+        <div class="stat-card" id="stat-strategies">
+          <div class="stat-value" id="stat-strategies-val">—</div>
+          <div class="stat-label">Strategies Hit</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Filters ─── -->
+  <section class="filters-section" aria-label="Signal filters">
+    <div class="container">
+      <div class="filters-bar">
+        <div class="filter-group">
+          <label class="filter-label" for="filter-exchange">Exchange</label>
+          <select class="filter-select" id="filter-exchange">
+            <option value="">All</option>
+            <option value="NSE">NSE</option>
+            <option value="BSE">BSE</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="filter-strategy">Strategy</label>
+          <select class="filter-select" id="filter-strategy">
+            <option value="">All Strategies</option>
+            <option>EMA Crossover</option>
+            <option>MACD Crossover</option>
+            <option>RSI Reversal</option>
+            <option>Bollinger Squeeze</option>
+            <option>Supertrend Breakout</option>
+            <option>Volume Breakout</option>
+            <option>Inside Bar Breakout</option>
+            <option>Golden Cross</option>
+            <option>EMA Pullback</option>
+            <option>52-Week High Break</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="filter-badge">Score</label>
+          <select class="filter-select" id="filter-badge">
+            <option value="">All</option>
+            <option value="Strong">🟢 Strong (80+)</option>
+            <option value="Moderate">🟡 Moderate (60–79)</option>
+            <option value="Weak">🔴 Weak (&lt;60)</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="filter-min-score">Min Score</label>
+          <div class="score-range-wrap">
+            <input type="range" class="score-range" id="filter-min-score" min="0" max="100" value="0" />
+            <span class="score-range-val" id="score-range-display">0</span>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="filter-pattern">Pattern</label>
+          <select class="filter-select" id="filter-pattern">
+            <option value="">Any Pattern</option>
+            <option>🔨 Hammer</option>
+            <option>🟢 Engulfing</option>
+            <option>⭐ Morning Star</option>
+            <option>🌠 Shooting Star</option>
+            <option>➕ Doji</option>
+            <option>📊 Marubozu</option>
+            <option>🌇 Evening Star</option>
+            <option>🤝 Harami</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="filter-search">Search</label>
+          <input type="text" class="filter-select" id="filter-search" placeholder="e.g. RELIANCE" aria-label="Search by symbol" />
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn-ghost" id="btn-clear-filters" onclick="clearFilters()">✕ Clear Filters</button>
+        <span class="results-count" id="results-count" aria-live="polite">—</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Main content ─── -->
+  <main class="main-content" id="main-content" role="main">
+    <div class="container">
+
+      <!-- Loading state -->
+      <div class="loading-state" id="loading-state" aria-busy="true">
+        <div class="spinner" aria-hidden="true"></div>
+        <p class="loading-text">Fetching signals from NSE...</p>
+      </div>
+
+      <!-- Error state -->
+      <div class="error-state" id="error-state" hidden>
+        <div class="error-icon" aria-hidden="true">⚠️</div>
+        <h2 class="error-title">Could not load signals</h2>
+        <p class="error-msg" id="error-msg">Check your connection or try again.</p>
+        <button class="btn-primary" onclick="fetchSignals()">Retry</button>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="empty-state" hidden>
+        <div class="empty-icon" aria-hidden="true">🔍</div>
+        <h2 class="empty-title">No signals match your filters</h2>
+        <button class="btn-ghost" onclick="clearFilters()">Clear Filters</button>
+      </div>
+
+      <!-- Cards grid -->
+      <div class="cards-grid" id="cards-grid" role="list" aria-label="Trading signals"></div>
+    </div>
+  </main>
+
+  <!-- ─── Footer ─── -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <p class="footer-copy">© 2025 SwingEdge · Powered by GitHub Actions · NSE/BSE Data</p>
+        <p class="footer-disclaimer">⚠️ For educational purposes only. Not financial advice. Always do your own research.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+/**
+ * app.js — SwingEdge Trading Dashboard
+ * Fetches signals.json from GitHub raw URL (or local fallback)
+ * and renders interactive signal cards with sparklines.
+ */
+
+'use strict';
+
+/* ═══════════════════════════════════════════════════════════
+   CONFIG — Update GITHUB_USER and GITHUB_REPO after pushing
+   ═══════════════════════════════════════════════════════════ */
+const CONFIG = {
+  // Swap these with your actual GitHub username and repo name:
+  GITHUB_USER:    'YOUR_GITHUB_USERNAME',
+  GITHUB_REPO:    'YOUR_GITHUB_REPO',
+  // Local path used when opening index.html directly or via local HTTP server
+  LOCAL_JSON:     './data/signals.json',      // served from project root
+  LOCAL_JSON_ALT: '../data/signals.json',     // file:// fallback
+  LOCAL_UPDATED:  './data/last_updated.txt',
+  REFRESH_MS:     60_000,     // Auto-refresh every 60 s
+  ANIMATION_STAGGER: 60,      // ms between card animations
+};
+
+// Derived URLs
+const RAW_BASE    = `https://raw.githubusercontent.com/${CONFIG.GITHUB_USER}/${CONFIG.GITHUB_REPO}/main`;
+const SIGNALS_URL = `${RAW_BASE}/data/signals.json`;
+const UPDATED_URL = `${RAW_BASE}/data/last_updated.txt`;
+
+/* ═══════════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════════ */
+let allSignals  = [];
+let filteredSig = [];
+let refreshTimer = null;
+const sparklineCharts = new Map();   // canvas id → Chart instance
+
+/* ═══════════════════════════════════════════════════════════
+   FETCH + RENDER PIPELINE
+   ═══════════════════════════════════════════════════════════ */
+
+async function fetchSignals() {
+  setLoading(true);
+  setRefreshSpinning(true);
+
+  try {
+    /* Try GitHub raw first, then local root, then local alt (file://) */
+    let data;
+    const sources = [
+      SIGNALS_URL + `?t=${Date.now()}`,
+      CONFIG.LOCAL_JSON,
+      CONFIG.LOCAL_JSON_ALT,
+    ];
+    let lastErr;
+    for (const src of sources) {
+      try {
+        const resp = await fetch(src);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        data = await resp.json();
+        break;
+      } catch (e) { lastErr = e; }
+    }
+    if (!data) throw new Error(`All sources failed. Run: python scripts/generate_json.py --demo`);
+
+    allSignals = data.signals || [];
+    updateStats(allSignals);
+    applyFilters();
+    updateLastUpdated(data.generated_at);
+    updateMarketStatus();
+    hideError();
+    startAutoRefresh();
+  } catch (err) {
+    showError(err.message);
+    console.error('[SwingEdge] Fetch error:', err);
+  } finally {
+    setLoading(false);
+    setRefreshSpinning(false);
+  }
+}
+
+async function fetchLastUpdated() {
+  try {
+    let ts;
+    try {
+      const r = await fetch(UPDATED_URL + `?t=${Date.now()}`);
+      ts = await r.text();
+    } catch (_) {
+      const r = await fetch(CONFIG.LOCAL_UPDATED + `?t=${Date.now()}`);
+      ts = await r.text();
+    }
+    updateLastUpdated(ts.trim());
+  } catch (_) { /* silent */ }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FILTERS
+   ═══════════════════════════════════════════════════════════ */
+
+function applyFilters() {
+  const exchange  = document.getElementById('filter-exchange').value;
+  const strategy  = document.getElementById('filter-strategy').value;
+  const badge     = document.getElementById('filter-badge').value;
+  const minScore  = parseInt(document.getElementById('filter-min-score').value, 10) || 0;
+  const pattern   = document.getElementById('filter-pattern').value;
+  const search    = document.getElementById('filter-search').value.trim().toUpperCase();
+
+  filteredSig = allSignals.filter(s => {
+    if (exchange && s.exchange !== exchange) return false;
+    if (strategy && s.strategy !== strategy) return false;
+    if (badge    && s.badge    !== badge)    return false;
+    if (s.score < minScore)                  return false;
+    if (pattern  && !s.pattern.includes(pattern.replace(/[🔨🟢⭐🌠➕📊🌇🤝]/gu, '').trim())) return false;
+    if (search   && !s.symbol.includes(search)) return false;
+    return true;
+  });
+
+  document.getElementById('results-count').textContent =
+    `${filteredSig.length} of ${allSignals.length} signals`;
+
+  renderCards(filteredSig);
+}
+
+function clearFilters() {
+  ['filter-exchange','filter-strategy','filter-badge','filter-pattern'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('filter-min-score').value = 0;
+  document.getElementById('score-range-display').textContent = '0';
+  document.getElementById('filter-search').value = '';
+  applyFilters();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER CARDS
+   ═══════════════════════════════════════════════════════════ */
+
+function renderCards(signals) {
+  const grid = document.getElementById('cards-grid');
+
+  // Destroy old sparkline charts
+  sparklineCharts.forEach(chart => chart.destroy());
+  sparklineCharts.clear();
+
+  if (!signals.length) {
+    grid.innerHTML = '';
+    document.getElementById('empty-state').hidden = false;
+    return;
+  }
+  document.getElementById('empty-state').hidden = true;
+
+  grid.innerHTML = signals.map((s, i) => buildCardHTML(s, i)).join('');
+
+  // Build sparklines after DOM is ready
+  requestAnimationFrame(() => {
+    signals.forEach((s, i) => {
+      const canvasId = `spark-${i}`;
+      buildSparkline(canvasId, s.sparkline || []);
+    });
+  });
+}
+
+function buildCardHTML(s, i) {
+  const score     = s.score || 0;
+  const pct       = score; // 0–100
+  const ringColor = score >= 80 ? '#22c55e' : score >= 60 ? '#eab308' : '#ef4444';
+  const ringGlow  = score >= 80 ? 'rgba(34,197,94,0.4)' : score >= 60 ? 'rgba(234,179,8,0.35)' : 'rgba(239,68,68,0.35)';
+
+  const rr   = s.rr  ? `${s.rr}:1` : '—';
+  const date = s.date ? formatDate(s.date) : '—';
+
+  const rup = n => n != null ? `₹${Number(n).toLocaleString('en-IN', {maximumFractionDigits: 2})}` : '—';
+
+  return `
+<article
+  class="signal-card badge-${escHtml(s.badge)}"
+  role="listitem"
+  style="animation-delay: ${i * CONFIG.ANIMATION_STAGGER}ms"
+  aria-label="${escHtml(s.symbol)} — ${escHtml(s.strategy)}"
+>
+  <!-- Header -->
+  <div class="card-header">
+    <div class="card-symbol-wrap">
+      <span class="card-symbol">${escHtml(s.symbol)}</span>
+      <span class="card-exchange-badge">${escHtml(s.exchange || 'NSE')}</span>
+      <span class="card-close">LTP ${rup(s.close)}</span>
+    </div>
+    <div class="score-badge">
+      <div
+        class="score-ring"
+        style="
+          --ring-color: ${ringColor};
+          --ring-pct: ${pct * 3.6}deg;
+          --ring-glow: ${ringGlow};
+          background: conic-gradient(${ringColor} ${pct * 3.6}deg, rgba(255,255,255,0.04) 0%);
+          box-shadow: 0 0 14px ${ringGlow};
+        "
+      >
+        <span class="score-num">${score}</span>
+      </div>
+      <span
+        class="score-label-text"
+        style="color: ${ringColor}"
+      >${escHtml(s.badge)}</span>
+    </div>
+  </div>
+
+  <!-- Strategy + Pattern -->
+  <div class="card-strategy-row">
+    <span class="card-strategy">${escHtml(s.strategy)}</span>
+    <span class="card-pattern">${escHtml(s.pattern || '—')}</span>
+  </div>
+
+  <!-- Prices -->
+  <div class="card-prices">
+    <div class="price-box">
+      <div class="price-label">Entry</div>
+      <div class="price-value entry">${rup(s.entry)}</div>
+    </div>
+    <div class="price-box">
+      <div class="price-label">Target 🎯</div>
+      <div class="price-value target">${rup(s.target)}</div>
+    </div>
+    <div class="price-box">
+      <div class="price-label">Stop Loss 🛑</div>
+      <div class="price-value sl">${rup(s.stop_loss)}</div>
+    </div>
+  </div>
+
+  <!-- R:R + Date -->
+  <div class="card-rr-row">
+    <span class="rr-pill">⚖️ R:R ${escHtml(rr)}</span>
+    <span class="card-date">${escHtml(date)}</span>
+  </div>
+
+  <!-- Sparkline -->
+  <div class="sparkline-wrap">
+    <canvas id="spark-${i}" height="44" aria-label="${escHtml(s.symbol)} 7-day price trend"></canvas>
+  </div>
+</article>`;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SPARKLINE (Chart.js)
+   ═══════════════════════════════════════════════════════════ */
+
+function buildSparkline(canvasId, data) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas || !data.length) return;
+
+  const isUp = data[data.length - 1] >= data[0];
+  const lineColor  = isUp ? '#22c55e' : '#ef4444';
+  const fillColor  = isUp ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)';
+
+  const chart = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: data.map((_, i) => `D-${data.length - 1 - i}`),
+      datasets: [{
+        data,
+        borderColor:     lineColor,
+        borderWidth:     1.8,
+        backgroundColor: fillColor,
+        fill:            true,
+        tension:         0.4,
+        pointRadius:     0,
+        pointHoverRadius:3,
+        pointHoverBackgroundColor: lineColor,
+      }]
+    },
+    options: {
+      responsive:          true,
+      maintainAspectRatio: false,
+      animation:           { duration: 600, easing: 'easeOutCubic' },
+      plugins: { legend: { display: false }, tooltip: {
+        mode: 'index', intersect: false,
+        backgroundColor: 'rgba(13,27,46,0.95)',
+        titleColor: '#7fa8d0', bodyColor: '#f0f6ff',
+        borderColor: 'rgba(59,130,246,0.3)', borderWidth: 1,
+        callbacks: { label: ctx => ` ${ctx.parsed.y.toFixed(1)}` }
+      }},
+      scales: {
+        x: { display: false },
+        y: { display: false, min: -5, max: 105 }
+      },
+      interaction: { mode: 'nearest', axis: 'x', intersect: false },
+    }
+  });
+
+  sparklineCharts.set(canvasId, chart);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STATS BAR
+   ═══════════════════════════════════════════════════════════ */
+
+function updateStats(signals) {
+  const strong   = signals.filter(s => s.badge === 'Strong').length;
+  const moderate = signals.filter(s => s.badge === 'Moderate').length;
+  const weak     = signals.filter(s => s.badge === 'Weak').length;
+  const strategies = new Set(signals.map(s => s.strategy)).size;
+
+  animateCount('stat-total-val',      signals.length);
+  animateCount('stat-strong-val',     strong);
+  animateCount('stat-moderate-val',   moderate);
+  animateCount('stat-weak-val',       weak);
+  animateCount('stat-strategies-val', strategies);
+}
+
+function animateCount(elId, target) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  let start = 0;
+  const step = Math.ceil(target / 20);
+  const interval = setInterval(() => {
+    start = Math.min(start + step, target);
+    el.textContent = start;
+    if (start >= target) clearInterval(interval);
+  }, 30);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MARKET STATUS (IST 9:15 AM – 3:30 PM)
+   ═══════════════════════════════════════════════════════════ */
+
+function updateMarketStatus() {
+  const now  = new Date();
+  const ist  = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+  const h    = ist.getHours();
+  const m    = ist.getMinutes();
+  const dow  = ist.getDay(); // 0=Sun 6=Sat
+  const mins = h * 60 + m;
+
+  const isWeekday = dow >= 1 && dow <= 5;
+  const isOpen    = isWeekday && mins >= 9 * 60 + 15 && mins < 15 * 60 + 30;
+
+  const dot  = document.getElementById('status-dot');
+  const text = document.getElementById('status-text');
+
+  if (isOpen) {
+    dot.className  = 'status-dot open';
+    text.textContent = 'Market Open';
+    text.style.color = '#22c55e';
+  } else {
+    dot.className  = 'status-dot closed';
+    const reason = !isWeekday ? 'Weekend' : mins < 9 * 60 + 15 ? 'Pre-Market' : 'Market Closed';
+    text.textContent = reason;
+    text.style.color = '#ef4444';
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UI HELPERS
+   ═══════════════════════════════════════════════════════════ */
+
+function setLoading(show) {
+  document.getElementById('loading-state').hidden  = !show;
+  document.getElementById('cards-grid').hidden     = show;
+}
+
+function showError(msg) {
+  document.getElementById('error-state').hidden = false;
+  document.getElementById('error-msg').textContent = msg;
+  document.getElementById('loading-state').hidden = true;
+}
+
+function hideError() {
+  document.getElementById('error-state').hidden = true;
+}
+
+function updateLastUpdated(ts) {
+  if (!ts) return;
+  document.getElementById('updated-text').textContent = `Updated: ${ts.trim()}`;
+}
+
+function setRefreshSpinning(on) {
+  const icon = document.getElementById('refresh-icon');
+  if (on) icon.classList.add('spinning');
+  else    icon.classList.remove('spinning');
+}
+
+function startAutoRefresh() {
+  clearInterval(refreshTimer);
+  refreshTimer = setInterval(fetchSignals, CONFIG.REFRESH_MS);
+}
+
+function formatDate(str) {
+  try {
+    const d = new Date(str);
+    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  } catch (_) { return str; }
+}
+
+function escHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   EVENT LISTENERS
+   ═══════════════════════════════════════════════════════════ */
+
+function bindFilters() {
+  const filterIds = [
+    'filter-exchange', 'filter-strategy', 'filter-badge',
+    'filter-pattern',  'filter-search',
+  ];
+  filterIds.forEach(id => {
+    document.getElementById(id)?.addEventListener('input', applyFilters);
+    document.getElementById(id)?.addEventListener('change', applyFilters);
+  });
+
+  const rangeEl = document.getElementById('filter-min-score');
+  const display = document.getElementById('score-range-display');
+  rangeEl?.addEventListener('input', () => {
+    display.textContent = rangeEl.value;
+    applyFilters();
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BOOT
+   ═══════════════════════════════════════════════════════════ */
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindFilters();
+  updateMarketStatus();
+  setInterval(updateMarketStatus, 60_000);
+  fetchSignals();
+});
+
+</script>
+<script>
+
+window.__INLINE__ = {"generated_at": "2026-04-30 12:00 IST", "total": 10, "signals": [{"symbol": "RELIANCE", "exchange": "NSE", "strategy": "EMA Crossover", "pattern": "🟢 Engulfing", "entry": 2850.5, "target": 3050.5, "stop_loss": 2750.5, "rr": 2.0, "score": 88, "badge": "Strong", "sparkline": [40, 45, 42, 55, 60, 72, 85], "date": "2026-04-30", "close": 2850.5}, {"symbol": "TCS", "exchange": "NSE", "strategy": "MACD Crossover", "pattern": "⭐ Morning Star", "entry": 4120.0, "target": 4500.0, "stop_loss": 3930.0, "rr": 2.0, "score": 82, "badge": "Strong", "sparkline": [30, 35, 38, 40, 55, 65, 78], "date": "2026-04-30", "close": 4120.0}, {"symbol": "HDFCBANK", "exchange": "NSE", "strategy": "RSI Reversal", "pattern": "🔨 Hammer", "entry": 1720.0, "target": 1900.0, "stop_loss": 1630.0, "rr": 2.0, "score": 75, "badge": "Moderate", "sparkline": [50, 45, 38, 35, 40, 55, 62], "date": "2026-04-30", "close": 1720.0}, {"symbol": "INFY", "exchange": "NSE", "strategy": "Volume Breakout", "pattern": "📊 Marubozu", "entry": 1890.0, "target": 2090.0, "stop_loss": 1790.0, "rr": 2.0, "score": 79, "badge": "Moderate", "sparkline": [60, 62, 58, 65, 70, 75, 80], "date": "2026-04-30", "close": 1890.0}, {"symbol": "ICICIBANK", "exchange": "NSE", "strategy": "Supertrend Breakout", "pattern": "—", "entry": 1340.0, "target": 1540.0, "stop_loss": 1240.0, "rr": 2.0, "score": 68, "badge": "Moderate", "sparkline": [45, 48, 50, 55, 58, 62, 68], "date": "2026-04-30", "close": 1340.0}, {"symbol": "BHARTIARTL", "exchange": "NSE", "strategy": "52-Week High Break", "pattern": "🟢 Engulfing", "entry": 1650.0, "target": 1850.0, "stop_loss": 1550.0, "rr": 2.0, "score": 92, "badge": "Strong", "sparkline": [55, 60, 65, 70, 75, 85, 95], "date": "2026-04-30", "close": 1650.0}, {"symbol": "LT", "exchange": "NSE", "strategy": "Bollinger Squeeze", "pattern": "➕ Doji", "entry": 3750.0, "target": 4150.0, "stop_loss": 3550.0, "rr": 2.0, "score": 65, "badge": "Moderate", "sparkline": [40, 42, 45, 48, 50, 55, 60], "date": "2026-04-30", "close": 3750.0}, {"symbol": "BAJFINANCE", "exchange": "NSE", "strategy": "EMA Pullback", "pattern": "🤝 Harami", "entry": 7100.0, "target": 7900.0, "stop_loss": 6700.0, "rr": 2.0, "score": 58, "badge": "Weak", "sparkline": [70, 65, 60, 58, 62, 65, 68], "date": "2026-04-30", "close": 7100.0}, {"symbol": "SBIN", "exchange": "NSE", "strategy": "Golden Cross", "pattern": "⭐ Morning Star", "entry": 810.0, "target": 910.0, "stop_loss": 760.0, "rr": 2.0, "score": 85, "badge": "Strong", "sparkline": [30, 35, 40, 48, 58, 68, 80], "date": "2026-04-30", "close": 810.0}, {"symbol": "MARUTI", "exchange": "NSE", "strategy": "Inside Bar Breakout", "pattern": "🔨 Hammer", "entry": 12800.0, "target": 14000.0, "stop_loss": 12200.0, "rr": 2.0, "score": 72, "badge": "Moderate", "sparkline": [50, 52, 48, 55, 58, 65, 70], "date": "2026-04-30", "close": 12800.0}]};
+const _origFetchSignals = typeof fetchSignals !== 'undefined' ? fetchSignals : null;
+function fetchSignals() {
+  setLoading(true);
+  setRefreshSpinning(true);
+  try {
+    const d = window.__INLINE__;
+    allSignals = d.signals || [];
+    updateStats(allSignals);
+    applyFilters();
+    updateLastUpdated(d.generated_at);
+    updateMarketStatus();
+    hideError();
+    startAutoRefresh();
+  } catch(e) {
+    showError(e.message);
+  } finally {
+    setLoading(false);
+    setRefreshSpinning(false);
+  }
+}
+
+</script>
+</body>
+</html>
