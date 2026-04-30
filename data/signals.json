@@ -1,9 +1,4 @@
 {
-<<<<<<< HEAD
-  "generated_at": "2026-04-30 18:30 IST",
-  "total": 0,
-  "signals": []
-=======
   "generated_at": "2026-04-30 18:29 IST",
   "total": 40,
   "signals": [
@@ -928,5 +923,4 @@
       "close": 316.8
     }
   ]
->>>>>>> ad85d679b3e645f3ff89f7dbea79e6ed6125fd38
 }
