@@ -435,6 +435,13 @@ input.filter-select { background-image: none; padding-right: 12px; }
 .price-value.target { color: var(--accent-green); }
 .price-value.sl     { color: var(--accent-red); }
 
+/* Multiple signals divider */
+.signal-divider {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 16px 0;
+}
+
 /* RR row */
 .card-rr-row {
   display: flex; align-items: center; justify-content: space-between;

@@ -147,41 +147,88 @@ function renderCards(signals) {
   }
   document.getElementById('empty-state').hidden = true;
 
-  grid.innerHTML = signals.map((s, i) => buildCardHTML(s, i)).join('');
+  // Group signals by symbol
+  const groupedMap = new Map();
+  signals.forEach(s => {
+    if (!groupedMap.has(s.symbol)) {
+      groupedMap.set(s.symbol, []);
+    }
+    groupedMap.get(s.symbol).push(s);
+  });
+  
+  const groupedArray = Array.from(groupedMap.values());
+
+  grid.innerHTML = groupedArray.map((group, i) => buildGroupCardHTML(group, i)).join('');
 
   // Build sparklines after DOM is ready
   requestAnimationFrame(() => {
-    signals.forEach((s, i) => {
+    groupedArray.forEach((group, i) => {
+      const s = group[0];
       const canvasId = `spark-${i}`;
       buildSparkline(canvasId, s.sparkline || []);
     });
   });
 }
 
-function buildCardHTML(s, i) {
-  const score     = s.score || 0;
+function buildGroupCardHTML(group, i) {
+  const mainSignal = group.reduce((prev, current) => (prev.score > current.score) ? prev : current);
+  const score     = mainSignal.score || 0;
   const pct       = score; // 0–100
   const ringColor = score >= 80 ? '#22c55e' : score >= 60 ? '#eab308' : '#ef4444';
   const ringGlow  = score >= 80 ? 'rgba(34,197,94,0.4)' : score >= 60 ? 'rgba(234,179,8,0.35)' : 'rgba(239,68,68,0.35)';
 
-  const rr   = s.rr  ? `${s.rr}:1` : '—';
-  const date = s.date ? formatDate(s.date) : '—';
-
   const rup = n => n != null ? `₹${Number(n).toLocaleString('en-IN', {maximumFractionDigits: 2})}` : '—';
+
+  const signalsHTML = group.map((s, idx) => {
+    const rr   = s.rr  ? `${s.rr}:1` : '—';
+    const date = s.date ? formatDate(s.date) : '—';
+    return `
+      ${idx > 0 ? '<hr class="signal-divider" />' : ''}
+      <div class="signal-item">
+        <!-- Strategy + Pattern -->
+        <div class="card-strategy-row">
+          <span class="card-strategy">${escHtml(s.strategy)}</span>
+          <span class="card-pattern">${escHtml(s.pattern || '—')}</span>
+        </div>
+
+        <!-- Prices -->
+        <div class="card-prices">
+          <div class="price-box">
+            <div class="price-label">Entry</div>
+            <div class="price-value entry">${rup(s.entry)}</div>
+          </div>
+          <div class="price-box">
+            <div class="price-label">Target 🎯</div>
+            <div class="price-value target">${rup(s.target)}</div>
+          </div>
+          <div class="price-box">
+            <div class="price-label">Stop Loss 🛑</div>
+            <div class="price-value sl">${rup(s.stop_loss)}</div>
+          </div>
+        </div>
+
+        <!-- R:R + Date -->
+        <div class="card-rr-row" style="margin-bottom: 0;">
+          <span class="rr-pill">⚖️ R:R ${escHtml(rr)}</span>
+          <span class="card-date">${escHtml(date)}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
 
   return `
 <article
-  class="signal-card badge-${escHtml(s.badge)}"
+  class="signal-card badge-${escHtml(mainSignal.badge)}"
   role="listitem"
   style="animation-delay: ${i * CONFIG.ANIMATION_STAGGER}ms"
-  aria-label="${escHtml(s.symbol)} — ${escHtml(s.strategy)}"
+  aria-label="${escHtml(mainSignal.symbol)} — ${group.length} signals"
 >
   <!-- Header -->
   <div class="card-header">
     <div class="card-symbol-wrap">
-      <span class="card-symbol">${escHtml(s.symbol)}</span>
-      <span class="card-exchange-badge">${escHtml(s.exchange || 'NSE')}</span>
-      <span class="card-close">LTP ${rup(s.close)}</span>
+      <span class="card-symbol">${escHtml(mainSignal.symbol)}</span>
+      <span class="card-exchange-badge">${escHtml(mainSignal.exchange || 'NSE')}</span>
+      <span class="card-close">LTP ${rup(mainSignal.close)}</span>
     </div>
     <div class="score-badge">
       <div
@@ -199,41 +246,17 @@ function buildCardHTML(s, i) {
       <span
         class="score-label-text"
         style="color: ${ringColor}"
-      >${escHtml(s.badge)}</span>
+      >${escHtml(mainSignal.badge)}</span>
     </div>
   </div>
 
-  <!-- Strategy + Pattern -->
-  <div class="card-strategy-row">
-    <span class="card-strategy">${escHtml(s.strategy)}</span>
-    <span class="card-pattern">${escHtml(s.pattern || '—')}</span>
-  </div>
-
-  <!-- Prices -->
-  <div class="card-prices">
-    <div class="price-box">
-      <div class="price-label">Entry</div>
-      <div class="price-value entry">${rup(s.entry)}</div>
-    </div>
-    <div class="price-box">
-      <div class="price-label">Target 🎯</div>
-      <div class="price-value target">${rup(s.target)}</div>
-    </div>
-    <div class="price-box">
-      <div class="price-label">Stop Loss 🛑</div>
-      <div class="price-value sl">${rup(s.stop_loss)}</div>
-    </div>
-  </div>
-
-  <!-- R:R + Date -->
-  <div class="card-rr-row">
-    <span class="rr-pill">⚖️ R:R ${escHtml(rr)}</span>
-    <span class="card-date">${escHtml(date)}</span>
+  <div class="group-signals">
+    ${signalsHTML}
   </div>
 
   <!-- Sparkline -->
   <div class="sparkline-wrap">
-    <canvas id="spark-${i}" height="44" aria-label="${escHtml(s.symbol)} 7-day price trend"></canvas>
+    <canvas id="spark-${i}" height="44" aria-label="${escHtml(mainSignal.symbol)} 7-day price trend"></canvas>
   </div>
 </article>`;
 }

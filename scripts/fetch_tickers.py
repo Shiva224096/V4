@@ -100,7 +100,7 @@ def save_bse_tickers(tickers: list):
 
 
 if __name__ == "__main__":
-    nse_symbols = fetch_nse_tickers("nifty500")
+    nse_symbols = fetch_nse_tickers("all")
     save_nse_tickers(nse_symbols)
 
     bse_tickers = fetch_bse_tickers()

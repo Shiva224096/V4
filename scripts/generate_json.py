@@ -59,6 +59,7 @@ def generate_demo_signals() -> dict:
     today = date.today().strftime("%Y-%m-%d")
     sample = [
         {"symbol":"RELIANCE","exchange":"NSE","strategy":"EMA Crossover","pattern":"🟢 Engulfing","entry":2850.50,"target":3050.50,"stop_loss":2750.50,"rr":2.0,"score":88,"badge":"Strong","sparkline":[40,45,42,55,60,72,85],"date":today,"close":2850.50},
+        {"symbol":"RELIANCE","exchange":"NSE","strategy":"RSI Reversal","pattern":"🔨 Hammer","entry":2860.00,"target":3000.00,"stop_loss":2760.00,"rr":1.8,"score":75,"badge":"Moderate","sparkline":[40,45,42,55,60,72,85],"date":today,"close":2850.50},
         {"symbol":"TCS","exchange":"NSE","strategy":"MACD Crossover","pattern":"⭐ Morning Star","entry":4120.00,"target":4500.00,"stop_loss":3930.00,"rr":2.0,"score":82,"badge":"Strong","sparkline":[30,35,38,40,55,65,78],"date":today,"close":4120.00},
         {"symbol":"HDFCBANK","exchange":"NSE","strategy":"RSI Reversal","pattern":"🔨 Hammer","entry":1720.00,"target":1900.00,"stop_loss":1630.00,"rr":2.0,"score":75,"badge":"Moderate","sparkline":[50,45,38,35,40,55,62],"date":today,"close":1720.00},
         {"symbol":"INFY","exchange":"NSE","strategy":"Volume Breakout","pattern":"📊 Marubozu","entry":1890.00,"target":2090.00,"stop_loss":1790.00,"rr":2.0,"score":79,"badge":"Moderate","sparkline":[60,62,58,65,70,75,80],"date":today,"close":1890.00},
