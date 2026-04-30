@@ -621,10 +621,43 @@ input.filter-select { background-image: none; padding-right: 12px; }
 }
 .btn-tradingview:hover { background: rgba(139,92,246,0.2); transform: translateY(-2px); }
 
+/* ── Chart Area ── */
+.modal-chart-area {
+  padding: 0; border-bottom: 1px solid var(--border);
+  background: #0a1628; border-radius: 0;
+}
+
+/* ── Pattern Explanation ── */
+.modal-pattern-explain { padding: 20px 28px; }
+.pattern-explain-header {
+  font-size: 14px; font-weight: 800; color: var(--text-primary);
+  margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.8px;
+}
+.pattern-explain-list { display: flex; flex-direction: column; gap: 10px; }
+.pattern-explain-item {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 14px 16px;
+  border-left: 3px solid var(--border);
+}
+.pattern-explain-item.bullish { border-left-color: var(--accent-green); }
+.pattern-explain-item.bearish { border-left-color: var(--accent-red); }
+.pattern-explain-name { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+.pattern-explain-meta { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+.pattern-type-badge {
+  font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.pattern-type-badge.bullish { background: rgba(34,197,94,0.1); color: var(--accent-green); border: 1px solid rgba(34,197,94,0.25); }
+.pattern-type-badge.bearish { background: rgba(239,68,68,0.1); color: var(--accent-red); border: 1px solid rgba(239,68,68,0.25); }
+.pattern-candle-count { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+.pattern-explain-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
 /* ── Responsive table ── */
 @media (max-width: 768px) {
   .signals-table { font-size: 11px; }
   .signals-table th, .signals-table td { padding: 8px 8px; }
   .modal-actions { flex-direction: column; }
   .modal-info-grid { grid-template-columns: repeat(2,1fr); }
+  .modal-pattern-explain { padding: 16px; }
 }
+

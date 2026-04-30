@@ -54,6 +54,35 @@ MODERATE_BULLISH = {
     "tweezer_bottom", "dragonfly_doji",
 }
 
+# How many candles each pattern spans (for chart highlighting)
+PATTERN_CANDLES = {
+    "hammer": 1, "inverted_hammer": 1, "bullish_marubozu": 1, "dragonfly_doji": 1,
+    "shooting_star": 1, "hanging_man": 1,
+    "bullish_engulfing": 2, "bearish_engulfing": 2, "piercing_line": 2,
+    "dark_cloud": 2, "bullish_harami": 2, "tweezer_bottom": 2,
+    "morning_star": 3, "evening_star": 3, "three_white": 3, "three_black": 3,
+}
+
+# Short descriptions for chart annotations
+PATTERN_DESCRIPTIONS = {
+    "hammer":           "Small body at top, long lower shadow signals buyers stepping in at support",
+    "inverted_hammer":  "Small body at bottom, long upper shadow hints at buying pressure emerging",
+    "bullish_engulfing":"Current bullish candle fully engulfs previous bearish candle — strong reversal",
+    "morning_star":     "3-candle reversal: bearish → indecision star → bullish close above midpoint",
+    "bullish_marubozu": "Full-bodied bullish candle with almost no shadows — pure buying pressure",
+    "piercing_line":    "Opens below prior low, closes above 50% of prior body — bulls fighting back",
+    "bullish_harami":   "Small bullish body inside prior large bearish body — selling momentum fading",
+    "three_white":      "Three consecutive strong bullish candles — powerful uptrend confirmation",
+    "tweezer_bottom":   "Two candles with matching lows — strong support level identified",
+    "dragonfly_doji":   "Open = Close = High with long lower shadow — rejection of lower prices",
+    "shooting_star":    "Small body at bottom, long upper shadow after uptrend — bearish reversal",
+    "evening_star":     "3-candle reversal: bullish → star → bearish close below midpoint",
+    "bearish_engulfing":"Current bearish candle fully engulfs prior bullish — distribution signal",
+    "dark_cloud":       "Opens above prior high, closes below 50% of prior body — sellers in control",
+    "hanging_man":      "Hammer-shaped candle after uptrend — potential trend exhaustion",
+    "three_black":      "Three consecutive strong bearish candles — powerful downtrend confirmation",
+}
+
 
 # ── Helpers ────────────────────────────────────────────────────────────────
 

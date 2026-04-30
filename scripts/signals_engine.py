@@ -19,7 +19,8 @@ from bhavcopy_bulk import build_bhavcopy_history
 from strategies import run_all_strategies
 from patterns import (
     get_active_patterns, get_pattern_label, get_all_pattern_labels,
-    pattern_score_bonus
+    pattern_score_bonus, PATTERN_CANDLES, PATTERN_DESCRIPTIONS, PATTERN_ICONS,
+    BULLISH_PATTERNS, BEARISH_PATTERNS
 )
 from backtester import load_backtest_weights
 
@@ -137,6 +138,26 @@ def build_sparkline(df: pd.DataFrame, n: int = 7) -> list[float]:
     return [round((v - mn) / rng * 100, 1) for v in closes]
 
 
+def build_ohlcv(df: pd.DataFrame, n: int = 50) -> list[dict]:
+    """Extract last N candles as OHLCV dicts for the frontend chart."""
+    tail = df.tail(n)
+    result = []
+    for _, row in tail.iterrows():
+        d = row.get("date")
+        if hasattr(d, "strftime"):
+            ds = d.strftime("%Y-%m-%d")
+        else:
+            ds = str(d)
+        result.append({
+            "time": ds,
+            "open":  round(float(row["open"]), 2),
+            "high":  round(float(row["high"]), 2),
+            "low":   round(float(row["low"]), 2),
+            "close": round(float(row["close"]), 2),
+        })
+    return result
+
+
 # ---------------------------------------------------------------------------
 # Holiday check (NSE market holidays — simplified weekend check)
 # ---------------------------------------------------------------------------
@@ -208,6 +229,20 @@ def run_engine():
             # Compute confluence bonus
             confluence_bonus = 15 if len(signals) > 1 else 0
 
+            # Build OHLCV for chart (last 50 candles)
+            ohlcv = build_ohlcv(df, n=50)
+
+            # Build pattern info for chart annotations
+            pattern_info = []
+            for p in patterns:
+                pattern_info.append({
+                    "name": PATTERN_ICONS.get(p, p),
+                    "key": p,
+                    "candles": PATTERN_CANDLES.get(p, 1),
+                    "description": PATTERN_DESCRIPTIONS.get(p, ""),
+                    "type": "bullish" if p in BULLISH_PATTERNS else "bearish",
+                })
+
             # Aggregate: one record per strategy triggered
             for sig in signals:
                 score = compute_score(df, sig, patterns) + confluence_bonus
@@ -218,6 +253,7 @@ def run_engine():
                     "strategy":      sig["strategy"],
                     "pattern":       pattern_label,
                     "all_patterns":  all_pattern_labels,
+                    "pattern_info":  pattern_info,
                     "entry":         sig.get("entry"),
                     "target":        sig.get("target"),
                     "stop_loss":     sig.get("stop_loss"),
@@ -225,6 +261,7 @@ def run_engine():
                     "score":         score,
                     "badge":         score_badge(score),
                     "sparkline":     build_sparkline(df),
+                    "ohlcv":         ohlcv,
                     "date":          df["date"].iloc[-1].strftime("%Y-%m-%d") if hasattr(df["date"].iloc[-1], "strftime") else str(df["date"].iloc[-1]),
                     "close":         round(float(df["close"].iloc[-1]), 2),
                 }

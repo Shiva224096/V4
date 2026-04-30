@@ -164,7 +164,9 @@ function renderPagination(total) {
 }
 function goPage(p) { currentPage=p; renderTable(filteredSig); document.getElementById('table-container').scrollIntoView({behavior:'smooth'}); }
 
-// ═══ MODAL + TRADINGVIEW ═══
+// ═══ MODAL + CHART ═══
+let modalChart = null;
+
 function openModal(signal) {
   modalSignal = signal;
   const m = document.getElementById('chart-modal');
@@ -180,11 +182,125 @@ function openModal(signal) {
       <div class="modal-info-item"><span class="mil">Stop Loss 🛑</span><span class="miv col-sl">${rup(signal.stop_loss)}</span></div>
       <div class="modal-info-item"><span class="mil">R:R</span><span class="miv">${signal.rr?signal.rr+':1':'—'}</span></div>
     </div>`;
+
+  // Build candlestick chart
+  renderCandlestickChart(signal);
+
+  // Build pattern explanation
+  renderPatternExplanation(signal);
+
   m.hidden = false; document.body.style.overflow = 'hidden';
 }
+
+function renderCandlestickChart(signal) {
+  const container = document.getElementById('candlestick-chart');
+  container.innerHTML = '';
+
+  const ohlcv = signal.ohlcv;
+  if (!ohlcv || !ohlcv.length || typeof LightweightCharts === 'undefined') {
+    container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:350px;color:var(--text-muted)">No chart data available. Run the engine locally to generate OHLCV data.</div>';
+    return;
+  }
+
+  // Destroy previous chart
+  if (modalChart) { modalChart.remove(); modalChart = null; }
+
+  const chart = LightweightCharts.createChart(container, {
+    width: container.clientWidth, height: 350,
+    layout: { background: { type: 'solid', color: '#0a1628' }, textColor: '#7fa8d0', fontSize: 12 },
+    grid: { vertLines: { color: 'rgba(59,130,246,0.06)' }, horzLines: { color: 'rgba(59,130,246,0.06)' } },
+    crosshair: { mode: 0 },
+    rightPriceScale: { borderColor: 'rgba(59,130,246,0.2)' },
+    timeScale: { borderColor: 'rgba(59,130,246,0.2)', timeVisible: false },
+  });
+  modalChart = chart;
+
+  // Candlestick series
+  const candleSeries = chart.addCandlestickSeries({
+    upColor: '#22c55e', downColor: '#ef4444',
+    borderUpColor: '#22c55e', borderDownColor: '#ef4444',
+    wickUpColor: '#22c55e', wickDownColor: '#ef4444',
+  });
+  candleSeries.setData(ohlcv);
+
+  // Entry / Target / SL price lines
+  if (signal.entry) candleSeries.createPriceLine({ price: signal.entry, color: '#3b82f6', lineWidth: 2, lineStyle: 2, title: 'Entry' });
+  if (signal.target) candleSeries.createPriceLine({ price: signal.target, color: '#22c55e', lineWidth: 1, lineStyle: 1, title: 'Target 🎯' });
+  if (signal.stop_loss) candleSeries.createPriceLine({ price: signal.stop_loss, color: '#ef4444', lineWidth: 1, lineStyle: 1, title: 'Stop Loss 🛑' });
+
+  // Pattern markers on the last N candles
+  const patterns = signal.pattern_info || [];
+  if (patterns.length > 0) {
+    const markers = [];
+    patterns.forEach(p => {
+      const nCandles = p.candles || 1;
+      const isBullish = p.type === 'bullish';
+      // Mark the last candle of the pattern
+      const lastIdx = ohlcv.length - 1;
+      const markerIdx = lastIdx; // Pattern detected on last candle(s)
+
+      markers.push({
+        time: ohlcv[markerIdx].time,
+        position: isBullish ? 'belowBar' : 'aboveBar',
+        color: isBullish ? '#22c55e' : '#ef4444',
+        shape: isBullish ? 'arrowUp' : 'arrowDown',
+        text: p.name,
+      });
+
+      // For multi-candle patterns, also mark the starting candle
+      if (nCandles > 1) {
+        const startIdx = Math.max(0, lastIdx - nCandles + 1);
+        if (startIdx !== markerIdx) {
+          markers.push({
+            time: ohlcv[startIdx].time,
+            position: 'belowBar',
+            color: isBullish ? 'rgba(34,197,94,0.5)' : 'rgba(239,68,68,0.5)',
+            shape: 'circle',
+            text: `← ${nCandles}-candle pattern starts`,
+          });
+        }
+      }
+    });
+    // Sort markers by time
+    markers.sort((a, b) => a.time < b.time ? -1 : 1);
+    candleSeries.setMarkers(markers);
+  }
+
+  chart.timeScale().fitContent();
+
+  // Resize handler
+  const ro = new ResizeObserver(() => { chart.applyOptions({ width: container.clientWidth }); });
+  ro.observe(container);
+  container._ro = ro;
+}
+
+function renderPatternExplanation(signal) {
+  const el = document.getElementById('modal-pattern-explain');
+  const patterns = signal.pattern_info || [];
+  if (!patterns.length) { el.innerHTML = ''; return; }
+
+  el.innerHTML = `
+    <div class="pattern-explain-header">📖 Pattern Analysis</div>
+    <div class="pattern-explain-list">
+      ${patterns.map(p => `
+        <div class="pattern-explain-item ${p.type}">
+          <div class="pattern-explain-name">${esc(p.name)}</div>
+          <div class="pattern-explain-meta">
+            <span class="pattern-type-badge ${p.type}">${p.type === 'bullish' ? '🟢 Bullish' : '🔴 Bearish'}</span>
+            <span class="pattern-candle-count">${p.candles}-candle pattern</span>
+          </div>
+          <div class="pattern-explain-desc">${esc(p.description)}</div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
 function closeModal() {
   document.getElementById('chart-modal').hidden = true;
   document.body.style.overflow = '';
+  if (modalChart) { modalChart.remove(); modalChart = null; }
+  const container = document.getElementById('candlestick-chart');
+  if (container._ro) container._ro.disconnect();
   modalSignal = null;
 }
 function openTradingViewChart() {
