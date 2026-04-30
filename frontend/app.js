@@ -11,8 +11,8 @@
    ═══════════════════════════════════════════════════════════ */
 const CONFIG = {
   // Swap these with your actual GitHub username and repo name:
-  GITHUB_USER:    'YOUR_GITHUB_USERNAME',
-  GITHUB_REPO:    'YOUR_GITHUB_REPO',
+  GITHUB_USER:    'Shiva224096',
+  GITHUB_REPO:    'V4',
   // Local path used when opening index.html directly or via local HTTP server
   LOCAL_JSON:     './data/signals.json',      // served from project root
   LOCAL_JSON_ALT: '../data/signals.json',     // file:// fallback
