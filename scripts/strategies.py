@@ -16,12 +16,16 @@ import numpy as np
 
 def _last(series: pd.Series):
     """Return the last non-NaN value of a series."""
+    if series is None:
+        return None
     s = series.dropna()
     return s.iloc[-1] if len(s) else None
 
 
 def _prev(series: pd.Series):
     """Return the second-to-last non-NaN value."""
+    if series is None:
+        return None
     s = series.dropna()
     return s.iloc[-2] if len(s) >= 2 else None
 
