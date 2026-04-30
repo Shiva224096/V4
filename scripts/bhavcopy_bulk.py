@@ -53,29 +53,33 @@ def build_bhavcopy_history(days=200) -> dict[str, pd.DataFrame]:
     for f in files:
         path = os.path.join(DATA_DIR, f)
         try:
-            temp = pd.read_csv(path, usecols=lambda c: c in [
-                'TradDt', 'TckrSymb', 'SctySrs', 'OpnPric', 'HghPric', 'LwPric', 'ClsPric', 'TtlTradgVol', # New format
-                'TIMESTAMP', 'SYMBOL', 'SERIES', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'TOTTRDQTY'               # Old format
-            ])
+            # Read all columns first to strip whitespace
+            temp = pd.read_csv(path)
+            temp.columns = temp.columns.str.strip()
+            
             # Normalize to standard columns
             col_map = {
-                'TradDt': 'date', 'TIMESTAMP': 'date',
+                'TradDt': 'date', 'TIMESTAMP': 'date', 'DATE1': 'date',
                 'TckrSymb': 'symbol', 'SYMBOL': 'symbol',
                 'SctySrs': 'series', 'SERIES': 'series',
-                'OpnPric': 'open', 'OPEN': 'open',
-                'HghPric': 'high', 'HIGH': 'high',
-                'LwPric': 'low', 'LOW': 'low',
-                'ClsPric': 'close', 'CLOSE': 'close',
-                'TtlTradgVol': 'volume', 'TOTTRDQTY': 'volume'
+                'OpnPric': 'open', 'OPEN': 'open', 'OPEN_PRICE': 'open',
+                'HghPric': 'high', 'HIGH': 'high', 'HIGH_PRICE': 'high',
+                'LwPric': 'low', 'LOW': 'low', 'LOW_PRICE': 'low',
+                'ClsPric': 'close', 'CLOSE': 'close', 'CLOSE_PRICE': 'close',
+                'TtlTradgVol': 'volume', 'TOTTRDQTY': 'volume', 'TTL_TRD_QNTY': 'volume'
             }
             temp.rename(columns=col_map, inplace=True)
             
             # Filter for Equity only
-            temp = temp[temp['series'] == 'EQ']
+            if 'series' in temp.columns:
+                temp = temp[temp['series'].astype(str).str.strip() == 'EQ']
             
             # Keep required columns
-            temp = temp[['date', 'symbol', 'open', 'high', 'low', 'close', 'volume']]
-            dfs.append(temp)
+            required_cols = ['date', 'symbol', 'open', 'high', 'low', 'close', 'volume']
+            missing = [c for c in required_cols if c not in temp.columns]
+            if not missing:
+                temp = temp[required_cols]
+                dfs.append(temp)
         except Exception as e:
             pass # Skip malformed files
 
