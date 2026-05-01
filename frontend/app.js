@@ -183,24 +183,33 @@ function openModal(signal) {
       <div class="modal-info-item"><span class="mil">R:R</span><span class="miv">${signal.rr?signal.rr+':1':'—'}</span></div>
     </div>`;
 
-  // Build candlestick chart
+  m.hidden = false;
+  document.body.style.overflow = 'hidden';
+
+  // Build candlestick chart (must be after modal is visible for clientWidth to work)
   renderCandlestickChart(signal);
 
   // Build pattern explanation
   renderPatternExplanation(signal);
-
-  m.hidden = false; document.body.style.overflow = 'hidden';
 }
 
 function renderCandlestickChart(signal) {
   const container = document.getElementById('candlestick-chart');
   container.innerHTML = '';
 
-  const ohlcv = signal.ohlcv;
+  let ohlcv = signal.ohlcv;
   if (!ohlcv || !ohlcv.length || typeof LightweightCharts === 'undefined') {
     container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:350px;color:var(--text-muted)">No chart data available. Run the engine locally to generate OHLCV data.</div>';
     return;
   }
+
+  // Deduplicate and sort by time for LightweightCharts
+  const uniqueTimes = new Set();
+  ohlcv = ohlcv.filter(c => {
+    if (uniqueTimes.has(c.time)) return false;
+    uniqueTimes.add(c.time);
+    return true;
+  }).sort((a, b) => a.time.localeCompare(b.time));
 
   // Destroy previous chart
   if (modalChart) { modalChart.remove(); modalChart = null; }
@@ -262,7 +271,7 @@ function renderCandlestickChart(signal) {
       }
     });
     // Sort markers by time
-    markers.sort((a, b) => a.time < b.time ? -1 : 1);
+    markers.sort((a, b) => a.time.localeCompare(b.time));
     candleSeries.setMarkers(markers);
   }
 

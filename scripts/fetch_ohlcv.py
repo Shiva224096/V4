@@ -230,6 +230,7 @@ def _standardise(df: pd.DataFrame) -> pd.DataFrame:
         df["date"] = pd.to_datetime(df["date"], errors="coerce")
 
     df.dropna(subset=["open", "high", "low", "close"], inplace=True)
+    df.drop_duplicates(subset=["date"], keep="last", inplace=True)
     df.sort_values("date", inplace=True)
     df.reset_index(drop=True, inplace=True)
     return df[[c for c in required if c in df.columns]]
