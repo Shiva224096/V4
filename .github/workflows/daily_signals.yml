@@ -1,6 +1,8 @@
 name: Send Daily Signals Email
 
 on:
+  schedule:
+    - cron: '10 5 * * *'       # 5:10 AM UTC = 10:40 AM IST (TEST — change to '30 3 * * 1-5' for production)
   push:
     paths:
       - 'data/signals.json'
