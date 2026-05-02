@@ -1,0 +1,40 @@
+name: Weekly Fundamentals Scan
+
+on:
+  schedule:
+    # Every Sunday at 4:30 AM UTC = 10:00 AM IST
+    - cron: '30 4 * * 0'
+  workflow_dispatch:  # Manual trigger button
+
+permissions:
+  contents: write
+
+jobs:
+  scan-fundamentals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install yfinance pandas pytz
+
+      - name: Run fundamental engine
+        run: |
+          python scripts/fundamental_engine.py --max 500
+
+      - name: Commit and push results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f data/fundamentals.json
+          git diff --cached --quiet || git commit -m "Update fundamentals data $(date +'%Y-%m-%d %H:%M')"
+          git push
