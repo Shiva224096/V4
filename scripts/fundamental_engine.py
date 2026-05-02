@@ -426,7 +426,7 @@ def run_engine(max_stocks=500):
             record = {
                 "symbol": symbol,
                 "name": data["company_name"],
-                "desc": (data["company_desc"][:200] + "...") if len(data.get("company_desc", "")) > 200 else data.get("company_desc", ""),
+                "desc": data.get("company_desc", ""),
                 "sector": data["sector"],
                 "industry": data["industry"],
                 "price": round(data["price"], 2),
