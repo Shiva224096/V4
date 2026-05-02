@@ -306,6 +306,92 @@ function fscoreClass(f) { return f >= 7 ? 'high' : f >= 4 ? 'mid' : 'low'; }
 function zscoreClass(z) { return z > 2.99 ? 'safe' : z > 1.8 ? 'grey' : 'distress'; }
 function esc(s) { return s == null ? '' : String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+// ═══ GITHUB ACTIONS TRIGGER ═══
+const GH_API = 'https://api.github.com';
+const GH_WORKFLOW_FUND = 'weekly_fundamentals.yml';
+const GH_WORKFLOW_SIGNALS = 'daily_signals.yml';
+
+function setupGithubToken() {
+  const existing = localStorage.getItem('gh_pat');
+  const msg = existing
+    ? 'GitHub token is already saved. Enter a new one to replace, or press Cancel to keep it.'
+    : 'To trigger scans from the dashboard, you need a GitHub Personal Access Token.\n\n' +
+      'Steps:\n1. Go to github.com → Settings → Developer Settings → Personal Access Tokens → Fine-grained\n' +
+      '2. Create token with "Actions" permission (Read & Write) for repo Shiva224096/V4\n3. Paste it below:';
+  const token = prompt(msg, '');
+  if (token && token.trim()) {
+    localStorage.setItem('gh_pat', token.trim());
+    updateScanStatus('Token saved! You can now trigger scans.', 'success');
+    updateTokenButton();
+  }
+}
+
+function updateTokenButton() {
+  const btn = document.getElementById('btn-setup-token');
+  const hasToken = !!localStorage.getItem('gh_pat');
+  if (btn) {
+    btn.textContent = hasToken ? '✓ Token Set' : 'Setup Token';
+    if (hasToken) btn.classList.add('token-set');
+    else btn.classList.remove('token-set');
+  }
+}
+
+async function triggerFundScan() {
+  const token = localStorage.getItem('gh_pat');
+  if (!token) {
+    setupGithubToken();
+    return;
+  }
+
+  const btn = document.getElementById('btn-run-scan');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-sm"></span> Triggering...';
+  updateScanStatus('Sending request to GitHub...', 'pending');
+
+  try {
+    const resp = await fetch(
+      `${GH_API}/repos/${FUND_CONFIG.GITHUB_USER}/${FUND_CONFIG.GITHUB_REPO}/actions/workflows/${GH_WORKFLOW_FUND}/dispatches`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+        body: JSON.stringify({ ref: 'main' }),
+      }
+    );
+
+    if (resp.status === 204) {
+      updateScanStatus('Scan triggered! It will run on GitHub (~15-20 min). Refresh the page later to see updated data.', 'success');
+      btn.innerHTML = '✓ Triggered';
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Run Scan Now';
+      }, 30000);
+    } else if (resp.status === 401 || resp.status === 403) {
+      updateScanStatus('Token is invalid or expired. Click "Setup Token" to update.', 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Run Scan Now';
+    } else {
+      const errData = await resp.json().catch(() => ({}));
+      throw new Error(errData.message || `HTTP ${resp.status}`);
+    }
+  } catch (err) {
+    updateScanStatus(`Failed: ${err.message}`, 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Run Scan Now';
+  }
+}
+
+function updateScanStatus(msg, type) {
+  const el = document.getElementById('scan-status');
+  if (!el) return;
+  const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'pending' ? '⏳' : '⏸';
+  el.textContent = `${icon} ${msg}`;
+  el.className = `scan-status scan-${type || 'idle'}`;
+}
+
 // ═══ EVENT BINDINGS ═══
 document.addEventListener('DOMContentLoaded', () => {
   ['f-sector','f-badge','f-search','f-pe-max'].forEach(id => {
@@ -316,4 +402,5 @@ document.addEventListener('DOMContentLoaded', () => {
   r?.addEventListener('input', () => { d.textContent = r.value; applyFundFilters(); });
   document.getElementById('fund-modal')?.addEventListener('click', e => { if (e.target.id === 'fund-modal') closeFundModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFundModal(); });
+  updateTokenButton();
 });
