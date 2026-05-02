@@ -55,6 +55,8 @@ def fetch_fundamentals(symbol):
 
     # --- Basic Info ---
     price = info.get("currentPrice") or info.get("regularMarketPrice", 0)
+    company_name = info.get("shortName") or info.get("longName") or symbol
+    about = info.get("longBusinessSummary", "")
     pe = info.get("trailingPE")
     forward_pe = info.get("forwardPE")
     pb = info.get("priceToBook")
@@ -116,6 +118,8 @@ def fetch_fundamentals(symbol):
 
     return {
         "symbol": symbol,
+        "company_name": company_name,
+        "about": about[:500] if about else "",  # Truncate to save JSON size
         "price": price,
         "pe": pe,
         "forward_pe": forward_pe,
@@ -421,6 +425,8 @@ def run_engine(max_stocks=500):
             # Format for frontend
             record = {
                 "symbol": symbol,
+                "company_name": data.get("company_name", symbol),
+                "about": data.get("about", ""),
                 "sector": data["sector"],
                 "industry": data["industry"],
                 "price": round(data["price"], 2),

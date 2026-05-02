@@ -166,7 +166,7 @@ function renderFundTable() {
     const bc = badgeClass(s.badge);
     const sc = s.composite_score || 0;
     return `<tr class="table-row ${bc}" onclick='openFundModal(${JSON.stringify(s).replace(/'/g,"&#39;")})'>
-      <td class="col-symbol">${esc(s.symbol)}</td>
+      <td class="col-symbol"><div class="symbol-cell"><span class="symbol-name">${esc(s.symbol)}</span><span class="company-name">${esc(s.company_name || '')}</span></div></td>
       <td><span class="strategy-pill" style="font-size:10px">${esc(s.sector||'')}</span></td>
       <td class="num">${rup(s.price)}</td>
       <td class="num">${fmt(s.pe)}</td>
@@ -217,7 +217,7 @@ function fGoPage(p) { fPage = p; renderFundTable(); }
 // ═══ MODAL ═══
 function openFundModal(stock) {
   fundModalStock = stock;
-  document.getElementById('fm-title').textContent = stock.symbol;
+  document.getElementById('fm-title').textContent = `${stock.symbol} — ${stock.company_name || stock.symbol}`;
   document.getElementById('fm-subtitle').textContent = `${stock.sector} · ${stock.industry} · Score ${stock.composite_score}`;
 
   const rup = n => n != null ? `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}` : '—';
@@ -243,7 +243,7 @@ function openFundModal(stock) {
       <div class="modal-info-item"><span class="mil">EBITDA</span><span class="miv">${rup(stock.ebitda_cr)} Cr</span></div>
       <div class="modal-info-item"><span class="mil">Total Debt</span><span class="miv col-sl">${rup(stock.debt_cr)} Cr</span></div>
       <div class="modal-info-item"><span class="mil">Cash</span><span class="miv col-target">${rup(stock.cash_cr)} Cr</span></div>
-    </div>`;
+    </div>${stock.about ? `<div class="fund-about"><div class="fund-about-title">About the Company</div><p class="fund-about-text">${esc(stock.about)}</p></div>` : ''}`;
 
   const sc = stock.composite_score;
   const rc = sc >= 75 ? '#22c55e' : sc >= 60 ? '#3b82f6' : sc >= 40 ? '#eab308' : '#ef4444';
@@ -390,6 +390,43 @@ function updateScanStatus(msg, type) {
   const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'pending' ? '⏳' : '⏸';
   el.textContent = `${icon} ${msg}`;
   el.className = `scan-status scan-${type || 'idle'}`;
+}
+
+async function triggerTechScan() {
+  const token = localStorage.getItem('gh_pat');
+  if (!token) { setupGithubToken(); return; }
+
+  const btn = document.getElementById('btn-run-tech');
+  btn.disabled = true;
+  const origHTML = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner-sm"></span> Triggering...';
+
+  try {
+    const resp = await fetch(
+      `${GH_API}/repos/${FUND_CONFIG.GITHUB_USER}/${FUND_CONFIG.GITHUB_REPO}/actions/workflows/${GH_WORKFLOW_SIGNALS}/dispatches`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+        body: JSON.stringify({ ref: 'main' }),
+      }
+    );
+    if (resp.status === 204) {
+      btn.innerHTML = '✓ Triggered';
+      setTimeout(() => { btn.disabled = false; btn.innerHTML = origHTML; }, 15000);
+    } else if (resp.status === 401 || resp.status === 403) {
+      alert('Token invalid or expired. Click "Setup Token" on the Fundamentals tab.');
+      btn.disabled = false; btn.innerHTML = origHTML;
+    } else {
+      throw new Error(`HTTP ${resp.status}`);
+    }
+  } catch (err) {
+    alert(`Failed: ${err.message}`);
+    btn.disabled = false; btn.innerHTML = origHTML;
+  }
 }
 
 // ═══ EVENT BINDINGS ═══

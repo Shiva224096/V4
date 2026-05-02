@@ -857,3 +857,30 @@ input.filter-select { background-image: none; padding-right: 12px; }
   border-top-color: #fff; border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
+
+/* Symbol cell with company name */
+.symbol-cell { display: flex; flex-direction: column; gap: 1px; }
+.symbol-name { font-weight: 700; color: var(--text-primary); font-size: 13px; }
+.company-name {
+  font-size: 10px; color: var(--text-muted); font-weight: 400;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;
+}
+
+/* About section in modal */
+.fund-about {
+  padding: 16px 28px; border-top: 1px solid var(--border);
+}
+.fund-about-title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--text-muted); margin-bottom: 8px; font-weight: 700;
+}
+.fund-about-text {
+  font-size: 13px; color: var(--text-secondary); line-height: 1.6;
+  margin: 0;
+}
+
+/* Header scan button */
+.btn-scan-header {
+  padding: 6px 12px !important; font-size: 11px !important;
+  box-shadow: none !important;
+}
