@@ -661,3 +661,151 @@ input.filter-select { background-image: none; padding-right: 12px; }
   .modal-pattern-explain { padding: 16px; }
 }
 
+/* ══════════════════════════════════════════════
+   TAB NAVIGATION
+   ══════════════════════════════════════════════ */
+.tab-nav {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+  position: sticky; top: 56px; z-index: 99;
+}
+.tab-bar {
+  display: flex; gap: 2px;
+  padding: 8px 0 0;
+}
+.tab-btn {
+  display: flex; align-items: center; gap: 8px;
+  background: transparent; border: none; border-bottom: 3px solid transparent;
+  padding: 12px 24px; color: var(--text-muted); font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all var(--transition); font-family: var(--font-sans);
+  border-radius: 8px 8px 0 0;
+}
+.tab-btn:hover { color: var(--text-primary); background: rgba(59,130,246,0.05); }
+.tab-btn.active {
+  color: var(--accent-blue); border-bottom-color: var(--accent-blue);
+  background: rgba(59,130,246,0.08);
+}
+.tab-btn svg { flex-shrink: 0; }
+
+/* ══════════════════════════════════════════════
+   FUNDAMENTALS TAB STYLES
+   ══════════════════════════════════════════════ */
+
+/* Preset Chips */
+.preset-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.preset-chip {
+  background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.25);
+  border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 600;
+  color: var(--accent-purple); cursor: pointer; transition: all var(--transition);
+  font-family: var(--font-sans); white-space: nowrap;
+}
+.preset-chip:hover { background: rgba(139,92,246,0.18); transform: translateY(-1px); }
+
+/* F-Score pills */
+.fscore-pill, .zscore-pill {
+  display: inline-block; border-radius: 4px; padding: 2px 8px;
+  font-family: var(--font-mono); font-weight: 800; font-size: 11px;
+}
+.fscore-pill.fscore-high { background: var(--strong-bg); color: var(--accent-green); border: 1px solid var(--strong-border); }
+.fscore-pill.fscore-mid { background: var(--moderate-bg); color: var(--accent-yellow); border: 1px solid var(--moderate-border); }
+.fscore-pill.fscore-low { background: var(--weak-bg); color: var(--accent-red); border: 1px solid var(--weak-border); }
+
+.zscore-pill.zscore-safe { background: var(--strong-bg); color: var(--accent-green); border: 1px solid var(--strong-border); }
+.zscore-pill.zscore-grey { background: var(--moderate-bg); color: var(--accent-yellow); border: 1px solid var(--moderate-border); }
+.zscore-pill.zscore-distress { background: var(--weak-bg); color: var(--accent-red); border: 1px solid var(--weak-border); }
+
+/* Badge Buy color */
+.badge-buy { border-color: rgba(59,130,246,0.25); }
+.badge-label.badge-buy { color: var(--accent-blue); }
+.score-pill.badge-buy { background: rgba(59,130,246,0.1); color: var(--accent-blue); border: 1px solid rgba(59,130,246,0.3); }
+
+/* Fund Updated line */
+.f-updated {
+  font-size: 12px; color: var(--text-muted); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* Fund Scores Grid (modal) */
+.fund-scores-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px 28px;
+}
+@media(max-width:700px) { .fund-scores-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.fund-score-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 16px; text-align: center;
+}
+.fund-score-title {
+  font-size: 10px; color: var(--text-muted); text-transform: uppercase;
+  letter-spacing: 0.8px; margin-bottom: 8px;
+}
+.fund-score-big {
+  font-size: 32px; font-weight: 900; font-family: var(--font-mono);
+}
+.fund-score-val {
+  font-size: 22px; font-weight: 800; font-family: var(--font-mono);
+  color: var(--text-primary); margin-bottom: 4px;
+}
+.fund-score-val.fscore-high { color: var(--accent-green); }
+.fund-score-val.fscore-mid { color: var(--accent-yellow); }
+.fund-score-val.fscore-low { color: var(--accent-red); }
+.fund-score-val.zscore-safe { color: var(--accent-green); }
+.fund-score-val.zscore-grey { color: var(--accent-yellow); }
+.fund-score-val.zscore-distress { color: var(--accent-red); }
+.fund-score-badge {
+  font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.fund-score-desc {
+  font-size: 12px; color: var(--text-secondary);
+}
+
+/* Score Range Slider */
+.score-range-wrap { display: flex; align-items: center; gap: 8px; }
+.score-range {
+  -webkit-appearance: none; width: 100px; height: 4px; border-radius: 4px;
+  background: var(--border); outline: none;
+}
+.score-range::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--accent-blue); cursor: pointer;
+}
+.score-range-val {
+  font-family: var(--font-mono); font-weight: 700; font-size: 13px;
+  color: var(--accent-blue); min-width: 24px; text-align: center;
+}
+
+/* Filter actions row */
+.filter-actions {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin-top: 10px;
+}
+.btn-ghost {
+  background: transparent; border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 6px 14px; color: var(--text-muted); font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all var(--transition); font-family: var(--font-sans);
+}
+.btn-ghost:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+.results-count {
+  margin-left: auto; font-size: 12px; color: var(--text-muted); font-weight: 600;
+}
+
+/* Score pill in table */
+.score-pill {
+  display: inline-block; padding: 2px 10px; border-radius: 4px;
+  font-family: var(--font-mono); font-weight: 800; font-size: 12px;
+}
+.score-pill.badge-strong { background: var(--strong-bg); color: var(--accent-green); border: 1px solid var(--strong-border); }
+.score-pill.badge-buy { background: rgba(59,130,246,0.1); color: var(--accent-blue); border: 1px solid rgba(59,130,246,0.3); }
+.score-pill.badge-moderate { background: var(--moderate-bg); color: var(--accent-yellow); border: 1px solid var(--moderate-border); }
+.score-pill.badge-weak { background: var(--weak-bg); color: var(--accent-red); border: 1px solid var(--weak-border); }
+
+/* Badge label */
+.badge-label {
+  display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px;
+  border-radius: 4px; white-space: nowrap;
+}
+.badge-label.badge-strong { color: var(--accent-green); background: var(--strong-bg); }
+.badge-label.badge-buy { color: var(--accent-blue); background: rgba(59,130,246,0.1); }
+.badge-label.badge-moderate { color: var(--accent-yellow); background: var(--moderate-bg); }
+.badge-label.badge-weak { color: var(--accent-red); background: var(--weak-bg); }

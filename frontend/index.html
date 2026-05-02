@@ -54,6 +54,25 @@
     </div>
   </header>
 
+  <!-- ─── Tab Navigation ─── -->
+  <nav class="tab-nav" role="tablist" aria-label="Dashboard sections">
+    <div class="container">
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tab-technical" role="tab" aria-selected="true" onclick="switchTab('technical')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Technical Signals
+        </button>
+        <button class="tab-btn" id="tab-fundamentals" role="tab" aria-selected="false" onclick="switchTab('fundamentals')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Fundamentals
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ TECHNICAL TAB ═══ -->
+  <div id="technical-panel">
+
   <!-- ─── Stats Bar ─── -->
   <section class="stats-bar" aria-label="Summary statistics">
     <div class="container">
@@ -271,6 +290,140 @@
     </div>
   </div>
 
+  </div><!-- /technical-panel -->
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- ─── FUNDAMENTALS TAB (hidden by default) ── -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="fundamentals-panel" hidden>
+
+    <!-- Stats -->
+    <section class="stats-bar" aria-label="Fundamental stats">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-card" id="fstat-total"><div class="stat-value" id="fstat-total-val">—</div><div class="stat-label">Stocks Screened</div></div>
+          <div class="stat-card stat-strong" id="fstat-strong"><div class="stat-value" id="fstat-strong-val">—</div><div class="stat-label">Strong Buy</div></div>
+          <div class="stat-card" id="fstat-buy"><div class="stat-value" id="fstat-buy-val">—</div><div class="stat-label">Buy</div></div>
+          <div class="stat-card stat-moderate" id="fstat-hold"><div class="stat-value" id="fstat-hold-val">—</div><div class="stat-label">Hold</div></div>
+          <div class="stat-card stat-weak" id="fstat-avoid"><div class="stat-value" id="fstat-avoid-val">—</div><div class="stat-label">Avoid</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters-section">
+      <div class="container">
+        <div class="filters-bar">
+          <div class="filter-group">
+            <label class="filter-label" for="f-sector">Sector</label>
+            <select class="filter-select" id="f-sector"><option value="">All Sectors</option></select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="f-badge">Rating</label>
+            <select class="filter-select" id="f-badge">
+              <option value="">All</option>
+              <option value="Strong Buy">Strong Buy</option>
+              <option value="Buy">Buy</option>
+              <option value="Hold">Hold</option>
+              <option value="Avoid">Avoid</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="f-min-score">Min Score</label>
+            <div class="score-range-wrap">
+              <input type="range" class="score-range" id="f-min-score" min="0" max="100" value="0" />
+              <span class="score-range-val" id="f-score-display">0</span>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="f-pe-max">Max PE</label>
+            <input type="number" class="filter-select" id="f-pe-max" placeholder="e.g. 25" style="width:90px;padding-right:8px;" />
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="f-search">Search</label>
+            <input type="text" class="filter-select" id="f-search" placeholder="e.g. RELIANCE" />
+          </div>
+        </div>
+        <div class="filter-actions">
+          <button class="btn-ghost" onclick="clearFundFilters()">Clear Filters</button>
+
+          <!-- Presets -->
+          <div class="preset-chips" id="preset-chips">
+            <button class="preset-chip" onclick="applyPreset('value')">Value Picks</button>
+            <button class="preset-chip" onclick="applyPreset('quality')">Quality Blue Chips</button>
+            <button class="preset-chip" onclick="applyPreset('safe')">Safe &amp; Sound</button>
+            <button class="preset-chip" onclick="applyPreset('undervalued')">Undervalued (Graham)</button>
+          </div>
+
+          <span class="results-count" id="f-results-count">—</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Table -->
+    <main class="main-content">
+      <div class="container">
+        <div class="loading-state" id="f-loading" aria-busy="true">
+          <div class="spinner"></div>
+          <p class="loading-text">Loading fundamental data...</p>
+        </div>
+        <div class="error-state" id="f-error" hidden>
+          <div class="error-icon">⚠️</div>
+          <h2 class="error-title">Could not load fundamentals</h2>
+          <p class="error-msg" id="f-error-msg">Run the fundamental engine locally first.</p>
+        </div>
+        <div class="table-container" id="f-table-container" hidden>
+          <div class="f-updated" id="f-updated"></div>
+          <div class="table-scroll">
+            <table class="signals-table" id="f-table">
+              <thead>
+                <tr>
+                  <th class="sortable" onclick="fSort('symbol')">Symbol <span class="sort-icon">⇅</span></th>
+                  <th class="sortable" onclick="fSort('sector')">Sector <span class="sort-icon">⇅</span></th>
+                  <th class="sortable num" onclick="fSort('price')">CMP <span class="sort-icon">⇅</span></th>
+                  <th class="sortable num" onclick="fSort('pe')">PE <span class="sort-icon">⇅</span></th>
+                  <th class="sortable num" onclick="fSort('pb')">PB <span class="sort-icon">⇅</span></th>
+                  <th class="sortable num" onclick="fSort('roe')">ROE% <span class="sort-icon">⇅</span></th>
+                  <th class="sortable num" onclick="fSort('de_ratio')">D/E <span class="sort-icon">⇅</span></th>
+                  <th class="sortable num" onclick="fSort('profit_margin')">NPM% <span class="sort-icon">⇅</span></th>
+                  <th class="sortable num" onclick="fSort('rev_growth')">Rev G% <span class="sort-icon">⇅</span></th>
+                  <th class="sortable num" onclick="fSort('fscore')">F-Score <span class="sort-icon">⇅</span></th>
+                  <th class="sortable num" onclick="fSort('zscore')">Z-Score <span class="sort-icon">⇅</span></th>
+                  <th class="sortable num" onclick="fSort('margin_of_safety')">MoS% <span class="sort-icon">⇅</span></th>
+                  <th class="sortable num" onclick="fSort('composite_score')">Score <span class="sort-icon">⇅</span></th>
+                  <th>Rating</th>
+                </tr>
+              </thead>
+              <tbody id="f-tbody"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="f-pagination"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ─── Fundamental Detail Modal ─── -->
+  <div class="modal-overlay" id="fund-modal" hidden>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h2 class="modal-title" id="fm-title">STOCK</h2>
+          <span class="modal-subtitle" id="fm-subtitle">Sector · Score</span>
+        </div>
+        <button class="modal-close" onclick="closeFundModal()">&times;</button>
+      </div>
+      <div class="modal-signal-info" id="fm-info"></div>
+      <div class="modal-signal-info" id="fm-scores"></div>
+      <div class="modal-actions">
+        <button class="btn-chart" onclick="openFundTV()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          View on TradingView
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ─── Footer ─── -->
   <footer class="footer" role="contentinfo">
     <div class="container">
@@ -282,5 +435,6 @@
   </footer>
 
   <script src="app.js"></script>
+  <script src="fundamentals.js"></script>
 </body>
 </html>
