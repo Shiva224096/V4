@@ -166,7 +166,7 @@ function renderFundTable() {
     const bc = badgeClass(s.badge);
     const sc = s.composite_score || 0;
     return `<tr class="table-row ${bc}" onclick='openFundModal(${JSON.stringify(s).replace(/'/g,"&#39;")})'>
-      <td class="col-symbol"><div class="symbol-cell"><span class="symbol-name">${esc(s.symbol)}</span><span class="company-name">${esc(s.company_name || '')}</span></div></td>
+      <td class="col-symbol"><div>${esc(s.symbol)}</div><div class="company-name">${esc(s.name||'')}</div></td>
       <td><span class="strategy-pill" style="font-size:10px">${esc(s.sector||'')}</span></td>
       <td class="num">${rup(s.price)}</td>
       <td class="num">${fmt(s.pe)}</td>
@@ -217,8 +217,9 @@ function fGoPage(p) { fPage = p; renderFundTable(); }
 // ═══ MODAL ═══
 function openFundModal(stock) {
   fundModalStock = stock;
-  document.getElementById('fm-title').textContent = `${stock.symbol} — ${stock.company_name || stock.symbol}`;
-  document.getElementById('fm-subtitle').textContent = `${stock.sector} · ${stock.industry} · Score ${stock.composite_score}`;
+  document.getElementById('fm-title').textContent = `${stock.symbol} — ${stock.name || ''}`;
+  document.getElementById('fm-subtitle').innerHTML = `${esc(stock.sector)} · ${esc(stock.industry)} · Score ${stock.composite_score}` +
+    (stock.desc ? `<div class="company-about">${esc(stock.desc)}</div>` : '');
 
   const rup = n => n != null ? `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}` : '—';
   const fmt = (n, s) => n != null ? `${n}${s || ''}` : '—';
@@ -243,7 +244,7 @@ function openFundModal(stock) {
       <div class="modal-info-item"><span class="mil">EBITDA</span><span class="miv">${rup(stock.ebitda_cr)} Cr</span></div>
       <div class="modal-info-item"><span class="mil">Total Debt</span><span class="miv col-sl">${rup(stock.debt_cr)} Cr</span></div>
       <div class="modal-info-item"><span class="mil">Cash</span><span class="miv col-target">${rup(stock.cash_cr)} Cr</span></div>
-    </div>${stock.about ? `<div class="fund-about"><div class="fund-about-title">About the Company</div><p class="fund-about-text">${esc(stock.about)}</p></div>` : ''}`;
+    </div>`;
 
   const sc = stock.composite_score;
   const rc = sc >= 75 ? '#22c55e' : sc >= 60 ? '#3b82f6' : sc >= 40 ? '#eab308' : '#ef4444';
@@ -316,7 +317,7 @@ function setupGithubToken() {
   const msg = existing
     ? 'GitHub token is already saved. Enter a new one to replace, or press Cancel to keep it.'
     : 'To trigger scans from the dashboard, you need a GitHub Personal Access Token.\n\n' +
-      'Steps:\n1. Go to github.com → Settings → Developer Settings → Personal Access Tokens → Fine-grained\n' +
+      'Steps:\n1. Go to github.com/settings/tokens?type=beta\n' +
       '2. Create token with "Actions" permission (Read & Write) for repo Shiva224096/V4\n3. Paste it below:';
   const token = prompt(msg, '');
   if (token && token.trim()) {
@@ -327,30 +328,33 @@ function setupGithubToken() {
 }
 
 function updateTokenButton() {
-  const btn = document.getElementById('btn-setup-token');
-  const hasToken = !!localStorage.getItem('gh_pat');
-  if (btn) {
-    btn.textContent = hasToken ? '✓ Token Set' : 'Setup Token';
-    if (hasToken) btn.classList.add('token-set');
-    else btn.classList.remove('token-set');
-  }
+  ['btn-setup-token', 'btn-setup-token-tech'].forEach(id => {
+    const btn = document.getElementById(id);
+    const hasToken = !!localStorage.getItem('gh_pat');
+    if (btn) {
+      btn.textContent = hasToken ? '✓ Token Set' : 'Setup Token';
+      if (hasToken) btn.classList.add('token-set');
+      else btn.classList.remove('token-set');
+    }
+  });
 }
 
-async function triggerFundScan() {
-  const token = localStorage.getItem('gh_pat');
-  if (!token) {
-    setupGithubToken();
-    return;
-  }
+async function triggerFundScan() { triggerWorkflow(GH_WORKFLOW_FUND, 'btn-run-scan', 'scan-status'); }
+async function triggerTechScan() { triggerWorkflow(GH_WORKFLOW_SIGNALS, 'btn-run-tech-scan', 'tech-scan-status'); }
 
-  const btn = document.getElementById('btn-run-scan');
+async function triggerWorkflow(workflow, btnId, statusId) {
+  const token = localStorage.getItem('gh_pat');
+  if (!token) { setupGithubToken(); return; }
+
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner-sm"></span> Triggering...';
-  updateScanStatus('Sending request to GitHub...', 'pending');
+  updateScanStatusEl(statusId, 'Sending request to GitHub...', 'pending');
 
   try {
     const resp = await fetch(
-      `${GH_API}/repos/${FUND_CONFIG.GITHUB_USER}/${FUND_CONFIG.GITHUB_REPO}/actions/workflows/${GH_WORKFLOW_FUND}/dispatches`,
+      `${GH_API}/repos/${FUND_CONFIG.GITHUB_USER}/${FUND_CONFIG.GITHUB_REPO}/actions/workflows/${workflow}/dispatches`,
       {
         method: 'POST',
         headers: {
@@ -363,71 +367,76 @@ async function triggerFundScan() {
     );
 
     if (resp.status === 204) {
-      updateScanStatus('Scan triggered! It will run on GitHub (~15-20 min). Refresh the page later to see updated data.', 'success');
+      updateScanStatusEl(statusId, 'Scan triggered! Waiting for GitHub to start...', 'success');
       btn.innerHTML = '✓ Triggered';
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Run Scan Now';
-      }, 30000);
+      // Start polling for status
+      pollWorkflowStatus(workflow, btnId, statusId);
     } else if (resp.status === 401 || resp.status === 403) {
-      updateScanStatus('Token is invalid or expired. Click "Setup Token" to update.', 'error');
-      btn.disabled = false;
-      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Run Scan Now';
+      updateScanStatusEl(statusId, 'Token is invalid or expired. Click "Setup Token" to update.', 'error');
+      resetBtn(btn);
     } else {
       const errData = await resp.json().catch(() => ({}));
       throw new Error(errData.message || `HTTP ${resp.status}`);
     }
   } catch (err) {
-    updateScanStatus(`Failed: ${err.message}`, 'error');
-    btn.disabled = false;
-    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Run Scan Now';
+    updateScanStatusEl(statusId, `Failed: ${err.message}`, 'error');
+    resetBtn(btn);
   }
 }
 
-function updateScanStatus(msg, type) {
-  const el = document.getElementById('scan-status');
+async function pollWorkflowStatus(workflow, btnId, statusId) {
+  const token = localStorage.getItem('gh_pat');
+  if (!token) return;
+  const btn = document.getElementById(btnId);
+  let attempts = 0;
+  const maxAttempts = 60; // Poll for up to 30 minutes (every 30s)
+
+  const poll = async () => {
+    attempts++;
+    try {
+      const resp = await fetch(
+        `${GH_API}/repos/${FUND_CONFIG.GITHUB_USER}/${FUND_CONFIG.GITHUB_REPO}/actions/workflows/${workflow}/runs?per_page=1`,
+        { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' } }
+      );
+      const data = await resp.json();
+      const run = data.workflow_runs?.[0];
+      if (!run) { updateScanStatusEl(statusId, 'Waiting for workflow to start...', 'pending'); }
+      else if (run.status === 'completed') {
+        const ok = run.conclusion === 'success';
+        updateScanStatusEl(statusId, ok ? 'Scan completed! Refresh to see new data.' : `Scan finished with: ${run.conclusion}`, ok ? 'success' : 'error');
+        if (btn) { btn.innerHTML = ok ? '✅ Done — Refresh Page' : '❌ Failed'; btn.disabled = false; btn.onclick = ok ? () => location.reload() : null; }
+        return; // Stop polling
+      } else {
+        const elapsed = Math.round((Date.now() - new Date(run.created_at).getTime()) / 1000);
+        const mins = Math.floor(elapsed / 60);
+        const secs = elapsed % 60;
+        updateScanStatusEl(statusId, `Running on GitHub... (${mins}m ${secs}s elapsed)`, 'pending');
+        if (btn) btn.innerHTML = `<span class="spinner-sm"></span> Running (${mins}m)`;
+      }
+    } catch (e) {
+      updateScanStatusEl(statusId, 'Could not check status. Refresh later.', 'error');
+    }
+    if (attempts < maxAttempts) setTimeout(poll, 30000);
+    else { updateScanStatusEl(statusId, 'Timed out waiting. Check GitHub Actions directly.', 'error'); resetBtn(btn); }
+  };
+
+  setTimeout(poll, 15000); // First check after 15s
+}
+
+function resetBtn(btn) {
+  if (!btn) return;
+  btn.disabled = false;
+  btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Run Scan Now';
+}
+
+function updateScanStatusEl(id, msg, type) {
+  const el = document.getElementById(id);
   if (!el) return;
   const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'pending' ? '⏳' : '⏸';
   el.textContent = `${icon} ${msg}`;
   el.className = `scan-status scan-${type || 'idle'}`;
 }
-
-async function triggerTechScan() {
-  const token = localStorage.getItem('gh_pat');
-  if (!token) { setupGithubToken(); return; }
-
-  const btn = document.getElementById('btn-run-tech');
-  btn.disabled = true;
-  const origHTML = btn.innerHTML;
-  btn.innerHTML = '<span class="spinner-sm"></span> Triggering...';
-
-  try {
-    const resp = await fetch(
-      `${GH_API}/repos/${FUND_CONFIG.GITHUB_USER}/${FUND_CONFIG.GITHUB_REPO}/actions/workflows/${GH_WORKFLOW_SIGNALS}/dispatches`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/vnd.github+json',
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-        body: JSON.stringify({ ref: 'main' }),
-      }
-    );
-    if (resp.status === 204) {
-      btn.innerHTML = '✓ Triggered';
-      setTimeout(() => { btn.disabled = false; btn.innerHTML = origHTML; }, 15000);
-    } else if (resp.status === 401 || resp.status === 403) {
-      alert('Token invalid or expired. Click "Setup Token" on the Fundamentals tab.');
-      btn.disabled = false; btn.innerHTML = origHTML;
-    } else {
-      throw new Error(`HTTP ${resp.status}`);
-    }
-  } catch (err) {
-    alert(`Failed: ${err.message}`);
-    btn.disabled = false; btn.innerHTML = origHTML;
-  }
-}
+function updateScanStatus(msg, type) { updateScanStatusEl('scan-status', msg, type); }
 
 // ═══ EVENT BINDINGS ═══
 document.addEventListener('DOMContentLoaded', () => {
