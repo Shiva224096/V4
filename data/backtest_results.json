@@ -1,0 +1,232 @@
+{
+  "generated_at": "2026-05-03 21:38 IST",
+  "strategies": {
+    "VWAP Reclaim": {
+      "wins": 54,
+      "losses": 91,
+      "total": 145,
+      "win_rate": 37.2,
+      "avg_gain": 6.49,
+      "avg_loss": -3.39,
+      "weight": -10
+    },
+    "Stochastic Oversold": {
+      "wins": 22,
+      "losses": 71,
+      "total": 93,
+      "win_rate": 23.7,
+      "avg_gain": 5.75,
+      "avg_loss": -2.88,
+      "weight": -10
+    },
+    "ADX Trend Strength": {
+      "wins": 13,
+      "losses": 13,
+      "total": 26,
+      "win_rate": 50.0,
+      "avg_gain": 5.07,
+      "avg_loss": -4.39,
+      "weight": 5
+    },
+    "EMA Crossover": {
+      "wins": 19,
+      "losses": 37,
+      "total": 56,
+      "win_rate": 33.9,
+      "avg_gain": 7.05,
+      "avg_loss": -3.73,
+      "weight": -10
+    },
+    "Double Bottom": {
+      "wins": 32,
+      "losses": 22,
+      "total": 54,
+      "win_rate": 59.3,
+      "avg_gain": 3.78,
+      "avg_loss": -3.18,
+      "weight": 5
+    },
+    "Supertrend Breakout": {
+      "wins": 10,
+      "losses": 12,
+      "total": 22,
+      "win_rate": 45.5,
+      "avg_gain": 7.79,
+      "avg_loss": -4.91,
+      "weight": 0
+    },
+    "Volume Breakout": {
+      "wins": 14,
+      "losses": 11,
+      "total": 25,
+      "win_rate": 56.0,
+      "avg_gain": 8.2,
+      "avg_loss": -4.58,
+      "weight": 5
+    },
+    "Inside Bar Breakout": {
+      "wins": 32,
+      "losses": 109,
+      "total": 141,
+      "win_rate": 22.7,
+      "avg_gain": 5.92,
+      "avg_loss": -2.45,
+      "weight": -10
+    },
+    "EMA Pullback": {
+      "wins": 64,
+      "losses": 167,
+      "total": 231,
+      "win_rate": 27.7,
+      "avg_gain": 3.86,
+      "avg_loss": -2.25,
+      "weight": -10
+    },
+    "Breakout Retest": {
+      "wins": 16,
+      "losses": 27,
+      "total": 43,
+      "win_rate": 37.2,
+      "avg_gain": 6.24,
+      "avg_loss": -5.04,
+      "weight": -10
+    },
+    "RSI Reversal": {
+      "wins": 9,
+      "losses": 28,
+      "total": 37,
+      "win_rate": 24.3,
+      "avg_gain": 8.09,
+      "avg_loss": -3.43,
+      "weight": -10
+    },
+    "MACD Crossover": {
+      "wins": 43,
+      "losses": 33,
+      "total": 76,
+      "win_rate": 56.6,
+      "avg_gain": 7.78,
+      "avg_loss": -4.12,
+      "weight": 5
+    },
+    "MA Ribbon Expansion": {
+      "wins": 12,
+      "losses": 25,
+      "total": 37,
+      "win_rate": 32.4,
+      "avg_gain": 4.05,
+      "avg_loss": -3.34,
+      "weight": -10
+    },
+    "Bollinger Squeeze": {
+      "wins": 4,
+      "losses": 3,
+      "total": 7,
+      "win_rate": 57.1,
+      "avg_gain": 6.66,
+      "avg_loss": -4.16,
+      "weight": 0
+    },
+    "52-Week High Break": {
+      "wins": 7,
+      "losses": 4,
+      "total": 11,
+      "win_rate": 63.6,
+      "avg_gain": 8.58,
+      "avg_loss": -6.67,
+      "weight": 15
+    }
+  },
+  "patterns": {
+    "bullish_harami": {
+      "wins": 43,
+      "losses": 14,
+      "total": 57,
+      "win_rate": 75.4
+    },
+    "inverted_hammer": {
+      "wins": 31,
+      "losses": 7,
+      "total": 38,
+      "win_rate": 81.6
+    },
+    "shooting_star": {
+      "wins": 10,
+      "losses": 4,
+      "total": 14,
+      "win_rate": 71.4
+    },
+    "morning_star": {
+      "wins": 32,
+      "losses": 11,
+      "total": 43,
+      "win_rate": 74.4
+    },
+    "evening_star": {
+      "wins": 36,
+      "losses": 11,
+      "total": 47,
+      "win_rate": 76.6
+    },
+    "bullish_engulfing": {
+      "wins": 30,
+      "losses": 6,
+      "total": 36,
+      "win_rate": 83.3
+    },
+    "bearish_engulfing": {
+      "wins": 60,
+      "losses": 12,
+      "total": 72,
+      "win_rate": 83.3
+    },
+    "hammer": {
+      "wins": 28,
+      "losses": 10,
+      "total": 38,
+      "win_rate": 73.7
+    },
+    "bullish_marubozu": {
+      "wins": 8,
+      "losses": 3,
+      "total": 11,
+      "win_rate": 72.7
+    },
+    "dragonfly_doji": {
+      "wins": 5,
+      "losses": 4,
+      "total": 9,
+      "win_rate": 55.6
+    },
+    "dark_cloud": {
+      "wins": 5,
+      "losses": 0,
+      "total": 5,
+      "win_rate": 100.0
+    },
+    "hanging_man": {
+      "wins": 17,
+      "losses": 5,
+      "total": 22,
+      "win_rate": 77.3
+    },
+    "three_black": {
+      "wins": 8,
+      "losses": 1,
+      "total": 9,
+      "win_rate": 88.9
+    },
+    "tweezer_bottom": {
+      "wins": 23,
+      "losses": 14,
+      "total": 37,
+      "win_rate": 62.2
+    },
+    "piercing_line": {
+      "wins": 1,
+      "losses": 1,
+      "total": 2,
+      "win_rate": 50.0
+    }
+  }
+}
