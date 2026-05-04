@@ -366,11 +366,11 @@ def run_backtest(history_dict: dict, sample_size: int = 50, step: int = 3):
     pattern_results  = aggregate_pattern_results(all_pattern_trades)
 
     # Print summary
-    print("\n[Backtester] ═══ Strategy Performance ═══")
+    print("\n[Backtester] === Strategy Performance ===")
     for strat, info in sorted(strategy_results.items(), key=lambda x: x[1]["win_rate"], reverse=True):
         print(f"  {strat:25s}  WR: {info['win_rate']:5.1f}%  |  W:{info['wins']:3d}  L:{info['losses']:3d}  |  AvgG: {info['avg_gain']:+.2f}%  AvgL: {info['avg_loss']:+.2f}%  |  Wt: {info['weight']:+d}")
 
-    print("\n[Backtester] ═══ Pattern Performance ═══")
+    print("\n[Backtester] === Pattern Performance ===")
     for pat, info in sorted(pattern_results.items(), key=lambda x: x[1]["win_rate"], reverse=True):
         print(f"  {pat:25s}  WR: {info['win_rate']:5.1f}%  |  W:{info['wins']:3d}  L:{info['losses']:3d}")
 
