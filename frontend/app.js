@@ -264,7 +264,16 @@ function updateMarketStatus() {
 }
 
 // ═══ HELPERS ═══
-function setLoading(s){document.getElementById('loading-state').hidden=!s;document.getElementById('cards-grid').hidden=s;document.getElementById('table-container').hidden=s||currentView!=='table';}
+function setLoading(s) {
+  document.getElementById('loading-state').hidden = !s;
+  if (s) {
+    document.getElementById('cards-grid').hidden = true;
+    document.getElementById('table-container').hidden = true;
+  } else {
+    document.getElementById('cards-grid').hidden = currentView !== 'cards';
+    document.getElementById('table-container').hidden = currentView !== 'table';
+  }
+}
 function showError(msg){document.getElementById('error-state').hidden=false;document.getElementById('error-msg').textContent=msg;document.getElementById('loading-state').hidden=true;}
 function hideError(){document.getElementById('error-state').hidden=true;}
 function updateLastUpdated(ts){if(ts)document.getElementById('updated-text').textContent=`Updated: ${ts.trim()}`;}

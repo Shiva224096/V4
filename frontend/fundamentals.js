@@ -16,20 +16,25 @@ function switchTab(tab) {
   activeTab = tab;
   const techPanel = document.getElementById('technical-panel');
   const fundPanel = document.getElementById('fundamentals-panel');
+  const btPanel = document.getElementById('backtesting-panel');
   const tabTech = document.getElementById('tab-technical');
   const tabFund = document.getElementById('tab-fundamentals');
+  const tabBt = document.getElementById('tab-backtesting');
+
+  [techPanel, fundPanel, btPanel].forEach(p => { if(p) p.hidden = true; });
+  [tabTech, tabFund, tabBt].forEach(t => { if(t) { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); } });
 
   if (tab === 'technical') {
     if (techPanel) techPanel.hidden = false;
-    if (fundPanel) fundPanel.hidden = true;
-    tabTech.classList.add('active'); tabTech.setAttribute('aria-selected','true');
-    tabFund.classList.remove('active'); tabFund.setAttribute('aria-selected','false');
-  } else {
-    if (techPanel) techPanel.hidden = true;
+    if (tabTech) { tabTech.classList.add('active'); tabTech.setAttribute('aria-selected', 'true'); }
+  } else if (tab === 'fundamentals') {
     if (fundPanel) fundPanel.hidden = false;
-    tabFund.classList.add('active'); tabFund.setAttribute('aria-selected','true');
-    tabTech.classList.remove('active'); tabTech.setAttribute('aria-selected','false');
+    if (tabFund) { tabFund.classList.add('active'); tabFund.setAttribute('aria-selected', 'true'); }
     if (!fundLoaded) fetchFundamentals();
+  } else if (tab === 'backtesting') {
+    if (btPanel) btPanel.hidden = false;
+    if (tabBt) { tabBt.classList.add('active'); tabBt.setAttribute('aria-selected', 'true'); }
+    if (typeof fetchBacktesting === 'function') fetchBacktesting();
   }
 }
 
