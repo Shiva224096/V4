@@ -101,6 +101,7 @@ def backtest_symbol(df: pd.DataFrame, symbol: str,
     trades = []
     # Walk from bar 'lookback_start' to len(df) - MAX_HOLD_DAYS
     scan_end = len(df) - MAX_HOLD_DAYS - 1
+    current_price = float(df["close"].iloc[-1]) if len(df) > 0 else 0.0
 
     for bar_idx in range(lookback_start, scan_end, step):
         # Slice df up to current bar (simulate "we only know data up to here")
@@ -137,6 +138,7 @@ def backtest_symbol(df: pd.DataFrame, symbol: str,
                     "outcome":   result["outcome"],
                     "pnl_pct":   result["pnl_pct"],
                     "bars_held": result["bars_held"],
+                    "current_price": current_price,
                 })
             except Exception:
                 continue
@@ -287,12 +289,13 @@ def aggregate_pattern_results(pattern_trades: list[dict]) -> dict:
 # Save / Load backtest results
 # ---------------------------------------------------------------------------
 
-def save_backtest_results(strategy_results: dict, pattern_results: dict):
+def save_backtest_results(strategy_results: dict, pattern_results: dict, recent_trades: list):
     path = os.path.join(DATA_DIR, "backtest_results.json")
     payload = {
         "generated_at": datetime.now(pytz.timezone("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M IST"),
         "strategies": strategy_results,
         "patterns":   pattern_results,
+        "recent_trades": recent_trades,
     }
     with open(path, "w") as f:
         json.dump(payload, f, indent=2)
@@ -371,7 +374,14 @@ def run_backtest(history_dict: dict, sample_size: int = 50, step: int = 3):
     for pat, info in sorted(pattern_results.items(), key=lambda x: x[1]["win_rate"], reverse=True):
         print(f"  {pat:25s}  WR: {info['win_rate']:5.1f}%  |  W:{info['wins']:3d}  L:{info['losses']:3d}")
 
-    save_backtest_results(strategy_results, pattern_results)
+    # Extract top 200 most recent trades
+    try:
+        recent_trades = sorted(all_trades, key=lambda x: str(x.get("date", "")), reverse=True)[:200]
+    except Exception:
+        recent_trades = all_trades[-200:]
+        recent_trades.reverse()
+
+    save_backtest_results(strategy_results, pattern_results, recent_trades)
     return strategy_results, pattern_results
 
 

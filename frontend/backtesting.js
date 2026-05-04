@@ -31,6 +31,7 @@ async function fetchBacktesting() {
     renderBtStats(data.strategies || {});
     renderBtTable(data.strategies || {});
     renderBtPatternTable(data.patterns || {});
+    renderBtRecentTrades(data.recent_trades || []);
 
     document.getElementById('bt-loading').hidden = true;
     document.getElementById('bt-table-container').hidden = false;
@@ -97,6 +98,35 @@ function renderBtPatternTable(patterns) {
       <td class="num">${p.total}</td>
       <td class="num col-target">${p.wins}</td>
       <td class="num col-sl">${p.losses}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderBtRecentTrades(trades) {
+  const tbody = document.getElementById('bt-trades-tbody');
+  if (!tbody) return;
+  if (trades.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted)">No recent trades found.</td></tr>';
+    return;
+  }
+  
+  const rup = n => n != null ? `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}` : '—';
+  
+  tbody.innerHTML = trades.map(t => {
+    let outcomeClass = '';
+    let outcomeIcon = '';
+    if (t.outcome === 'win') { outcomeClass = 'col-target'; outcomeIcon = '✅ Win'; }
+    else if (t.outcome === 'loss') { outcomeClass = 'col-sl'; outcomeIcon = '❌ Loss'; }
+    else { outcomeClass = ''; outcomeIcon = '⏳ Pending'; }
+
+    return `<tr class="table-row">
+      <td>${escBt(t.date || '—')}</td>
+      <td><strong>${escBt(t.symbol)}</strong></td>
+      <td><span class="strategy-pill" style="font-size:10px">${escBt(t.strategy)}</span></td>
+      <td class="num">${rup(t.entry)}</td>
+      <td class="num col-target">${rup(t.target)}</td>
+      <td class="num">${rup(t.current_price)}</td>
+      <td class="num ${outcomeClass}">${outcomeIcon} (${t.pnl_pct > 0 ? '+' : ''}${t.pnl_pct}%)</td>
     </tr>`;
   }).join('');
 }
