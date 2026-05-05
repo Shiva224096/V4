@@ -25,6 +25,16 @@ def build_bhavcopy_history(days=200) -> dict[str, pd.DataFrame]:
     """
     os.makedirs(DATA_DIR, exist_ok=True)
     
+    # Cleanup corrupted/404 bhavcopies (files < 10KB)
+    try:
+        for f in os.listdir(DATA_DIR):
+            if f.endswith('.csv'):
+                path = os.path.join(DATA_DIR, f)
+                if os.path.getsize(path) < 10000:
+                    os.remove(path)
+    except Exception as e:
+        print(f"[Bhavcopy Bulk] Cleanup error: {e}")
+        
     # 1. Generate past dates
     dts = []
     curr = date.today()
