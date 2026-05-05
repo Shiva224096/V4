@@ -34,7 +34,7 @@ function switchTab(tab) {
   } else if (tab === 'backtesting') {
     if (btPanel) btPanel.hidden = false;
     if (tabBt) { tabBt.classList.add('active'); tabBt.setAttribute('aria-selected', 'true'); }
-    if (typeof fetchBacktesting === 'function') fetchBacktesting();
+    if (typeof fetchBacktesting === 'function' && typeof btLoaded !== 'undefined' && !btLoaded) fetchBacktesting();
   }
 }
 
@@ -45,7 +45,7 @@ async function fetchFundamentals() {
   document.getElementById('f-error').hidden = true;
   try {
     let data;
-    const sources = [FUND_URL + `?t=${Date.now()}`, FUND_CONFIG.LOCAL_JSON, FUND_CONFIG.LOCAL_ALT];
+    const sources = [`${FUND_CONFIG.LOCAL_JSON}?t=${Date.now()}`, `${FUND_CONFIG.LOCAL_ALT}?t=${Date.now()}`, FUND_URL + `?t=${Date.now()}`];
     for (const src of sources) {
       try { const r = await fetch(src); if (!r.ok) throw 0; data = await r.json(); break; } catch(_){}
     }

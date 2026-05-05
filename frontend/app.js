@@ -19,7 +19,7 @@ async function fetchSignals() {
   setLoading(true); setRefreshSpinning(true);
   try {
     let data;
-    const sources = [SIGNALS_URL+`?t=${Date.now()}`, CONFIG.LOCAL_JSON, CONFIG.LOCAL_JSON_ALT];
+    const sources = [`${CONFIG.LOCAL_JSON}?t=${Date.now()}`, `${CONFIG.LOCAL_JSON_ALT}?t=${Date.now()}`, SIGNALS_URL+`?t=${Date.now()}`];
     for (const src of sources) {
       try { const r = await fetch(src); if(!r.ok) throw 0; data = await r.json(); break; } catch(_){}
     }
@@ -281,6 +281,14 @@ function setRefreshSpinning(on){const i=document.getElementById('refresh-icon');
 function startAutoRefresh(){clearInterval(refreshTimer);refreshTimer=setInterval(fetchSignals,CONFIG.REFRESH_MS);}
 function formatDate(str){try{return new Date(str).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}catch(_){return str;}}
 function esc(s){return s==null?'':String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function refreshActiveTab() {
+  const isFund = document.getElementById('fundamentals-panel') && !document.getElementById('fundamentals-panel').hidden;
+  const isBt = document.getElementById('backtesting-panel') && !document.getElementById('backtesting-panel').hidden;
+  if (isFund && typeof fetchFundamentals === 'function') fetchFundamentals();
+  else if (isBt && typeof fetchBacktesting === 'function') fetchBacktesting();
+  else fetchSignals();
+}
 
 // ═══ EVENTS ═══
 function bindFilters() {

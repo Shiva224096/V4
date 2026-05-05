@@ -10,14 +10,13 @@ const BT_URL = `https://raw.githubusercontent.com/${BT_CONFIG.GITHUB_USER}/${BT_
 let btLoaded = false;
 
 async function fetchBacktesting() {
-  if (btLoaded) return;
   document.getElementById('bt-loading').hidden = false;
   document.getElementById('bt-table-container').hidden = true;
   document.getElementById('bt-error').hidden = true;
 
   try {
     let data;
-    const sources = [BT_URL + `?t=${Date.now()}`, BT_CONFIG.LOCAL_JSON, BT_CONFIG.LOCAL_ALT];
+    const sources = [`${BT_CONFIG.LOCAL_JSON}?t=${Date.now()}`, `${BT_CONFIG.LOCAL_ALT}?t=${Date.now()}`, BT_URL + `?t=${Date.now()}`];
     for (const src of sources) {
       try { const r = await fetch(src); if (!r.ok) throw 0; data = await r.json(); break; } catch(_){}
     }
