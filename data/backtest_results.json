@@ -1,22 +1,22 @@
 {
-  "generated_at": "2026-07-26 22:00 IST",
+  "generated_at": "2026-08-02 21:59 IST",
   "strategies": {
     "VWAP Reclaim": {
-      "wins": 63,
-      "losses": 118,
-      "total": 181,
-      "win_rate": 34.8,
-      "avg_gain": 6.41,
-      "avg_loss": -3.37,
+      "wins": 61,
+      "losses": 124,
+      "total": 185,
+      "win_rate": 33.0,
+      "avg_gain": 6.15,
+      "avg_loss": -3.34,
       "weight": -10
     },
     "Stochastic Oversold": {
-      "wins": 33,
-      "losses": 72,
-      "total": 105,
-      "win_rate": 31.4,
-      "avg_gain": 5.06,
-      "avg_loss": -2.93,
+      "wins": 36,
+      "losses": 74,
+      "total": 110,
+      "win_rate": 32.7,
+      "avg_gain": 4.96,
+      "avg_loss": -2.86,
       "weight": -10
     },
     "ADX Trend Strength": {
@@ -29,66 +29,66 @@
       "weight": -10
     },
     "EMA Crossover": {
-      "wins": 28,
-      "losses": 49,
-      "total": 77,
-      "win_rate": 36.4,
-      "avg_gain": 6.52,
-      "avg_loss": -3.46,
+      "wins": 27,
+      "losses": 48,
+      "total": 75,
+      "win_rate": 36.0,
+      "avg_gain": 5.87,
+      "avg_loss": -3.5,
       "weight": -10
     },
     "Double Bottom": {
       "wins": 39,
-      "losses": 25,
-      "total": 64,
-      "win_rate": 60.9,
+      "losses": 26,
+      "total": 65,
+      "win_rate": 60.0,
       "avg_gain": 4.27,
-      "avg_loss": -3.28,
+      "avg_loss": -3.27,
       "weight": 15
     },
     "Supertrend Breakout": {
       "wins": 13,
-      "losses": 16,
-      "total": 29,
-      "win_rate": 44.8,
-      "avg_gain": 10.16,
-      "avg_loss": -4.71,
+      "losses": 15,
+      "total": 28,
+      "win_rate": 46.4,
+      "avg_gain": 8.56,
+      "avg_loss": -4.78,
       "weight": 0
     },
     "Volume Breakout": {
-      "wins": 19,
+      "wins": 20,
       "losses": 23,
-      "total": 42,
-      "win_rate": 45.2,
-      "avg_gain": 7.86,
-      "avg_loss": -4.74,
+      "total": 43,
+      "win_rate": 46.5,
+      "avg_gain": 8.02,
+      "avg_loss": -4.58,
       "weight": 0
     },
     "Inside Bar Breakout": {
-      "wins": 70,
-      "losses": 164,
-      "total": 234,
-      "win_rate": 29.9,
-      "avg_gain": 5.86,
-      "avg_loss": -2.5,
+      "wins": 69,
+      "losses": 167,
+      "total": 236,
+      "win_rate": 29.2,
+      "avg_gain": 5.84,
+      "avg_loss": -2.57,
       "weight": -10
     },
     "EMA Pullback": {
-      "wins": 103,
-      "losses": 219,
-      "total": 322,
-      "win_rate": 32.0,
-      "avg_gain": 4.39,
-      "avg_loss": -2.3,
+      "wins": 105,
+      "losses": 228,
+      "total": 333,
+      "win_rate": 31.5,
+      "avg_gain": 4.46,
+      "avg_loss": -2.25,
       "weight": -10
     },
     "Breakout Retest": {
       "wins": 37,
-      "losses": 39,
-      "total": 76,
-      "win_rate": 48.7,
-      "avg_gain": 6.48,
-      "avg_loss": -4.55,
+      "losses": 40,
+      "total": 77,
+      "win_rate": 48.1,
+      "avg_gain": 5.91,
+      "avg_loss": -4.52,
       "weight": 0
     },
     "RSI Reversal": {
@@ -101,12 +101,12 @@
       "weight": -10
     },
     "MACD Crossover": {
-      "wins": 41,
-      "losses": 42,
-      "total": 83,
-      "win_rate": 49.4,
-      "avg_gain": 7.73,
-      "avg_loss": -4.12,
+      "wins": 40,
+      "losses": 44,
+      "total": 84,
+      "win_rate": 47.6,
+      "avg_gain": 7.49,
+      "avg_loss": -4.24,
       "weight": 0
     },
     "MA Ribbon Expansion": {
@@ -115,7 +115,7 @@
       "total": 71,
       "win_rate": 40.8,
       "avg_gain": 5.03,
-      "avg_loss": -3.47,
+      "avg_loss": -3.45,
       "weight": 0
     },
     "Golden Cross": {
@@ -138,50 +138,50 @@
     },
     "52-Week High Break": {
       "wins": 9,
-      "losses": 9,
-      "total": 18,
-      "win_rate": 50.0,
+      "losses": 10,
+      "total": 19,
+      "win_rate": 47.4,
       "avg_gain": 7.32,
-      "avg_loss": -4.54,
-      "weight": 5
+      "avg_loss": -4.11,
+      "weight": 0
     }
   },
   "patterns": {
     "bullish_harami": {
-      "wins": 46,
-      "losses": 14,
-      "total": 60,
-      "win_rate": 76.7
+      "wins": 48,
+      "losses": 15,
+      "total": 63,
+      "win_rate": 76.2
     },
     "inverted_hammer": {
-      "wins": 49,
+      "wins": 50,
       "losses": 7,
-      "total": 56,
-      "win_rate": 87.5
+      "total": 57,
+      "win_rate": 87.7
     },
     "shooting_star": {
-      "wins": 13,
+      "wins": 14,
       "losses": 4,
-      "total": 17,
-      "win_rate": 76.5
+      "total": 18,
+      "win_rate": 77.8
     },
     "morning_star": {
       "wins": 41,
-      "losses": 14,
-      "total": 55,
-      "win_rate": 74.5
+      "losses": 13,
+      "total": 54,
+      "win_rate": 75.9
     },
     "evening_star": {
-      "wins": 45,
-      "losses": 13,
+      "wins": 44,
+      "losses": 14,
       "total": 58,
-      "win_rate": 77.6
+      "win_rate": 75.9
     },
     "bullish_engulfing": {
-      "wins": 48,
+      "wins": 45,
       "losses": 8,
-      "total": 56,
-      "win_rate": 85.7
+      "total": 53,
+      "win_rate": 84.9
     },
     "bearish_engulfing": {
       "wins": 89,
@@ -190,16 +190,16 @@
       "win_rate": 82.4
     },
     "hammer": {
-      "wins": 36,
+      "wins": 37,
       "losses": 13,
-      "total": 49,
-      "win_rate": 73.5
+      "total": 50,
+      "win_rate": 74.0
     },
     "bullish_marubozu": {
-      "wins": 10,
+      "wins": 11,
       "losses": 4,
-      "total": 14,
-      "win_rate": 71.4
+      "total": 15,
+      "win_rate": 73.3
     },
     "dragonfly_doji": {
       "wins": 9,
@@ -214,16 +214,16 @@
       "win_rate": 100.0
     },
     "tweezer_bottom": {
-      "wins": 27,
+      "wins": 29,
       "losses": 11,
-      "total": 38,
-      "win_rate": 71.1
+      "total": 40,
+      "win_rate": 72.5
     },
     "hanging_man": {
-      "wins": 24,
+      "wins": 25,
       "losses": 4,
-      "total": 28,
-      "win_rate": 85.7
+      "total": 29,
+      "win_rate": 86.2
     },
     "three_black": {
       "wins": 10,
@@ -246,6 +246,669 @@
   },
   "recent_trades": [
     {
+      "symbol": "A2ZINFRA",
+      "strategy": "MACD Crossover",
+      "bar_idx": 134,
+      "date": "2026-07-14 00:00:00",
+      "entry": 14.01,
+      "target": 16.11,
+      "stop_loss": 12.96,
+      "outcome": "loss",
+      "pnl_pct": -7.49,
+      "bars_held": 3,
+      "current_price": 13.26
+    },
+    {
+      "symbol": "A2ZINFRA",
+      "strategy": "VWAP Reclaim",
+      "bar_idx": 134,
+      "date": "2026-07-14 00:00:00",
+      "entry": 14.01,
+      "target": 16.11,
+      "stop_loss": 12.96,
+      "outcome": "loss",
+      "pnl_pct": -7.49,
+      "bars_held": 3,
+      "current_price": 13.26
+    },
+    {
+      "symbol": "AAKASH",
+      "strategy": "EMA Crossover",
+      "bar_idx": 137,
+      "date": "2026-07-14 00:00:00",
+      "entry": 9.18,
+      "target": 10.24,
+      "stop_loss": 8.65,
+      "outcome": "loss",
+      "pnl_pct": -2.61,
+      "bars_held": 10,
+      "current_price": 8.86
+    },
+    {
+      "symbol": "AAKASH",
+      "strategy": "MA Ribbon Expansion",
+      "bar_idx": 137,
+      "date": "2026-07-14 00:00:00",
+      "entry": 9.18,
+      "target": 10.24,
+      "stop_loss": 8.65,
+      "outcome": "loss",
+      "pnl_pct": -2.61,
+      "bars_held": 10,
+      "current_price": 8.86
+    },
+    {
+      "symbol": "ABSLMSCIN",
+      "strategy": "EMA Pullback",
+      "bar_idx": 98,
+      "date": "2026-07-13 00:00:00",
+      "entry": 29.59,
+      "target": 30.45,
+      "stop_loss": 29.16,
+      "outcome": "loss",
+      "pnl_pct": -1.45,
+      "bars_held": 8,
+      "current_price": 29.59
+    },
+    {
+      "symbol": "ABSLMSCIN",
+      "strategy": "Stochastic Oversold",
+      "bar_idx": 98,
+      "date": "2026-07-13 00:00:00",
+      "entry": 29.59,
+      "target": 30.75,
+      "stop_loss": 29.01,
+      "outcome": "loss",
+      "pnl_pct": -1.96,
+      "bars_held": 9,
+      "current_price": 29.59
+    },
+    {
+      "symbol": "20MICRONS",
+      "strategy": "EMA Pullback",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 198.34,
+      "target": 215.02,
+      "stop_loss": 190.0,
+      "outcome": "win",
+      "pnl_pct": 8.41,
+      "bars_held": 9,
+      "current_price": 201.16
+    },
+    {
+      "symbol": "360ONE",
+      "strategy": "EMA Pullback",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 1129.0,
+      "target": 1224.6,
+      "stop_loss": 1081.2,
+      "outcome": "loss",
+      "pnl_pct": -4.23,
+      "bars_held": 4,
+      "current_price": 1161.3
+    },
+    {
+      "symbol": "360ONE",
+      "strategy": "VWAP Reclaim",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 1129.0,
+      "target": 1224.6,
+      "stop_loss": 1081.2,
+      "outcome": "loss",
+      "pnl_pct": -4.23,
+      "bars_held": 4,
+      "current_price": 1161.3
+    },
+    {
+      "symbol": "3IINFOLTD",
+      "strategy": "Volume Breakout",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 18.77,
+      "target": 20.83,
+      "stop_loss": 17.74,
+      "outcome": "win",
+      "pnl_pct": 10.97,
+      "bars_held": 9,
+      "current_price": 22.11
+    },
+    {
+      "symbol": "3IINFOLTD",
+      "strategy": "Inside Bar Breakout",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 18.77,
+      "target": 20.11,
+      "stop_loss": 18.1,
+      "outcome": "loss",
+      "pnl_pct": -3.57,
+      "bars_held": 2,
+      "current_price": 22.11
+    },
+    {
+      "symbol": "63MOONS",
+      "strategy": "EMA Pullback",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 678.6,
+      "target": 730.8,
+      "stop_loss": 652.5,
+      "outcome": "win",
+      "pnl_pct": 7.69,
+      "bars_held": 1,
+      "current_price": 778.45
+    },
+    {
+      "symbol": "AARON",
+      "strategy": "Stochastic Oversold",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 118.93,
+      "target": 126.79,
+      "stop_loss": 115.0,
+      "outcome": "loss",
+      "pnl_pct": -3.3,
+      "bars_held": 1,
+      "current_price": 134.78
+    },
+    {
+      "symbol": "AARTIIND",
+      "strategy": "Inside Bar Breakout",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 484.1,
+      "target": 521.2,
+      "stop_loss": 465.55,
+      "outcome": "loss",
+      "pnl_pct": -1.3,
+      "bars_held": 10,
+      "current_price": 485.5
+    },
+    {
+      "symbol": "AARTIIND",
+      "strategy": "EMA Pullback",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 484.1,
+      "target": 528.2,
+      "stop_loss": 462.05,
+      "outcome": "loss",
+      "pnl_pct": -1.3,
+      "bars_held": 10,
+      "current_price": 485.5
+    },
+    {
+      "symbol": "AARTIIND",
+      "strategy": "VWAP Reclaim",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 484.1,
+      "target": 528.2,
+      "stop_loss": 462.05,
+      "outcome": "loss",
+      "pnl_pct": -1.3,
+      "bars_held": 10,
+      "current_price": 485.5
+    },
+    {
+      "symbol": "AARTISURF",
+      "strategy": "EMA Crossover",
+      "bar_idx": 215,
+      "date": "2026-07-10 00:00:00",
+      "entry": 387.05,
+      "target": 437.95,
+      "stop_loss": 361.6,
+      "outcome": "loss",
+      "pnl_pct": -1.41,
+      "bars_held": 10,
+      "current_price": 390.5
+    },
+    {
+      "symbol": "AARTISURF",
+      "strategy": "EMA Pullback",
+      "bar_idx": 215,
+      "date": "2026-07-10 00:00:00",
+      "entry": 387.05,
+      "target": 437.95,
+      "stop_loss": 361.6,
+      "outcome": "loss",
+      "pnl_pct": -1.41,
+      "bars_held": 10,
+      "current_price": 390.5
+    },
+    {
+      "symbol": "AARTISURF",
+      "strategy": "VWAP Reclaim",
+      "bar_idx": 215,
+      "date": "2026-07-10 00:00:00",
+      "entry": 387.05,
+      "target": 437.95,
+      "stop_loss": 361.6,
+      "outcome": "loss",
+      "pnl_pct": -1.41,
+      "bars_held": 10,
+      "current_price": 390.5
+    },
+    {
+      "symbol": "AARVI",
+      "strategy": "Volume Breakout",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 155.24,
+      "target": 189.72,
+      "stop_loss": 138.0,
+      "outcome": "loss",
+      "pnl_pct": -0.23,
+      "bars_held": 10,
+      "current_price": 152.31
+    },
+    {
+      "symbol": "AARVI",
+      "strategy": "52-Week High Break",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 155.24,
+      "target": 189.72,
+      "stop_loss": 138.0,
+      "outcome": "loss",
+      "pnl_pct": -0.23,
+      "bars_held": 10,
+      "current_price": 152.31
+    },
+    {
+      "symbol": "ABBOTINDIA",
+      "strategy": "Supertrend Breakout",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 27165.0,
+      "target": 29445.0,
+      "stop_loss": 26025.0,
+      "outcome": "win",
+      "pnl_pct": 3.09,
+      "bars_held": 10,
+      "current_price": 27745.0
+    },
+    {
+      "symbol": "ABBOTINDIA",
+      "strategy": "Breakout Retest",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 27165.0,
+      "target": 29245.0,
+      "stop_loss": 26125.0,
+      "outcome": "win",
+      "pnl_pct": 3.09,
+      "bars_held": 10,
+      "current_price": 27745.0
+    },
+    {
+      "symbol": "ABCAPITAL",
+      "strategy": "Inside Bar Breakout",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 408.3,
+      "target": 451.5,
+      "stop_loss": 386.7,
+      "outcome": "loss",
+      "pnl_pct": -5.29,
+      "bars_held": 10,
+      "current_price": 397.6
+    },
+    {
+      "symbol": "ABCAPITAL",
+      "strategy": "Breakout Retest",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 408.3,
+      "target": 456.9,
+      "stop_loss": 384.0,
+      "outcome": "loss",
+      "pnl_pct": -3.54,
+      "bars_held": 10,
+      "current_price": 397.6
+    },
+    {
+      "symbol": "ABFRL",
+      "strategy": "MACD Crossover",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 60.02,
+      "target": 64.48,
+      "stop_loss": 57.79,
+      "outcome": "loss",
+      "pnl_pct": -3.72,
+      "bars_held": 5,
+      "current_price": 58.06
+    },
+    {
+      "symbol": "ABLBL",
+      "strategy": "Inside Bar Breakout",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 95.55,
+      "target": 99.25,
+      "stop_loss": 93.7,
+      "outcome": "win",
+      "pnl_pct": 3.87,
+      "bars_held": 1,
+      "current_price": 95.43
+    },
+    {
+      "symbol": "ABLBL",
+      "strategy": "Stochastic Oversold",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 95.55,
+      "target": 100.23,
+      "stop_loss": 93.21,
+      "outcome": "loss",
+      "pnl_pct": -2.45,
+      "bars_held": 9,
+      "current_price": 95.43
+    },
+    {
+      "symbol": "ABREL",
+      "strategy": "Inside Bar Breakout",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 1447.0,
+      "target": 1619.2,
+      "stop_loss": 1360.9,
+      "outcome": "loss",
+      "pnl_pct": -5.95,
+      "bars_held": 10,
+      "current_price": 1405.6
+    },
+    {
+      "symbol": "ABSLAMC",
+      "strategy": "EMA Pullback",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 1146.6,
+      "target": 1209.4,
+      "stop_loss": 1115.2,
+      "outcome": "loss",
+      "pnl_pct": -2.74,
+      "bars_held": 6,
+      "current_price": 1017.5
+    },
+    {
+      "symbol": "ABSLBANETF",
+      "strategy": "EMA Pullback",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 59.39,
+      "target": 61.99,
+      "stop_loss": 58.09,
+      "outcome": "loss",
+      "pnl_pct": -2.19,
+      "bars_held": 9,
+      "current_price": 58.6
+    },
+    {
+      "symbol": "ABSLBANETF",
+      "strategy": "VWAP Reclaim",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 59.39,
+      "target": 61.99,
+      "stop_loss": 58.09,
+      "outcome": "loss",
+      "pnl_pct": -2.19,
+      "bars_held": 9,
+      "current_price": 58.6
+    },
+    {
+      "symbol": "ABSLLIQUID",
+      "strategy": "EMA Pullback",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 1000.0,
+      "target": 1000.02,
+      "stop_loss": 999.99,
+      "outcome": "loss",
+      "pnl_pct": -0.0,
+      "bars_held": 1,
+      "current_price": 999.99
+    },
+    {
+      "symbol": "ABSLLIQUID",
+      "strategy": "VWAP Reclaim",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 1000.0,
+      "target": 1000.02,
+      "stop_loss": 999.99,
+      "outcome": "loss",
+      "pnl_pct": -0.0,
+      "bars_held": 1,
+      "current_price": 999.99
+    },
+    {
+      "symbol": "ABSLLIQUID",
+      "strategy": "Stochastic Oversold",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 1000.0,
+      "target": 1000.02,
+      "stop_loss": 999.99,
+      "outcome": "loss",
+      "pnl_pct": -0.0,
+      "bars_held": 1,
+      "current_price": 999.99
+    },
+    {
+      "symbol": "ABSLNN50ET",
+      "strategy": "EMA Pullback",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 75.92,
+      "target": 80.56,
+      "stop_loss": 73.6,
+      "outcome": "loss",
+      "pnl_pct": -0.47,
+      "bars_held": 10,
+      "current_price": 76.2
+    },
+    {
+      "symbol": "ABSLNN50ET",
+      "strategy": "VWAP Reclaim",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 75.92,
+      "target": 80.56,
+      "stop_loss": 73.6,
+      "outcome": "loss",
+      "pnl_pct": -0.47,
+      "bars_held": 10,
+      "current_price": 76.2
+    },
+    {
+      "symbol": "ACC",
+      "strategy": "Inside Bar Breakout",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 1384.5,
+      "target": 1483.3,
+      "stop_loss": 1335.1,
+      "outcome": "loss",
+      "pnl_pct": -3.57,
+      "bars_held": 9,
+      "current_price": 1370.8
+    },
+    {
+      "symbol": "ACC",
+      "strategy": "EMA Pullback",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 1384.5,
+      "target": 1489.5,
+      "stop_loss": 1332.0,
+      "outcome": "loss",
+      "pnl_pct": -3.79,
+      "bars_held": 9,
+      "current_price": 1370.8
+    },
+    {
+      "symbol": "ACC",
+      "strategy": "Double Bottom",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 1384.5,
+      "target": 1461.8,
+      "stop_loss": 1297.0,
+      "outcome": "loss",
+      "pnl_pct": -3.15,
+      "bars_held": 10,
+      "current_price": 1370.8
+    },
+    {
+      "symbol": "ACCELYA",
+      "strategy": "MACD Crossover",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 1108.9,
+      "target": 1154.9,
+      "stop_loss": 1085.9,
+      "outcome": "win",
+      "pnl_pct": 4.15,
+      "bars_held": 6,
+      "current_price": 1164.8
+    },
+    {
+      "symbol": "ACCELYA",
+      "strategy": "Stochastic Oversold",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 1108.9,
+      "target": 1154.9,
+      "stop_loss": 1085.9,
+      "outcome": "win",
+      "pnl_pct": 4.15,
+      "bars_held": 6,
+      "current_price": 1164.8
+    },
+    {
+      "symbol": "ACE",
+      "strategy": "EMA Pullback",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 989.0,
+      "target": 1042.2,
+      "stop_loss": 962.4,
+      "outcome": "loss",
+      "pnl_pct": -2.69,
+      "bars_held": 2,
+      "current_price": 1051.3
+    },
+    {
+      "symbol": "ACE",
+      "strategy": "VWAP Reclaim",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 989.0,
+      "target": 1042.2,
+      "stop_loss": 962.4,
+      "outcome": "loss",
+      "pnl_pct": -2.69,
+      "bars_held": 2,
+      "current_price": 1051.3
+    },
+    {
+      "symbol": "ACI",
+      "strategy": "Inside Bar Breakout",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 527.45,
+      "target": 538.15,
+      "stop_loss": 522.1,
+      "outcome": "loss",
+      "pnl_pct": -1.01,
+      "bars_held": 1,
+      "current_price": 565.75
+    },
+    {
+      "symbol": "ACMESOLAR",
+      "strategy": "Inside Bar Breakout",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 377.0,
+      "target": 399.9,
+      "stop_loss": 365.55,
+      "outcome": "loss",
+      "pnl_pct": -3.04,
+      "bars_held": 1,
+      "current_price": 366.65
+    },
+    {
+      "symbol": "ADANIENSOL",
+      "strategy": "Breakout Retest",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 1654.0,
+      "target": 1741.8,
+      "stop_loss": 1610.1,
+      "outcome": "win",
+      "pnl_pct": 5.31,
+      "bars_held": 4,
+      "current_price": 1667.8
+    },
+    {
+      "symbol": "ADANIENT",
+      "strategy": "EMA Pullback",
+      "bar_idx": 245,
+      "date": "2026-07-10 00:00:00",
+      "entry": 3157.3,
+      "target": 3418.3,
+      "stop_loss": 3026.8,
+      "outcome": "loss",
+      "pnl_pct": -4.13,
+      "bars_held": 9,
+      "current_price": 3024.5
+    },
+    {
+      "symbol": "AAKASH",
+      "strategy": "Stochastic Oversold",
+      "bar_idx": 134,
+      "date": "2026-07-09 00:00:00",
+      "entry": 8.83,
+      "target": 9.37,
+      "stop_loss": 8.56,
+      "outcome": "win",
+      "pnl_pct": 6.12,
+      "bars_held": 2,
+      "current_price": 8.86
+    },
+    {
+      "symbol": "ABCOTS",
+      "strategy": "Stochastic Oversold",
+      "bar_idx": 203,
+      "date": "2026-07-09 00:00:00",
+      "entry": 207.44,
+      "target": 210.32,
+      "stop_loss": 206.0,
+      "outcome": "win",
+      "pnl_pct": 1.39,
+      "bars_held": 1,
+      "current_price": 200.65
+    },
+    {
+      "symbol": "ABSL10BANK",
+      "strategy": "EMA Pullback",
+      "bar_idx": 89,
+      "date": "2026-07-09 00:00:00",
+      "entry": 172.11,
+      "target": 182.07,
+      "stop_loss": 167.13,
+      "outcome": "loss",
+      "pnl_pct": -1.77,
+      "bars_held": 10,
+      "current_price": 170.14
+    },
+    {
       "symbol": "20MICRONS",
       "strategy": "Golden Cross",
       "bar_idx": 242,
@@ -256,7 +919,7 @@
       "outcome": "loss",
       "pnl_pct": -0.77,
       "bars_held": 1,
-      "current_price": 211.15
+      "current_price": 201.16
     },
     {
       "symbol": "20MICRONS",
@@ -269,7 +932,7 @@
       "outcome": "loss",
       "pnl_pct": -0.77,
       "bars_held": 1,
-      "current_price": 211.15
+      "current_price": 201.16
     },
     {
       "symbol": "3MINDIA",
@@ -282,7 +945,7 @@
       "outcome": "loss",
       "pnl_pct": -1.09,
       "bars_held": 1,
-      "current_price": 35725.0
+      "current_price": 35425.0
     },
     {
       "symbol": "63MOONS",
@@ -295,7 +958,7 @@
       "outcome": "win",
       "pnl_pct": 3.12,
       "bars_held": 10,
-      "current_price": 704.9
+      "current_price": 778.45
     },
     {
       "symbol": "63MOONS",
@@ -308,7 +971,7 @@
       "outcome": "win",
       "pnl_pct": 3.12,
       "bars_held": 10,
-      "current_price": 704.9
+      "current_price": 778.45
     },
     {
       "symbol": "AARTIDRUGS",
@@ -321,7 +984,7 @@
       "outcome": "win",
       "pnl_pct": 5.86,
       "bars_held": 5,
-      "current_price": 412.0
+      "current_price": 411.25
     },
     {
       "symbol": "AARTIDRUGS",
@@ -334,7 +997,7 @@
       "outcome": "win",
       "pnl_pct": 4.76,
       "bars_held": 5,
-      "current_price": 412.0
+      "current_price": 411.25
     },
     {
       "symbol": "AAVAS",
@@ -347,7 +1010,7 @@
       "outcome": "loss",
       "pnl_pct": -0.28,
       "bars_held": 1,
-      "current_price": 1444.0
+      "current_price": 1387.3
     },
     {
       "symbol": "ABBOTINDIA",
@@ -360,7 +1023,7 @@
       "outcome": "win",
       "pnl_pct": 7.76,
       "bars_held": 10,
-      "current_price": 28900.0
+      "current_price": 27745.0
     },
     {
       "symbol": "ADANIENSOL",
@@ -373,7 +1036,7 @@
       "outcome": "win",
       "pnl_pct": 5.49,
       "bars_held": 10,
-      "current_price": 1724.4
+      "current_price": 1667.8
     },
     {
       "symbol": "A2ZINFRA",
@@ -386,7 +1049,7 @@
       "outcome": "loss",
       "pnl_pct": -3.72,
       "bars_held": 5,
-      "current_price": 12.56
+      "current_price": 13.26
     },
     {
       "symbol": "ACL",
@@ -399,7 +1062,7 @@
       "outcome": "loss",
       "pnl_pct": -0.84,
       "bars_held": 1,
-      "current_price": 48.7
+      "current_price": 48.24
     },
     {
       "symbol": "ABSLMSCIN",
@@ -412,7 +1075,7 @@
       "outcome": "loss",
       "pnl_pct": -1.66,
       "bars_held": 3,
-      "current_price": 29.31
+      "current_price": 29.59
     },
     {
       "symbol": "20MICRONS",
@@ -425,7 +1088,7 @@
       "outcome": "loss",
       "pnl_pct": -2.31,
       "bars_held": 2,
-      "current_price": 211.15
+      "current_price": 201.16
     },
     {
       "symbol": "3IINFOLTD",
@@ -438,7 +1101,7 @@
       "outcome": "win",
       "pnl_pct": 4.71,
       "bars_held": 4,
-      "current_price": 19.97
+      "current_price": 22.11
     },
     {
       "symbol": "3IINFOLTD",
@@ -451,7 +1114,7 @@
       "outcome": "win",
       "pnl_pct": 3.22,
       "bars_held": 1,
-      "current_price": 19.97
+      "current_price": 22.11
     },
     {
       "symbol": "3IINFOLTD",
@@ -464,7 +1127,7 @@
       "outcome": "win",
       "pnl_pct": 4.71,
       "bars_held": 4,
-      "current_price": 19.97
+      "current_price": 22.11
     },
     {
       "symbol": "3IINFOLTD",
@@ -477,7 +1140,7 @@
       "outcome": "win",
       "pnl_pct": 4.71,
       "bars_held": 4,
-      "current_price": 19.97
+      "current_price": 22.11
     },
     {
       "symbol": "3IINFOLTD",
@@ -490,7 +1153,7 @@
       "outcome": "win",
       "pnl_pct": 4.71,
       "bars_held": 4,
-      "current_price": 19.97
+      "current_price": 22.11
     },
     {
       "symbol": "3PLAND",
@@ -503,7 +1166,7 @@
       "outcome": "loss",
       "pnl_pct": -2.05,
       "bars_held": 10,
-      "current_price": 31.85
+      "current_price": 32.28
     },
     {
       "symbol": "3PLAND",
@@ -516,7 +1179,7 @@
       "outcome": "loss",
       "pnl_pct": -2.05,
       "bars_held": 10,
-      "current_price": 31.85
+      "current_price": 32.28
     },
     {
       "symbol": "5PAISA",
@@ -529,7 +1192,7 @@
       "outcome": "loss",
       "pnl_pct": -0.06,
       "bars_held": 10,
-      "current_price": 369.95
+      "current_price": 348.4
     },
     {
       "symbol": "63MOONS",
@@ -542,7 +1205,7 @@
       "outcome": "loss",
       "pnl_pct": -1.55,
       "bars_held": 2,
-      "current_price": 704.9
+      "current_price": 778.45
     },
     {
       "symbol": "AARNAV",
@@ -555,7 +1218,7 @@
       "outcome": "loss",
       "pnl_pct": -2.79,
       "bars_held": 2,
-      "current_price": 28.91
+      "current_price": 29.15
     },
     {
       "symbol": "AARTIDRUGS",
@@ -568,7 +1231,7 @@
       "outcome": "win",
       "pnl_pct": 8.04,
       "bars_held": 9,
-      "current_price": 412.0
+      "current_price": 411.25
     },
     {
       "symbol": "AARTIDRUGS",
@@ -581,7 +1244,7 @@
       "outcome": "win",
       "pnl_pct": 8.04,
       "bars_held": 9,
-      "current_price": 412.0
+      "current_price": 411.25
     },
     {
       "symbol": "AARTIDRUGS",
@@ -594,7 +1257,7 @@
       "outcome": "win",
       "pnl_pct": 4.81,
       "bars_held": 5,
-      "current_price": 412.0
+      "current_price": 411.25
     },
     {
       "symbol": "AARTIDRUGS",
@@ -607,7 +1270,7 @@
       "outcome": "win",
       "pnl_pct": 8.04,
       "bars_held": 9,
-      "current_price": 412.0
+      "current_price": 411.25
     },
     {
       "symbol": "AARTIIND",
@@ -620,7 +1283,7 @@
       "outcome": "win",
       "pnl_pct": 4.71,
       "bars_held": 10,
-      "current_price": 495.95
+      "current_price": 485.5
     },
     {
       "symbol": "AARTIIND",
@@ -633,7 +1296,7 @@
       "outcome": "win",
       "pnl_pct": 4.71,
       "bars_held": 10,
-      "current_price": 495.95
+      "current_price": 485.5
     },
     {
       "symbol": "AARTIIND",
@@ -646,7 +1309,7 @@
       "outcome": "win",
       "pnl_pct": 4.71,
       "bars_held": 10,
-      "current_price": 495.95
+      "current_price": 485.5
     },
     {
       "symbol": "AARTIIND",
@@ -659,7 +1322,7 @@
       "outcome": "win",
       "pnl_pct": 4.71,
       "bars_held": 10,
-      "current_price": 495.95
+      "current_price": 485.5
     },
     {
       "symbol": "AARTIPHARM",
@@ -672,7 +1335,7 @@
       "outcome": "win",
       "pnl_pct": 2.9,
       "bars_held": 10,
-      "current_price": 672.7
+      "current_price": 682.95
     },
     {
       "symbol": "ABCAPITAL",
@@ -685,7 +1348,7 @@
       "outcome": "win",
       "pnl_pct": 2.34,
       "bars_held": 1,
-      "current_price": 400.6
+      "current_price": 397.6
     },
     {
       "symbol": "ABDL",
@@ -698,7 +1361,7 @@
       "outcome": "loss",
       "pnl_pct": -3.37,
       "bars_held": 1,
-      "current_price": 615.7
+      "current_price": 644.8
     },
     {
       "symbol": "ABFRL",
@@ -711,7 +1374,7 @@
       "outcome": "loss",
       "pnl_pct": -6.46,
       "bars_held": 4,
-      "current_price": 57.05
+      "current_price": 58.06
     },
     {
       "symbol": "ABFRL",
@@ -724,7 +1387,7 @@
       "outcome": "loss",
       "pnl_pct": -6.46,
       "bars_held": 4,
-      "current_price": 57.05
+      "current_price": 58.06
     },
     {
       "symbol": "ABFRL",
@@ -737,7 +1400,20 @@
       "outcome": "loss",
       "pnl_pct": -6.46,
       "bars_held": 4,
-      "current_price": 57.05
+      "current_price": 58.06
+    },
+    {
+      "symbol": "ABGSEC",
+      "strategy": "EMA Pullback",
+      "bar_idx": 221,
+      "date": "2026-07-02 00:00:00",
+      "entry": 114.92,
+      "target": 117.76,
+      "stop_loss": 113.5,
+      "outcome": "loss",
+      "pnl_pct": -0.13,
+      "bars_held": 10,
+      "current_price": 113.9
     },
     {
       "symbol": "ABLBL",
@@ -750,7 +1426,7 @@
       "outcome": "loss",
       "pnl_pct": -4.16,
       "bars_held": 4,
-      "current_price": 93.81
+      "current_price": 95.43
     },
     {
       "symbol": "ABSLLIQUID",
@@ -776,7 +1452,7 @@
       "outcome": "loss",
       "pnl_pct": -1.61,
       "bars_held": 4,
-      "current_price": 75.97
+      "current_price": 76.2
     },
     {
       "symbol": "ACC",
@@ -789,7 +1465,7 @@
       "outcome": "win",
       "pnl_pct": 1.67,
       "bars_held": 10,
-      "current_price": 1359.0
+      "current_price": 1370.8
     },
     {
       "symbol": "ACCELYA",
@@ -802,7 +1478,7 @@
       "outcome": "win",
       "pnl_pct": 1.88,
       "bars_held": 1,
-      "current_price": 1128.1
+      "current_price": 1164.8
     },
     {
       "symbol": "ACI",
@@ -815,7 +1491,7 @@
       "outcome": "win",
       "pnl_pct": 6.17,
       "bars_held": 10,
-      "current_price": 562.5
+      "current_price": 565.75
     },
     {
       "symbol": "ADANIENSOL",
@@ -828,7 +1504,7 @@
       "outcome": "win",
       "pnl_pct": 11.16,
       "bars_held": 10,
-      "current_price": 1724.4
+      "current_price": 1667.8
     },
     {
       "symbol": "ADANIENT",
@@ -841,7 +1517,7 @@
       "outcome": "loss",
       "pnl_pct": -0.82,
       "bars_held": 10,
-      "current_price": 3147.7
+      "current_price": 3024.5
     },
     {
       "symbol": "AAKASH",
@@ -854,7 +1530,7 @@
       "outcome": "win",
       "pnl_pct": 0.55,
       "bars_held": 10,
-      "current_price": 9.09
+      "current_price": 8.86
     },
     {
       "symbol": "AAKASH",
@@ -867,7 +1543,7 @@
       "outcome": "win",
       "pnl_pct": 0.55,
       "bars_held": 10,
-      "current_price": 9.09
+      "current_price": 8.86
     },
     {
       "symbol": "21STCENMGM",
@@ -880,7 +1556,7 @@
       "outcome": "loss",
       "pnl_pct": -1.66,
       "bars_held": 1,
-      "current_price": 35.68
+      "current_price": 38.88
     },
     {
       "symbol": "3IINFOLTD",
@@ -893,7 +1569,7 @@
       "outcome": "loss",
       "pnl_pct": -0.64,
       "bars_held": 1,
-      "current_price": 19.97
+      "current_price": 22.11
     },
     {
       "symbol": "3PLAND",
@@ -906,7 +1582,7 @@
       "outcome": "win",
       "pnl_pct": 3.71,
       "bars_held": 1,
-      "current_price": 31.85
+      "current_price": 32.28
     },
     {
       "symbol": "AADHARHFC",
@@ -919,7 +1595,7 @@
       "outcome": "win",
       "pnl_pct": 3.31,
       "bars_held": 10,
-      "current_price": 510.25
+      "current_price": 494.55
     },
     {
       "symbol": "AARNAV",
@@ -932,7 +1608,7 @@
       "outcome": "loss",
       "pnl_pct": -2.36,
       "bars_held": 5,
-      "current_price": 28.91
+      "current_price": 29.15
     },
     {
       "symbol": "AARTIDRUGS",
@@ -945,7 +1621,7 @@
       "outcome": "win",
       "pnl_pct": 2.62,
       "bars_held": 1,
-      "current_price": 412.0
+      "current_price": 411.25
     },
     {
       "symbol": "AARTIDRUGS",
@@ -958,7 +1634,7 @@
       "outcome": "loss",
       "pnl_pct": -0.56,
       "bars_held": 1,
-      "current_price": 412.0
+      "current_price": 411.25
     },
     {
       "symbol": "ABB",
@@ -971,7 +1647,7 @@
       "outcome": "loss",
       "pnl_pct": -2.31,
       "bars_held": 2,
-      "current_price": 7506.0
+      "current_price": 7310.5
     },
     {
       "symbol": "ABB",
@@ -984,7 +1660,7 @@
       "outcome": "loss",
       "pnl_pct": -3.39,
       "bars_held": 3,
-      "current_price": 7506.0
+      "current_price": 7310.5
     },
     {
       "symbol": "ABB",
@@ -997,7 +1673,7 @@
       "outcome": "loss",
       "pnl_pct": -3.39,
       "bars_held": 3,
-      "current_price": 7506.0
+      "current_price": 7310.5
     },
     {
       "symbol": "ABDL",
@@ -1010,7 +1686,7 @@
       "outcome": "loss",
       "pnl_pct": -5.04,
       "bars_held": 10,
-      "current_price": 615.7
+      "current_price": 644.8
     },
     {
       "symbol": "ABDL",
@@ -1023,7 +1699,7 @@
       "outcome": "loss",
       "pnl_pct": -5.04,
       "bars_held": 10,
-      "current_price": 615.7
+      "current_price": 644.8
     },
     {
       "symbol": "ABGSEC",
@@ -1036,7 +1712,7 @@
       "outcome": "win",
       "pnl_pct": 1.04,
       "bars_held": 2,
-      "current_price": 114.77
+      "current_price": 113.9
     },
     {
       "symbol": "ABGSEC",
@@ -1049,7 +1725,7 @@
       "outcome": "win",
       "pnl_pct": 1.04,
       "bars_held": 2,
-      "current_price": 114.77
+      "current_price": 113.9
     },
     {
       "symbol": "ABMINTLLTD",
@@ -1062,7 +1738,7 @@
       "outcome": "loss",
       "pnl_pct": -3.43,
       "bars_held": 6,
-      "current_price": 42.74
+      "current_price": 42.98
     },
     {
       "symbol": "ACEINTEG",
@@ -1075,7 +1751,7 @@
       "outcome": "loss",
       "pnl_pct": -3.23,
       "bars_held": 1,
-      "current_price": 19.16
+      "current_price": 19.87
     },
     {
       "symbol": "ACMESOLAR",
@@ -1088,7 +1764,7 @@
       "outcome": "loss",
       "pnl_pct": -0.12,
       "bars_held": 10,
-      "current_price": 369.6
+      "current_price": 366.65
     },
     {
       "symbol": "ACMESOLAR",
@@ -1101,7 +1777,7 @@
       "outcome": "loss",
       "pnl_pct": -0.12,
       "bars_held": 10,
-      "current_price": 369.6
+      "current_price": 366.65
     },
     {
       "symbol": "ACUTAAS",
@@ -1114,7 +1790,7 @@
       "outcome": "loss",
       "pnl_pct": -2.05,
       "bars_held": 10,
-      "current_price": 3659.6
+      "current_price": 3306.2
     },
     {
       "symbol": "ACUTAAS",
@@ -1127,7 +1803,7 @@
       "outcome": "loss",
       "pnl_pct": -2.05,
       "bars_held": 10,
-      "current_price": 3659.6
+      "current_price": 3306.2
     },
     {
       "symbol": "ACUTAAS",
@@ -1140,7 +1816,7 @@
       "outcome": "loss",
       "pnl_pct": -2.05,
       "bars_held": 10,
-      "current_price": 3659.6
+      "current_price": 3306.2
     },
     {
       "symbol": "5PAISA",
@@ -1153,7 +1829,7 @@
       "outcome": "win",
       "pnl_pct": 4.39,
       "bars_held": 10,
-      "current_price": 369.95
+      "current_price": 348.4
     },
     {
       "symbol": "5PAISA",
@@ -1166,7 +1842,7 @@
       "outcome": "win",
       "pnl_pct": 9.17,
       "bars_held": 6,
-      "current_price": 369.95
+      "current_price": 348.4
     },
     {
       "symbol": "5PAISA",
@@ -1179,7 +1855,7 @@
       "outcome": "win",
       "pnl_pct": 4.39,
       "bars_held": 10,
-      "current_price": 369.95
+      "current_price": 348.4
     },
     {
       "symbol": "AADHARHFC",
@@ -1192,7 +1868,7 @@
       "outcome": "win",
       "pnl_pct": 6.83,
       "bars_held": 1,
-      "current_price": 510.25
+      "current_price": 494.55
     },
     {
       "symbol": "AARNAV",
@@ -1205,7 +1881,7 @@
       "outcome": "loss",
       "pnl_pct": -3.86,
       "bars_held": 8,
-      "current_price": 28.91
+      "current_price": 29.15
     },
     {
       "symbol": "AARNAV",
@@ -1218,7 +1894,7 @@
       "outcome": "loss",
       "pnl_pct": -3.86,
       "bars_held": 8,
-      "current_price": 28.91
+      "current_price": 29.15
     },
     {
       "symbol": "AARNAV",
@@ -1231,7 +1907,7 @@
       "outcome": "loss",
       "pnl_pct": -3.86,
       "bars_held": 8,
-      "current_price": 28.91
+      "current_price": 29.15
     },
     {
       "symbol": "AARTISURF",
@@ -1244,7 +1920,7 @@
       "outcome": "loss",
       "pnl_pct": -3.92,
       "bars_held": 10,
-      "current_price": 388.2
+      "current_price": 390.5
     },
     {
       "symbol": "AAVAS",
@@ -1257,7 +1933,7 @@
       "outcome": "win",
       "pnl_pct": 1.16,
       "bars_held": 10,
-      "current_price": 1444.0
+      "current_price": 1387.3
     },
     {
       "symbol": "AAVAS",
@@ -1270,7 +1946,7 @@
       "outcome": "win",
       "pnl_pct": 1.16,
       "bars_held": 10,
-      "current_price": 1444.0
+      "current_price": 1387.3
     },
     {
       "symbol": "ABCAPITAL",
@@ -1283,7 +1959,7 @@
       "outcome": "loss",
       "pnl_pct": -2.29,
       "bars_held": 10,
-      "current_price": 400.6
+      "current_price": 397.6
     },
     {
       "symbol": "ABGSEC",
@@ -1296,7 +1972,7 @@
       "outcome": "loss",
       "pnl_pct": -0.26,
       "bars_held": 10,
-      "current_price": 114.77
+      "current_price": 113.9
     },
     {
       "symbol": "ABINFRA",
@@ -1309,7 +1985,7 @@
       "outcome": "win",
       "pnl_pct": 14.59,
       "bars_held": 1,
-      "current_price": 10.2
+      "current_price": 10.06
     },
     {
       "symbol": "ABINFRA",
@@ -1322,7 +1998,7 @@
       "outcome": "win",
       "pnl_pct": 15.5,
       "bars_held": 1,
-      "current_price": 10.2
+      "current_price": 10.06
     },
     {
       "symbol": "ABINFRA",
@@ -1335,7 +2011,7 @@
       "outcome": "win",
       "pnl_pct": 16.59,
       "bars_held": 1,
-      "current_price": 10.2
+      "current_price": 10.06
     },
     {
       "symbol": "ABLBL",
@@ -1348,7 +2024,7 @@
       "outcome": "loss",
       "pnl_pct": -3.96,
       "bars_held": 3,
-      "current_price": 93.81
+      "current_price": 95.43
     },
     {
       "symbol": "ABSLBANETF",
@@ -1361,7 +2037,7 @@
       "outcome": "loss",
       "pnl_pct": -2.0,
       "bars_held": 5,
-      "current_price": 58.67
+      "current_price": 58.6
     },
     {
       "symbol": "ABSLLIQUID",
@@ -1400,7 +2076,7 @@
       "outcome": "win",
       "pnl_pct": 9.52,
       "bars_held": 5,
-      "current_price": 369.6
+      "current_price": 366.65
     },
     {
       "symbol": "ADANIENSOL",
@@ -1413,7 +2089,7 @@
       "outcome": "win",
       "pnl_pct": 2.13,
       "bars_held": 1,
-      "current_price": 1724.4
+      "current_price": 1667.8
     },
     {
       "symbol": "ADANIENT",
@@ -1426,7 +2102,7 @@
       "outcome": "loss",
       "pnl_pct": -0.74,
       "bars_held": 10,
-      "current_price": 3147.7
+      "current_price": 3024.5
     },
     {
       "symbol": "20MICRONS",
@@ -1439,7 +2115,7 @@
       "outcome": "win",
       "pnl_pct": 0.47,
       "bars_held": 1,
-      "current_price": 211.15
+      "current_price": 201.16
     },
     {
       "symbol": "20MICRONS",
@@ -1452,7 +2128,7 @@
       "outcome": "win",
       "pnl_pct": 1.67,
       "bars_held": 1,
-      "current_price": 211.15
+      "current_price": 201.16
     },
     {
       "symbol": "21STCENMGM",
@@ -1465,7 +2141,7 @@
       "outcome": "loss",
       "pnl_pct": -6.15,
       "bars_held": 10,
-      "current_price": 35.68
+      "current_price": 38.88
     },
     {
       "symbol": "21STCENMGM",
@@ -1478,7 +2154,7 @@
       "outcome": "loss",
       "pnl_pct": -5.85,
       "bars_held": 10,
-      "current_price": 35.68
+      "current_price": 38.88
     },
     {
       "symbol": "3IINFOLTD",
@@ -1491,7 +2167,7 @@
       "outcome": "win",
       "pnl_pct": 1.15,
       "bars_held": 1,
-      "current_price": 19.97
+      "current_price": 22.11
     },
     {
       "symbol": "5PAISA",
@@ -1504,7 +2180,7 @@
       "outcome": "win",
       "pnl_pct": 8.15,
       "bars_held": 3,
-      "current_price": 369.95
+      "current_price": 348.4
     },
     {
       "symbol": "AAATECH",
@@ -1517,7 +2193,7 @@
       "outcome": "loss",
       "pnl_pct": -0.64,
       "bars_held": 1,
-      "current_price": 90.58
+      "current_price": 89.32
     },
     {
       "symbol": "AADHARHFC",
@@ -1530,7 +2206,7 @@
       "outcome": "win",
       "pnl_pct": 7.86,
       "bars_held": 10,
-      "current_price": 510.25
+      "current_price": 494.55
     },
     {
       "symbol": "AADHARHFC",
@@ -1543,7 +2219,7 @@
       "outcome": "win",
       "pnl_pct": 7.86,
       "bars_held": 10,
-      "current_price": 510.25
+      "current_price": 494.55
     },
     {
       "symbol": "AADHARHFC",
@@ -1556,7 +2232,7 @@
       "outcome": "win",
       "pnl_pct": 7.86,
       "bars_held": 10,
-      "current_price": 510.25
+      "current_price": 494.55
     },
     {
       "symbol": "AADHARHFC",
@@ -1569,7 +2245,7 @@
       "outcome": "win",
       "pnl_pct": 7.86,
       "bars_held": 10,
-      "current_price": 510.25
+      "current_price": 494.55
     },
     {
       "symbol": "AARTECH",
@@ -1595,7 +2271,7 @@
       "outcome": "win",
       "pnl_pct": 1.92,
       "bars_held": 1,
-      "current_price": 412.0
+      "current_price": 411.25
     },
     {
       "symbol": "AARTIPHARM",
@@ -1608,7 +2284,7 @@
       "outcome": "win",
       "pnl_pct": 2.1,
       "bars_held": 10,
-      "current_price": 672.7
+      "current_price": 682.95
     },
     {
       "symbol": "AARVI",
@@ -1621,7 +2297,7 @@
       "outcome": "loss",
       "pnl_pct": -2.04,
       "bars_held": 1,
-      "current_price": 161.75
+      "current_price": 152.31
     },
     {
       "symbol": "AAVAS",
@@ -1634,7 +2310,7 @@
       "outcome": "loss",
       "pnl_pct": -4.89,
       "bars_held": 1,
-      "current_price": 1444.0
+      "current_price": 1387.3
     },
     {
       "symbol": "ABCAPITAL",
@@ -1647,7 +2323,7 @@
       "outcome": "win",
       "pnl_pct": 3.88,
       "bars_held": 1,
-      "current_price": 400.6
+      "current_price": 397.6
     },
     {
       "symbol": "ABREL",
@@ -1660,7 +2336,7 @@
       "outcome": "win",
       "pnl_pct": 3.33,
       "bars_held": 1,
-      "current_price": 1408.6
+      "current_price": 1405.6
     },
     {
       "symbol": "ABSLAMC",
@@ -1673,7 +2349,7 @@
       "outcome": "loss",
       "pnl_pct": -0.19,
       "bars_held": 10,
-      "current_price": 1002.9
+      "current_price": 1017.5
     },
     {
       "symbol": "ABSLLIQUID",
@@ -1699,7 +2375,7 @@
       "outcome": "loss",
       "pnl_pct": -0.66,
       "bars_held": 1,
-      "current_price": 10.38
+      "current_price": 10.25
     },
     {
       "symbol": "A2ZINFRA",
@@ -1712,7 +2388,7 @@
       "outcome": "loss",
       "pnl_pct": -0.35,
       "bars_held": 1,
-      "current_price": 12.56
+      "current_price": 13.26
     },
     {
       "symbol": "ABGSEC",
@@ -1725,7 +2401,20 @@
       "outcome": "win",
       "pnl_pct": 0.57,
       "bars_held": 1,
-      "current_price": 114.77
+      "current_price": 113.9
+    },
+    {
+      "symbol": "ABSL10BANK",
+      "strategy": "Breakout Retest",
+      "bar_idx": 74,
+      "date": "2026-06-18 00:00:00",
+      "entry": 170.08,
+      "target": 174.98,
+      "stop_loss": 167.63,
+      "outcome": "win",
+      "pnl_pct": 2.88,
+      "bars_held": 2,
+      "current_price": 170.14
     },
     {
       "symbol": "ABSLMSCIN",
@@ -1738,7 +2427,7 @@
       "outcome": "win",
       "pnl_pct": 6.95,
       "bars_held": 2,
-      "current_price": 29.31
+      "current_price": 29.59
     },
     {
       "symbol": "20MICRONS",
@@ -1751,7 +2440,7 @@
       "outcome": "win",
       "pnl_pct": 6.94,
       "bars_held": 5,
-      "current_price": 211.15
+      "current_price": 201.16
     },
     {
       "symbol": "21STCENMGM",
@@ -1764,7 +2453,7 @@
       "outcome": "win",
       "pnl_pct": 0.81,
       "bars_held": 10,
-      "current_price": 35.68
+      "current_price": 38.88
     },
     {
       "symbol": "3IINFOLTD",
@@ -1777,7 +2466,7 @@
       "outcome": "loss",
       "pnl_pct": -2.72,
       "bars_held": 10,
-      "current_price": 19.97
+      "current_price": 22.11
     },
     {
       "symbol": "3IINFOLTD",
@@ -1790,7 +2479,7 @@
       "outcome": "loss",
       "pnl_pct": -2.72,
       "bars_held": 10,
-      "current_price": 19.97
+      "current_price": 22.11
     },
     {
       "symbol": "3IINFOLTD",
@@ -1803,7 +2492,7 @@
       "outcome": "loss",
       "pnl_pct": -2.72,
       "bars_held": 10,
-      "current_price": 19.97
+      "current_price": 22.11
     },
     {
       "symbol": "3MINDIA",
@@ -1816,7 +2505,7 @@
       "outcome": "win",
       "pnl_pct": 1.86,
       "bars_held": 10,
-      "current_price": 35725.0
+      "current_price": 35425.0
     },
     {
       "symbol": "3PLAND",
@@ -1829,7 +2518,7 @@
       "outcome": "loss",
       "pnl_pct": -5.22,
       "bars_held": 9,
-      "current_price": 31.85
+      "current_price": 32.28
     },
     {
       "symbol": "5PAISA",
@@ -1842,7 +2531,7 @@
       "outcome": "win",
       "pnl_pct": 9.32,
       "bars_held": 10,
-      "current_price": 369.95
+      "current_price": 348.4
     },
     {
       "symbol": "5PAISA",
@@ -1855,7 +2544,7 @@
       "outcome": "win",
       "pnl_pct": 9.32,
       "bars_held": 10,
-      "current_price": 369.95
+      "current_price": 348.4
     },
     {
       "symbol": "63MOONS",
@@ -1868,7 +2557,7 @@
       "outcome": "loss",
       "pnl_pct": -2.04,
       "bars_held": 10,
-      "current_price": 704.9
+      "current_price": 778.45
     },
     {
       "symbol": "AADHARHFC",
@@ -1881,7 +2570,7 @@
       "outcome": "win",
       "pnl_pct": 11.13,
       "bars_held": 7,
-      "current_price": 510.25
+      "current_price": 494.55
     },
     {
       "symbol": "AARNAV",
@@ -1894,7 +2583,7 @@
       "outcome": "loss",
       "pnl_pct": -2.92,
       "bars_held": 3,
-      "current_price": 28.91
+      "current_price": 29.15
     },
     {
       "symbol": "AARTECH",
@@ -1972,7 +2661,7 @@
       "outcome": "loss",
       "pnl_pct": -7.73,
       "bars_held": 10,
-      "current_price": 495.95
+      "current_price": 485.5
     },
     {
       "symbol": "AARTIPHARM",
@@ -1985,7 +2674,7 @@
       "outcome": "win",
       "pnl_pct": 7.1,
       "bars_held": 3,
-      "current_price": 672.7
+      "current_price": 682.95
     },
     {
       "symbol": "AAVAS",
@@ -1998,7 +2687,7 @@
       "outcome": "win",
       "pnl_pct": 9.14,
       "bars_held": 10,
-      "current_price": 1444.0
+      "current_price": 1387.3
     },
     {
       "symbol": "ABB",
@@ -2011,7 +2700,7 @@
       "outcome": "win",
       "pnl_pct": 0.14,
       "bars_held": 10,
-      "current_price": 7506.0
+      "current_price": 7310.5
     },
     {
       "symbol": "ABB",
@@ -2024,7 +2713,7 @@
       "outcome": "win",
       "pnl_pct": 0.14,
       "bars_held": 10,
-      "current_price": 7506.0
+      "current_price": 7310.5
     },
     {
       "symbol": "ABB",
@@ -2037,7 +2726,7 @@
       "outcome": "win",
       "pnl_pct": 0.14,
       "bars_held": 10,
-      "current_price": 7506.0
+      "current_price": 7310.5
     },
     {
       "symbol": "ABCAPITAL",
@@ -2050,7 +2739,7 @@
       "outcome": "win",
       "pnl_pct": 4.86,
       "bars_held": 10,
-      "current_price": 400.6
+      "current_price": 397.6
     },
     {
       "symbol": "ABCAPITAL",
@@ -2063,7 +2752,7 @@
       "outcome": "win",
       "pnl_pct": 4.86,
       "bars_held": 10,
-      "current_price": 400.6
+      "current_price": 397.6
     },
     {
       "symbol": "ABLBL",
@@ -2076,7 +2765,7 @@
       "outcome": "loss",
       "pnl_pct": -5.55,
       "bars_held": 9,
-      "current_price": 93.81
+      "current_price": 95.43
     },
     {
       "symbol": "ABLBL",
@@ -2089,7 +2778,7 @@
       "outcome": "loss",
       "pnl_pct": -4.34,
       "bars_held": 9,
-      "current_price": 93.81
+      "current_price": 95.43
     },
     {
       "symbol": "ABREL",
@@ -2102,7 +2791,7 @@
       "outcome": "win",
       "pnl_pct": 0.6,
       "bars_held": 10,
-      "current_price": 1408.6
+      "current_price": 1405.6
     },
     {
       "symbol": "ABREL",
@@ -2115,7 +2804,7 @@
       "outcome": "win",
       "pnl_pct": 0.6,
       "bars_held": 10,
-      "current_price": 1408.6
+      "current_price": 1405.6
     },
     {
       "symbol": "ABREL",
@@ -2128,7 +2817,7 @@
       "outcome": "win",
       "pnl_pct": 0.6,
       "bars_held": 10,
-      "current_price": 1408.6
+      "current_price": 1405.6
     },
     {
       "symbol": "ABREL",
@@ -2141,7 +2830,7 @@
       "outcome": "win",
       "pnl_pct": 0.6,
       "bars_held": 10,
-      "current_price": 1408.6
+      "current_price": 1405.6
     },
     {
       "symbol": "ABSLLIQUID",
@@ -2155,695 +2844,6 @@
       "pnl_pct": -0.0,
       "bars_held": 1,
       "current_price": 999.99
-    },
-    {
-      "symbol": "ABSLNN50ET",
-      "strategy": "EMA Crossover",
-      "bar_idx": 227,
-      "date": "2026-06-16 00:00:00",
-      "entry": 75.4,
-      "target": 83.0,
-      "stop_loss": 71.6,
-      "outcome": "loss",
-      "pnl_pct": -0.04,
-      "bars_held": 10,
-      "current_price": 75.97
-    },
-    {
-      "symbol": "ABSLNN50ET",
-      "strategy": "MA Ribbon Expansion",
-      "bar_idx": 227,
-      "date": "2026-06-16 00:00:00",
-      "entry": 75.4,
-      "target": 84.5,
-      "stop_loss": 70.85,
-      "outcome": "loss",
-      "pnl_pct": -0.04,
-      "bars_held": 10,
-      "current_price": 75.97
-    },
-    {
-      "symbol": "ACE",
-      "strategy": "Breakout Retest",
-      "bar_idx": 227,
-      "date": "2026-06-16 00:00:00",
-      "entry": 930.5,
-      "target": 998.6,
-      "stop_loss": 896.45,
-      "outcome": "win",
-      "pnl_pct": 7.32,
-      "bars_held": 4,
-      "current_price": 1007.6
-    },
-    {
-      "symbol": "ABCOTS",
-      "strategy": "Supertrend Breakout",
-      "bar_idx": 185,
-      "date": "2026-06-15 00:00:00",
-      "entry": 246.33,
-      "target": 343.61,
-      "stop_loss": 197.69,
-      "outcome": "loss",
-      "pnl_pct": -9.47,
-      "bars_held": 10,
-      "current_price": 204.15
-    },
-    {
-      "symbol": "ABCOTS",
-      "strategy": "Volume Breakout",
-      "bar_idx": 185,
-      "date": "2026-06-15 00:00:00",
-      "entry": 246.33,
-      "target": 342.99,
-      "stop_loss": 198.0,
-      "outcome": "loss",
-      "pnl_pct": -9.47,
-      "bars_held": 10,
-      "current_price": 204.15
-    },
-    {
-      "symbol": "ABCOTS",
-      "strategy": "ADX Trend Strength",
-      "bar_idx": 185,
-      "date": "2026-06-15 00:00:00",
-      "entry": 246.33,
-      "target": 343.61,
-      "stop_loss": 197.69,
-      "outcome": "loss",
-      "pnl_pct": -9.47,
-      "bars_held": 10,
-      "current_price": 204.15
-    },
-    {
-      "symbol": "ABCOTS",
-      "strategy": "Double Bottom",
-      "bar_idx": 185,
-      "date": "2026-06-15 00:00:00",
-      "entry": 246.33,
-      "target": 271.64,
-      "stop_loss": 197.69,
-      "outcome": "loss",
-      "pnl_pct": -9.47,
-      "bars_held": 10,
-      "current_price": 204.15
-    },
-    {
-      "symbol": "ABGSEC",
-      "strategy": "EMA Pullback",
-      "bar_idx": 209,
-      "date": "2026-06-15 00:00:00",
-      "entry": 112.39,
-      "target": 114.71,
-      "stop_loss": 111.23,
-      "outcome": "win",
-      "pnl_pct": 2.06,
-      "bars_held": 9,
-      "current_price": 114.77
-    },
-    {
-      "symbol": "ACCURACY",
-      "strategy": "EMA Pullback",
-      "bar_idx": 206,
-      "date": "2026-06-15 00:00:00",
-      "entry": 5.62,
-      "target": 6.66,
-      "stop_loss": 5.1,
-      "outcome": "loss",
-      "pnl_pct": -3.91,
-      "bars_held": 10,
-      "current_price": 5.47
-    },
-    {
-      "symbol": "ACCURACY",
-      "strategy": "VWAP Reclaim",
-      "bar_idx": 206,
-      "date": "2026-06-15 00:00:00",
-      "entry": 5.62,
-      "target": 6.66,
-      "stop_loss": 5.1,
-      "outcome": "loss",
-      "pnl_pct": -3.91,
-      "bars_held": 10,
-      "current_price": 5.47
-    },
-    {
-      "symbol": "ACCURACY",
-      "strategy": "MA Ribbon Expansion",
-      "bar_idx": 206,
-      "date": "2026-06-15 00:00:00",
-      "entry": 5.62,
-      "target": 6.66,
-      "stop_loss": 5.1,
-      "outcome": "loss",
-      "pnl_pct": -3.91,
-      "bars_held": 10,
-      "current_price": 5.47
-    },
-    {
-      "symbol": "360ONE",
-      "strategy": "Stochastic Oversold",
-      "bar_idx": 224,
-      "date": "2026-06-11 00:00:00",
-      "entry": 1064.1,
-      "target": 1129.7,
-      "stop_loss": 1031.3,
-      "outcome": "win",
-      "pnl_pct": 6.16,
-      "bars_held": 2,
-      "current_price": 1093.6
-    },
-    {
-      "symbol": "63MOONS",
-      "strategy": "MACD Crossover",
-      "bar_idx": 224,
-      "date": "2026-06-11 00:00:00",
-      "entry": 642.4,
-      "target": 691.6,
-      "stop_loss": 617.8,
-      "outcome": "win",
-      "pnl_pct": 7.66,
-      "bars_held": 9,
-      "current_price": 704.9
-    },
-    {
-      "symbol": "AAATECH",
-      "strategy": "EMA Pullback",
-      "bar_idx": 134,
-      "date": "2026-06-11 00:00:00",
-      "entry": 98.14,
-      "target": 110.42,
-      "stop_loss": 92.0,
-      "outcome": "loss",
-      "pnl_pct": -3.04,
-      "bars_held": 10,
-      "current_price": 90.58
-    },
-    {
-      "symbol": "AARON",
-      "strategy": "RSI Reversal",
-      "bar_idx": 224,
-      "date": "2026-06-11 00:00:00",
-      "entry": 114.75,
-      "target": 120.25,
-      "stop_loss": 112.0,
-      "outcome": "win",
-      "pnl_pct": 4.79,
-      "bars_held": 2,
-      "current_price": 117.48
-    },
-    {
-      "symbol": "AARTIIND",
-      "strategy": "Stochastic Oversold",
-      "bar_idx": 224,
-      "date": "2026-06-11 00:00:00",
-      "entry": 427.85,
-      "target": 435.55,
-      "stop_loss": 424.0,
-      "outcome": "win",
-      "pnl_pct": 1.8,
-      "bars_held": 1,
-      "current_price": 495.95
-    },
-    {
-      "symbol": "AARTIPHARM",
-      "strategy": "Stochastic Oversold",
-      "bar_idx": 224,
-      "date": "2026-06-11 00:00:00",
-      "entry": 622.35,
-      "target": 658.75,
-      "stop_loss": 604.15,
-      "outcome": "win",
-      "pnl_pct": 5.85,
-      "bars_held": 5,
-      "current_price": 672.7
-    },
-    {
-      "symbol": "AAVAS",
-      "strategy": "EMA Pullback",
-      "bar_idx": 224,
-      "date": "2026-06-11 00:00:00",
-      "entry": 1328.2,
-      "target": 1489.4,
-      "stop_loss": 1247.6,
-      "outcome": "win",
-      "pnl_pct": 12.14,
-      "bars_held": 7,
-      "current_price": 1444.0
-    },
-    {
-      "symbol": "ABDL",
-      "strategy": "Volume Breakout",
-      "bar_idx": 224,
-      "date": "2026-06-11 00:00:00",
-      "entry": 608.45,
-      "target": 705.35,
-      "stop_loss": 560.0,
-      "outcome": "win",
-      "pnl_pct": 2.28,
-      "bars_held": 10,
-      "current_price": 615.7
-    },
-    {
-      "symbol": "ABSLBANETF",
-      "strategy": "EMA Pullback",
-      "bar_idx": 224,
-      "date": "2026-06-11 00:00:00",
-      "entry": 56.32,
-      "target": 58.3,
-      "stop_loss": 55.33,
-      "outcome": "win",
-      "pnl_pct": 3.52,
-      "bars_held": 2,
-      "current_price": 58.67
-    },
-    {
-      "symbol": "ACE",
-      "strategy": "EMA Pullback",
-      "bar_idx": 224,
-      "date": "2026-06-11 00:00:00",
-      "entry": 891.95,
-      "target": 951.85,
-      "stop_loss": 862.0,
-      "outcome": "win",
-      "pnl_pct": 6.72,
-      "bars_held": 2,
-      "current_price": 1007.6
-    },
-    {
-      "symbol": "ACE",
-      "strategy": "VWAP Reclaim",
-      "bar_idx": 224,
-      "date": "2026-06-11 00:00:00",
-      "entry": 891.95,
-      "target": 951.85,
-      "stop_loss": 862.0,
-      "outcome": "win",
-      "pnl_pct": 6.72,
-      "bars_held": 2,
-      "current_price": 1007.6
-    },
-    {
-      "symbol": "ACEINTEG",
-      "strategy": "EMA Pullback",
-      "bar_idx": 224,
-      "date": "2026-06-11 00:00:00",
-      "entry": 20.02,
-      "target": 21.74,
-      "stop_loss": 19.16,
-      "outcome": "win",
-      "pnl_pct": 8.59,
-      "bars_held": 5,
-      "current_price": 19.16
-    },
-    {
-      "symbol": "ABGSEC",
-      "strategy": "Supertrend Breakout",
-      "bar_idx": 206,
-      "date": "2026-06-10 00:00:00",
-      "entry": 113.82,
-      "target": 119.96,
-      "stop_loss": 110.75,
-      "outcome": "loss",
-      "pnl_pct": -0.64,
-      "bars_held": 10,
-      "current_price": 114.77
-    },
-    {
-      "symbol": "ABGSEC",
-      "strategy": "Volume Breakout",
-      "bar_idx": 206,
-      "date": "2026-06-10 00:00:00",
-      "entry": 113.82,
-      "target": 117.46,
-      "stop_loss": 112.0,
-      "outcome": "loss",
-      "pnl_pct": -1.6,
-      "bars_held": 1,
-      "current_price": 114.77
-    },
-    {
-      "symbol": "ABGSEC",
-      "strategy": "EMA Pullback",
-      "bar_idx": 206,
-      "date": "2026-06-10 00:00:00",
-      "entry": 113.82,
-      "target": 117.46,
-      "stop_loss": 112.0,
-      "outcome": "loss",
-      "pnl_pct": -1.6,
-      "bars_held": 1,
-      "current_price": 114.77
-    },
-    {
-      "symbol": "ABGSEC",
-      "strategy": "52-Week High Break",
-      "bar_idx": 206,
-      "date": "2026-06-10 00:00:00",
-      "entry": 113.82,
-      "target": 119.96,
-      "stop_loss": 110.75,
-      "outcome": "loss",
-      "pnl_pct": -0.64,
-      "bars_held": 10,
-      "current_price": 114.77
-    },
-    {
-      "symbol": "ABGSEC",
-      "strategy": "Double Bottom",
-      "bar_idx": 206,
-      "date": "2026-06-10 00:00:00",
-      "entry": 113.82,
-      "target": 117.1,
-      "stop_loss": 109.93,
-      "outcome": "loss",
-      "pnl_pct": -0.64,
-      "bars_held": 10,
-      "current_price": 114.77
-    },
-    {
-      "symbol": "3PLAND",
-      "strategy": "VWAP Reclaim",
-      "bar_idx": 221,
-      "date": "2026-06-08 00:00:00",
-      "entry": 32.76,
-      "target": 36.28,
-      "stop_loss": 31.0,
-      "outcome": "loss",
-      "pnl_pct": -5.37,
-      "bars_held": 3,
-      "current_price": 31.85
-    },
-    {
-      "symbol": "3PLAND",
-      "strategy": "Double Bottom",
-      "bar_idx": 221,
-      "date": "2026-06-08 00:00:00",
-      "entry": 32.76,
-      "target": 34.87,
-      "stop_loss": 30.05,
-      "outcome": "win",
-      "pnl_pct": 6.44,
-      "bars_held": 1,
-      "current_price": 31.85
-    },
-    {
-      "symbol": "AARNAV",
-      "strategy": "Inside Bar Breakout",
-      "bar_idx": 71,
-      "date": "2026-06-08 00:00:00",
-      "entry": 24.55,
-      "target": 25.25,
-      "stop_loss": 24.2,
-      "outcome": "win",
-      "pnl_pct": 2.85,
-      "bars_held": 1,
-      "current_price": 28.91
-    },
-    {
-      "symbol": "AARVI",
-      "strategy": "Inside Bar Breakout",
-      "bar_idx": 221,
-      "date": "2026-06-08 00:00:00",
-      "entry": 130.89,
-      "target": 136.91,
-      "stop_loss": 127.88,
-      "outcome": "win",
-      "pnl_pct": 4.6,
-      "bars_held": 2,
-      "current_price": 161.75
-    },
-    {
-      "symbol": "AARVI",
-      "strategy": "EMA Pullback",
-      "bar_idx": 221,
-      "date": "2026-06-08 00:00:00",
-      "entry": 130.89,
-      "target": 142.07,
-      "stop_loss": 125.3,
-      "outcome": "win",
-      "pnl_pct": 8.54,
-      "bars_held": 3,
-      "current_price": 161.75
-    },
-    {
-      "symbol": "ABSLLIQUID",
-      "strategy": "EMA Pullback",
-      "bar_idx": 221,
-      "date": "2026-06-08 00:00:00",
-      "entry": 1000.0,
-      "target": 1000.02,
-      "stop_loss": 999.99,
-      "outcome": "loss",
-      "pnl_pct": -0.0,
-      "bars_held": 1,
-      "current_price": 999.99
-    },
-    {
-      "symbol": "ACEINTEG",
-      "strategy": "EMA Pullback",
-      "bar_idx": 221,
-      "date": "2026-06-08 00:00:00",
-      "entry": 20.66,
-      "target": 22.86,
-      "stop_loss": 19.56,
-      "outcome": "loss",
-      "pnl_pct": -5.32,
-      "bars_held": 2,
-      "current_price": 19.16
-    },
-    {
-      "symbol": "ACEINTEG",
-      "strategy": "VWAP Reclaim",
-      "bar_idx": 221,
-      "date": "2026-06-08 00:00:00",
-      "entry": 20.66,
-      "target": 22.86,
-      "stop_loss": 19.56,
-      "outcome": "loss",
-      "pnl_pct": -5.32,
-      "bars_held": 2,
-      "current_price": 19.16
-    },
-    {
-      "symbol": "ABGSEC",
-      "strategy": "EMA Pullback",
-      "bar_idx": 203,
-      "date": "2026-06-05 00:00:00",
-      "entry": 111.99,
-      "target": 114.47,
-      "stop_loss": 110.75,
-      "outcome": "win",
-      "pnl_pct": 1.45,
-      "bars_held": 10,
-      "current_price": 114.77
-    },
-    {
-      "symbol": "20MICRONS",
-      "strategy": "VWAP Reclaim",
-      "bar_idx": 218,
-      "date": "2026-06-03 00:00:00",
-      "entry": 188.95,
-      "target": 206.59,
-      "stop_loss": 180.13,
-      "outcome": "loss",
-      "pnl_pct": -4.67,
-      "bars_held": 6,
-      "current_price": 211.15
-    },
-    {
-      "symbol": "3PLAND",
-      "strategy": "Stochastic Oversold",
-      "bar_idx": 218,
-      "date": "2026-06-03 00:00:00",
-      "entry": 32.21,
-      "target": 36.51,
-      "stop_loss": 30.06,
-      "outcome": "win",
-      "pnl_pct": 13.35,
-      "bars_held": 3,
-      "current_price": 31.85
-    },
-    {
-      "symbol": "3PLAND",
-      "strategy": "Double Bottom",
-      "bar_idx": 218,
-      "date": "2026-06-03 00:00:00",
-      "entry": 32.21,
-      "target": 34.32,
-      "stop_loss": 30.05,
-      "outcome": "win",
-      "pnl_pct": 6.55,
-      "bars_held": 3,
-      "current_price": 31.85
-    },
-    {
-      "symbol": "5PAISA",
-      "strategy": "EMA Pullback",
-      "bar_idx": 218,
-      "date": "2026-06-03 00:00:00",
-      "entry": 325.05,
-      "target": 339.15,
-      "stop_loss": 318.0,
-      "outcome": "loss",
-      "pnl_pct": -2.17,
-      "bars_held": 2,
-      "current_price": 369.95
-    },
-    {
-      "symbol": "AARTECH",
-      "strategy": "VWAP Reclaim",
-      "bar_idx": 218,
-      "date": "2026-06-03 00:00:00",
-      "entry": 42.65,
-      "target": 46.13,
-      "stop_loss": 40.91,
-      "outcome": "loss",
-      "pnl_pct": -4.08,
-      "bars_held": 3,
-      "current_price": 49.66
-    },
-    {
-      "symbol": "AAVAS",
-      "strategy": "ADX Trend Strength",
-      "bar_idx": 218,
-      "date": "2026-06-03 00:00:00",
-      "entry": 1312.0,
-      "target": 1356.0,
-      "stop_loss": 1290.0,
-      "outcome": "loss",
-      "pnl_pct": -1.68,
-      "bars_held": 2,
-      "current_price": 1444.0
-    },
-    {
-      "symbol": "ABDL",
-      "strategy": "EMA Pullback",
-      "bar_idx": 218,
-      "date": "2026-06-03 00:00:00",
-      "entry": 572.2,
-      "target": 632.6,
-      "stop_loss": 542.0,
-      "outcome": "win",
-      "pnl_pct": 10.56,
-      "bars_held": 7,
-      "current_price": 615.7
-    },
-    {
-      "symbol": "ABDL",
-      "strategy": "VWAP Reclaim",
-      "bar_idx": 218,
-      "date": "2026-06-03 00:00:00",
-      "entry": 572.2,
-      "target": 632.6,
-      "stop_loss": 542.0,
-      "outcome": "win",
-      "pnl_pct": 10.56,
-      "bars_held": 7,
-      "current_price": 615.7
-    },
-    {
-      "symbol": "ABSLAMC",
-      "strategy": "EMA Crossover",
-      "bar_idx": 218,
-      "date": "2026-06-03 00:00:00",
-      "entry": 1033.3,
-      "target": 1088.7,
-      "stop_loss": 1005.6,
-      "outcome": "win",
-      "pnl_pct": 5.36,
-      "bars_held": 5,
-      "current_price": 1002.9
-    },
-    {
-      "symbol": "ABSLAMC",
-      "strategy": "EMA Pullback",
-      "bar_idx": 218,
-      "date": "2026-06-03 00:00:00",
-      "entry": 1033.3,
-      "target": 1088.7,
-      "stop_loss": 1005.6,
-      "outcome": "win",
-      "pnl_pct": 5.36,
-      "bars_held": 5,
-      "current_price": 1002.9
-    },
-    {
-      "symbol": "ABSLLIQUID",
-      "strategy": "Golden Cross",
-      "bar_idx": 218,
-      "date": "2026-06-03 00:00:00",
-      "entry": 1000.0,
-      "target": 1000.02,
-      "stop_loss": 999.99,
-      "outcome": "loss",
-      "pnl_pct": -0.0,
-      "bars_held": 1,
-      "current_price": 999.99
-    },
-    {
-      "symbol": "ABSLLIQUID",
-      "strategy": "EMA Pullback",
-      "bar_idx": 218,
-      "date": "2026-06-03 00:00:00",
-      "entry": 1000.0,
-      "target": 1000.02,
-      "stop_loss": 999.99,
-      "outcome": "loss",
-      "pnl_pct": -0.0,
-      "bars_held": 1,
-      "current_price": 999.99
-    },
-    {
-      "symbol": "ABSLLIQUID",
-      "strategy": "VWAP Reclaim",
-      "bar_idx": 218,
-      "date": "2026-06-03 00:00:00",
-      "entry": 1000.0,
-      "target": 1000.02,
-      "stop_loss": 999.99,
-      "outcome": "loss",
-      "pnl_pct": -0.0,
-      "bars_held": 1,
-      "current_price": 999.99
-    },
-    {
-      "symbol": "ACI",
-      "strategy": "MACD Crossover",
-      "bar_idx": 218,
-      "date": "2026-06-03 00:00:00",
-      "entry": 535.5,
-      "target": 573.8,
-      "stop_loss": 516.35,
-      "outcome": "loss",
-      "pnl_pct": -3.58,
-      "bars_held": 2,
-      "current_price": 562.5
-    },
-    {
-      "symbol": "ACUTAAS",
-      "strategy": "Breakout Retest",
-      "bar_idx": 218,
-      "date": "2026-06-03 00:00:00",
-      "entry": 3135.7,
-      "target": 3603.1,
-      "stop_loss": 2902.0,
-      "outcome": "loss",
-      "pnl_pct": -4.33,
-      "bars_held": 10,
-      "current_price": 3659.6
-    },
-    {
-      "symbol": "A2ZINFRA",
-      "strategy": "Stochastic Oversold",
-      "bar_idx": 104,
-      "date": "2026-06-02 00:00:00",
-      "entry": 14.38,
-      "target": 15.9,
-      "stop_loss": 13.62,
-      "outcome": "loss",
-      "pnl_pct": -0.76,
-      "bars_held": 10,
-      "current_price": 12.56
     }
   ]
 }
